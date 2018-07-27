@@ -1,9 +1,0 @@
-{
-	"ImportPath": "myBot",
-	"GoVersion": "go1.7",
-    "GodepVersion": "v74",
-    "packages": [
-        "./..."
-    ],
-    "Deps": []
-}
