@@ -28,9 +28,15 @@ func main() {
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
 	http.HandleFunc("/callback", callbackHandler)
+	http.HandleFunc("/", hello)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
-	http.ListenAndServe(addr, nil)
+	go http.ListenAndServe(addr, nil)
+	http.ListenAndServe(":"+os.Getenv("PORT”), nil)
+}
+
+func hello(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte("!hello world!"))
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
