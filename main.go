@@ -31,8 +31,8 @@ func main() {
 	http.HandleFunc("/", hello)
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
-	go http.ListenAndServe(addr, nil)
-	http.ListenAndServe(":"+os.Getenv("PORT”), nil)
+	http.ListenAndServe(addr, nil)
+	
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
