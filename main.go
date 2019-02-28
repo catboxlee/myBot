@@ -36,7 +36,7 @@ func main() {
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("!hello world!"))
+	w.Write([]byte("!hello world!test"))
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
