@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	. "emoji"
+	. "myBot/emoji"
 )
 
 type boomType struct {
