@@ -93,9 +93,9 @@ func (b *boomType) reset() {
 
 func (b *boomType) show() {
 	if b.current == b.hit {
-		texts = append(texts, fmt.Sprintf("%s %d",Emoji(":collision:", b.hit))
+		texts = append(texts, fmt.Sprintf("%s %d",Emoji(":collision:"), b.hit))
 	} else {
-		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), Emoji(":bomb:", helper.Min(100, b.max)))
+		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), Emoji(":bomb:"), helper.Min(100, b.max)))
 	}
 }
 
