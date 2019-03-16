@@ -20,8 +20,8 @@ import (
 	"time"
 	"math/rand"
 	
-	"MyLine/boomgame1"
-	"MyLine/player"
+	"myBot/boomgame1"
+	"myBot/player"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
