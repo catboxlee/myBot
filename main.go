@@ -17,13 +17,21 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
+	"math/rand"
+	
+	"MyLine/boomgame1"
+	"MyLine/player"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 var bot *linebot.Client
+var msgcount = 0
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
@@ -36,7 +44,7 @@ func main() {
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("!hello world!test"))
+	w.Write([]byte("!hello world!"))
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +63,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		if event.Type == linebot.EventTypeMessage {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.ID+":"+message.Text+" OK!")).Do(); err != nil {
+				input := strings.TrimSpace(string(inputLine))
+				texts = boomgame1.Run(input)
+				var contents string
+				for _, text := range texts {
+					content += text + "\n"
+				}
+				msgcount++
+				ot = fmt.Sprintf("%d : %s", msgcount, content)
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n" + ot)).Do(); err != nil {
 					log.Print(err)
 				}
 			}
