@@ -11,8 +11,8 @@ func EmojiCode(input string) string{
 }
 
 func Emoji(input string) string {
-	if _, err := emojiCodeMap[input]; err == nil {
+	if _, exist := emojiCodeMap[input]; exist {
 		return emojiCodeMap[input]
 	}
-	return nil
+	return ""
 }
