@@ -1,7 +1,6 @@
 package emoji
 
 import (
-	"fmt"
 	"html"
 	"strconv"
 )
