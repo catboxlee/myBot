@@ -22,7 +22,6 @@ import (
 	"strings"
 	
 	"myBot/boomgame1"
-	"myBot/player"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -65,13 +64,13 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				input := strings.TrimSpace(string(message.Text))
-				texts = boomgame1.Run(input)
+				texts := boomgame1.Run(input)
 				var contents string
 				for _, text := range texts {
 					contents += text + "\n"
 				}
 				msgcount++
-				ot = fmt.Sprintf("%d : %s", msgcount, contents)
+				ot := fmt.Sprintf("%d : %s", msgcount, contents)
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n" + ot)).Do(); err != nil {
 					log.Print(err)
 				}
