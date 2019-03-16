@@ -3,7 +3,6 @@ package boomgame1
 import (
 	"myBot/dice"
 	"myBot/helper"
-	"myBot/player"
 	"fmt"
 	"strconv"
 	"strings"
