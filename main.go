@@ -27,7 +27,6 @@ import (
 )
 
 var bot *linebot.Client
-var msgcount = 0
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -69,9 +68,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				for _, text := range texts {
 					contents += text + "\n"
 				}
-				msgcount++
-				ot := fmt.Sprintf("%d : %s", msgcount, contents)
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n" + ot)).Do(); err != nil {
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n")).Do(); err != nil {
 					log.Print(err)
 				}
 			}

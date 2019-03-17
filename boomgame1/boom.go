@@ -25,13 +25,11 @@ type rankType struct {
 var boom boomType
 var texts []string
 
-func init() {
-	boom.reset()
-	boom.show()
-}
-
 // Run ...
 func Run(input string) []string {
+	if boom.hit == 0 {
+		boom.reset()
+	}
 	texts = nil
 
 	if strings.HasPrefix(input, "/") {
