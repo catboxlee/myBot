@@ -34,10 +34,6 @@ type onlineType struct {
 	displayName string
 }
 
-var bot *linebot.Client
-
-// Event ...
-var Event *linebot.Event
 var onlineUsers map[string]onlineType
 
 // LoadUsersData ...
@@ -64,22 +60,6 @@ func LoadUsersData() {
 	json.Unmarshal(byteValue, &users)
 }
 
-// GetSenderInfo ...
-func GetSenderInfo() interface{} {
-	switch Event.Source.Type {
-	case linebot.EventSourceTypeGroup:
-		return Event.Source.GroupID
-	case linebot.EventSourceTypeRoom:
-		return Event.Source.RoomID
-	case linebot.EventSourceTypeUser:
-		if senderProfile, err := bot.GetProfile(Event.Source.UserID).Do(); err == nil {
-			return senderProfile
-		}
-		//return event.Source.UserID
-	}
-	return nil
-}
-
 // GetSenderID - Get event sender's id
 func GetSenderID(c context.Context, event *linebot.Event) string {
 	switch event.Source.Type {
@@ -95,11 +75,6 @@ func GetSenderID(c context.Context, event *linebot.Event) string {
 }
 
 // GetSenderName ...
-/* 送信者の表示名を取得する
- *
- * ユーザしか取得できないので、ルームおよびグループではidをそのまま返す
- * グループメンバーのUserIDの場合、そのユーザが直接Botと友だち登録していなければ取得できない
- */
 func GetSenderName(c context.Context, bot *linebot.Client, from string) string {
 	if len(from) == 0 {
 		log.Println(c, "Parameter `mid` was not specified.")

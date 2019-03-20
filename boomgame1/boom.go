@@ -5,8 +5,6 @@ import (
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
-	"myBot/user"
-	"reflect"
 	"strconv"
 	"strings"
 )
@@ -79,9 +77,6 @@ func (b *boomType) checkBoom(x int) {
 }
 
 func (b *boomType) boomUser() {
-	if userInfo := user.GetSenderInfo(); userInfo != nil {
-		texts = append(texts, fmt.Sprintf("%s", reflect.TypeOf(userInfo).String()))
-	}
 }
 
 func (b *boomType) rank() {

@@ -15,6 +15,7 @@ type playerType struct {
 // Players Data
 var Players playersType
 
+// Test ...
 func Test() {
 	fmt.Println("player loading...")
 	Players.loadData()
