@@ -1,12 +1,14 @@
 package boomgame1
 
 import (
-	"myBot/dice"
-	"myBot/helper"
 	"fmt"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/helper"
+	"myBot/user"
+	"reflect"
 	"strconv"
 	"strings"
-	. "myBot/emoji"
 )
 
 type boomType struct {
@@ -17,27 +19,28 @@ type boomType struct {
 }
 
 type rankType struct {
-	userId   string
+	userID      string
 	displayName string
-	boom     int
+	boom        int
 }
 
-var boom boomType
+// Boom ...
+var Boom boomType
 var texts []string
 
 // Run ...
-func Run(input string) []string {
-	if boom.hit == 0 {
-		boom.reset()
+func (b *boomType) Run(input string) []string {
+	if b.hit == 0 {
+		b.reset()
 	}
 	texts = nil
 
 	if strings.HasPrefix(input, "/") {
 		// 字串 - 執行指令
-		boom.checkCommand(strings.TrimLeft(input, "/"))
+		b.checkCommand(strings.TrimLeft(input, "/"))
 	} else if x, err := strconv.Atoi(input); err == nil {
 		// 數字 - 檢查炸彈
-		boom.checkBoom(x)
+		b.checkBoom(x)
 	}
 	return texts
 }
@@ -59,8 +62,8 @@ func (b *boomType) checkBoom(x int) {
 		b.current = x
 		switch {
 		case b.current == b.hit:
-			
 			b.show()
+			b.boomUser()
 			b.rank()
 			b.reset()
 			b.show()
@@ -75,12 +78,18 @@ func (b *boomType) checkBoom(x int) {
 	}
 }
 
+func (b *boomType) boomUser() {
+	if userInfo := user.GetSenderInfo(); userInfo != nil {
+		texts = append(texts, fmt.Sprintf("%s", reflect.TypeOf(userInfo).String()))
+	}
+}
+
 func (b *boomType) rank() {
 
 }
 
 func (b *boomType) reset() {
-	hit := dice.Dice
+	hit := &dice.Dice
 	hit.Roll("1d100")
 	b.hit = hit.N
 	b.current = 0
@@ -90,12 +99,16 @@ func (b *boomType) reset() {
 
 func (b *boomType) show() {
 	if b.current == b.hit {
-		texts = append(texts, fmt.Sprintf("%s %d",Emoji(":collision:"), b.hit))
+		texts = append(texts, fmt.Sprintf("%s %d", emoji.Emoji(":collision:"), b.hit))
 	} else {
-		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), Emoji(":bomb:"), helper.Min(100, b.max)))
+		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), emoji.Emoji(":bomb:"), helper.Min(100, b.max)))
 	}
 }
 
 func (b *boomType) save() {
+
+}
+
+func loadProfile(userID string) {
 
 }

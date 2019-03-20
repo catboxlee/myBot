@@ -7,15 +7,18 @@ import (
 )
 
 // DiceType type
-type DiceType struct {
+type diceType struct {
 	N     int
 	Rolls []int
 }
 
-var Dice DiceType
+// Dice ...
+var Dice diceType
 
 // Roll dice
-func (d *DiceType) Roll(s string) {
+func (d *diceType) Roll(s string) {
+	d.N = 0
+	d.Rolls = nil
 
 	re := regexp.MustCompile(`(\d*)d(\d*)\+?(\d*)`)
 	matches := re.FindStringSubmatch(s)

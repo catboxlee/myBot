@@ -15,13 +15,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
-	"time"
-	"math/rand"
 	"strings"
-	
+	"time"
+
 	"myBot/boomgame1"
+	"myBot/user"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -29,7 +30,6 @@ import (
 var bot *linebot.Client
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
@@ -37,9 +37,10 @@ func main() {
 	http.HandleFunc("/callback", callbackHandler)
 	http.HandleFunc("/", hello)
 	port := os.Getenv("PORT")
+	//port = "8080"
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
-	
+
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
@@ -58,12 +59,15 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rand.Seed(time.Now().UnixNano())
+
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
+			user.Event = event
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				input := strings.TrimSpace(string(message.Text))
-				texts := boomgame1.Run(input)
+				texts := boomgame1.Boom.Run(input)
 				var contents string
 				for _, text := range texts {
 					contents += text + "\n"
