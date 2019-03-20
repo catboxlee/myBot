@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"myBot/boomgame1"
-	"myBot/user"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -63,7 +62,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
-			user.Event = event
+
+			//displayName := GetSenderInfo(event)
+
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				input := strings.TrimSpace(string(message.Text))
@@ -72,10 +73,45 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				for _, text := range texts {
 					contents += text + "\n"
 				}
+				contents += linebot.Event.Source.UserID
 				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n")).Do(); err != nil {
 					log.Print(err)
 				}
 			}
 		}
 	}
+}
+
+// GetSenderInfo ...
+func GetSenderInfo(event *linebot.Event) string {
+	switch event.Source.Type {
+	case linebot.EventSourceTypeGroup:
+		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
+			return senderProfile.DisplayName
+		}
+	case linebot.EventSourceTypeRoom:
+		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do; err == nil {
+			return senderProfile.DisplayName
+		}
+	case linebot.EventSourceTypeUser:
+		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
+			return senderProfile.DisplayName
+		}
+		//return event.Source.UserID
+	}
+	return ""
+}
+
+// GetSenderID - Get event sender's id
+func GetSenderID(event *linebot.Event) string {
+	switch event.Source.Type {
+	case linebot.EventSourceTypeGroup:
+		return event.Source.GroupID
+	case linebot.EventSourceTypeRoom:
+		return event.Source.RoomID
+	case linebot.EventSourceTypeUser:
+		return event.Source.UserID
+	}
+	log.Printf("Can not get sender id. type: %v\n", event.Source.Type)
+	return ""
 }
