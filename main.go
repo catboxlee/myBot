@@ -74,7 +74,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				for _, text := range texts {
 					contents += text + "\n"
 				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text+" OK!\n")).Do(); err != nil {
+				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(contents+" OK!\n")).Do(); err != nil {
 					log.Print(err)
 				}
 			}
