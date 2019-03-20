@@ -20,7 +20,7 @@ type Users struct {
 type User struct {
 	UserID      string `json:"userID"`
 	DisplayName string `json:"displayName"`
-	Items       Items  `json:"Items"`
+	Items       Items  `json:"items"`
 }
 
 // Items ...
@@ -29,35 +29,40 @@ type Items struct {
 	Item2 string `json:"item2"`
 }
 
-type onlineType struct {
-	userID      string
-	displayName string
-}
-
-var onlineUsers map[string]onlineType
-
-// LoadUsersData ...
-func LoadUsersData() {
+func getJSON() {
 	// Open our jsonFile
-	jsonFile, err := os.Open("users.json")
+	jsonFile, err := os.Open("savedata/user.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	fmt.Println("Successfully Opened users.json")
-	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
-
-	// read our opened xmlFile as a byte array.
+	var users map[string]User
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	// we initialize our Users array
-	var users Users
-
-	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'users' which we defined above
 	json.Unmarshal(byteValue, &users)
+	fmt.Println(users)
+}
+
+func setJSON() {
+
+	user := User{"test1", "c", Items{}}
+	users := map[string]User{"t1": user}
+	jsonData, _ := json.Marshal(users)
+
+	// sanity check
+	fmt.Println(string(jsonData))
+
+	// write to JSON file
+	jsonFile, err := os.Create("savedata/user.json")
+	if err != nil {
+		panic(err)
+	}
+	defer jsonFile.Close()
+
+	jsonFile.Write(jsonData)
+	jsonFile.Close()
+	fmt.Println("JSON data written to ", jsonFile.Name())
 }
 
 // GetSenderID - Get event sender's id
