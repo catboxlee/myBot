@@ -68,15 +68,12 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			case *linebot.TextMessage:
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
-				var contents string
-				userProfile := GetSenderInfo(event)
-				user.LineUser.UserProfile = userProfile
-				user.LineUser.Event = event
-				contents = user.LineUser.UserProfile.DisplayName
+				var contents []linebot.SendingMessage
+				GetSenderInfo(event)
 				for _, text := range texts {
-					contents += text + "\n"
+					contents = append(contents, linebot.NewTextMessage(text))
 				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(contents+" OK!\n")).Do(); err != nil {
+				if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
 					log.Print(err)
 				}
 			}
@@ -85,22 +82,23 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetSenderInfo ...
-func GetSenderInfo(event *linebot.Event) *linebot.UserProfileResponse {
+func GetSenderInfo(event *linebot.Event) {
 	switch event.Source.Type {
 	case linebot.EventSourceTypeGroup:
 		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
-			return senderProfile
+			user.LineUser.UserProfile = senderProfile
+			user.LineUser.Event = event
 		}
 	case linebot.EventSourceTypeRoom:
 		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do(); err == nil {
-			return senderProfile
+			user.LineUser.UserProfile = senderProfile
+			user.LineUser.Event = event
 		}
 	case linebot.EventSourceTypeUser:
 		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
-			return senderProfile
+			user.LineUser.UserProfile = senderProfile
+			user.LineUser.Event = event
 		}
 		//return event.Source.UserID
 	}
-	var senderProfile *linebot.UserProfileResponse
-	return senderProfile
 }
