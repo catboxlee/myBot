@@ -5,6 +5,7 @@ import (
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
+	"myBot/user"
 	"strconv"
 	"strings"
 )
@@ -94,7 +95,7 @@ func (b *boomType) reset() {
 
 func (b *boomType) show() {
 	if b.current == b.hit {
-		texts = append(texts, fmt.Sprintf("%s %d", emoji.Emoji(":collision:"), b.hit))
+		texts = append(texts, fmt.Sprintf("%s %s %d", user.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.hit))
 	} else {
 		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), emoji.Emoji(":bomb:"), helper.Min(100, b.max)))
 	}

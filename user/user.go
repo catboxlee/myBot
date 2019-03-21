@@ -29,6 +29,36 @@ type Items struct {
 	Item2 string `json:"item2"`
 }
 
+type lineUser struct {
+	UserProfile *linebot.UserProfileResponse
+	Event       *linebot.Event
+}
+
+// LineUser ...
+var LineUser *lineUser
+
+// GetSenderInfo ...
+func (u *lineUser) GetSenderInfo(event *linebot.Event) {
+	var bot *linebot.Client
+	u.Event = event
+	switch event.Source.Type {
+	case linebot.EventSourceTypeGroup:
+		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
+			u.UserProfile = senderProfile
+		}
+	case linebot.EventSourceTypeRoom:
+		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do(); err == nil {
+			u.UserProfile = senderProfile
+		}
+	case linebot.EventSourceTypeUser:
+		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
+			u.UserProfile = senderProfile
+		}
+
+		//return event.Source.UserID
+	}
+}
+
 func getJSON() {
 	// Open our jsonFile
 	jsonFile, err := os.Open("savedata/user.json")
