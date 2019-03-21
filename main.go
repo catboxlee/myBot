@@ -69,12 +69,18 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
 				var contents []linebot.SendingMessage
+				contents = append(contents, linebot.NewTextMessage("Push"))
 				GetSenderInfo(event)
-				for _, text := range texts {
-					contents = append(contents, linebot.NewTextMessage(text))
-				}
-				if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
-					log.Print(err)
+				if len(texts) > 0 {
+					for _, text := range texts {
+						contents = append(contents, linebot.NewTextMessage(text))
+					}
+					if _, err = bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
+						log.Print(err)
+					}
+					else if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
+						log.Print(err)
+					}
 				}
 			}
 		}
@@ -101,4 +107,19 @@ func GetSenderInfo(event *linebot.Event) {
 		}
 		//return event.Source.UserID
 	}
+}
+
+
+// GetSenderID - Get event sender's id
+func GetSenderID(event *linebot.Event) string {
+	switch event.Source.Type {
+	case linebot.EventSourceTypeGroup:
+		return event.Source.GroupID
+	case linebot.EventSourceTypeRoom:
+		return event.Source.RoomID
+	case linebot.EventSourceTypeUser:
+		return event.Source.UserID
+	}
+	log.Printf("Can not get sender id. type: %v\n", event.Source.Type)
+	return ""
 }
