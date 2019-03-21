@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"myBot/boomgame1"
+	"myBot/user"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -68,8 +69,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
 				var contents string
-				testUser := GetSenderInfo(event)
-				contents = testUser.DisplayName
+				user.LineUser.GetSenderInfo()
+				contents = user.LineUser.UserProfile.DisplayName
 				for _, text := range texts {
 					contents += text + "\n"
 				}

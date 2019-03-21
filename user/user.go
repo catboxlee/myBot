@@ -29,34 +29,33 @@ type Items struct {
 	Item2 string `json:"item2"`
 }
 
-type lineUser struct {
+// CurrentUserProfile ...
+type CurrentUserProfile struct {
 	UserProfile *linebot.UserProfileResponse
 	Event       *linebot.Event
 }
 
 // LineUser ...
-var LineUser lineUser
+var LineUser CurrentUserProfile
 
 // GetSenderInfo ...
-func (u *lineUser) GetSenderInfo(event *linebot.Event) {
+func (u *CurrentUserProfile) GetSenderInfo() {
 	var bot *linebot.Client
-	u.Event = event
-	switch event.Source.Type {
+	switch u.Event.Source.Type {
 	case linebot.EventSourceTypeGroup:
-		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
+		if senderProfile, err := bot.GetGroupMemberProfile(u.Event.Source.GroupID, u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
 		}
 	case linebot.EventSourceTypeRoom:
-		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do(); err == nil {
+		if senderProfile, err := bot.GetRoomMemberProfile(u.Event.Source.RoomID, u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
 		}
 	case linebot.EventSourceTypeUser:
-		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
+		if senderProfile, err := bot.GetProfile(u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
 		}
 		//return event.Source.UserID
 	}
-	log.Println(u)
 }
 
 func getJSON() {
