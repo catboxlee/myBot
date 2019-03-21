@@ -40,19 +40,17 @@ func (b *boomType) Run(input string) []string {
 		b.checkCommand(strings.TrimLeft(input, "/"))
 		return texts
 	}
-	re := regexp.MustCompile(`(\d*)`)
+
+	re := regexp.MustCompile(`(\d+)`)
 	matches := re.FindStringSubmatch(input)
-	if x, err := strconv.Atoi(matches[1]); err == nil {
-		// 數字 - 檢查炸彈
-		b.checkBoom(x)
-		return texts
-	}
-	/*
-		} else if x, err := strconv.Atoi(input); err == nil {
+
+	if len(matches) > 1 {
+		if x, err := strconv.Atoi(matches[1]); err == nil {
 			// 數字 - 檢查炸彈
 			b.checkBoom(x)
+			return texts
 		}
-	*/
+	}
 	return texts
 }
 
