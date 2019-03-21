@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"myBot/boomgame1"
-	"myBot/user"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -69,8 +68,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
 				var contents string
-				user.LineUser.GetSenderInfo(event)
-				contents = user.LineUser.UserProfile.DisplayName
+				testUser := GetSenderInfo(event)
+				contents = testUser.DisplayName
 				for _, text := range texts {
 					contents += text + "\n"
 				}
@@ -80,4 +79,24 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+// GetSenderInfo ...
+func GetSenderInfo(event *linebot.Event) *linebot.UserProfileResponse {
+	switch event.Source.Type {
+	case linebot.EventSourceTypeGroup:
+		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
+			return senderProfile
+		}
+	case linebot.EventSourceTypeRoom:
+		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do(); err == nil {
+			return senderProfile
+		}
+	case linebot.EventSourceTypeUser:
+		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
+			return senderProfile
+		}
+		//return event.Source.UserID
+	}
+	return ""
 }
