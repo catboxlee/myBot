@@ -39,8 +39,7 @@ type CurrentUserProfile struct {
 var LineUser CurrentUserProfile
 
 // GetSenderInfo ...
-func (u *CurrentUserProfile) GetSenderInfo() {
-	var bot *linebot.Client
+func (u *CurrentUserProfile) GetSenderInfo(bot *linebot.Client) {
 	switch u.Event.Source.Type {
 	case linebot.EventSourceTypeGroup:
 		if senderProfile, err := bot.GetGroupMemberProfile(u.Event.Source.GroupID, u.Event.Source.UserID).Do(); err == nil {

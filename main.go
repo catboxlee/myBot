@@ -69,7 +69,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
 				var contents string
-				user.LineUser.GetSenderInfo()
+				userProfile := GetSenderInfo(event)
+				user.LineUser.UserProfile = userProfile
+				user.LineUser.Event = event
 				contents = user.LineUser.UserProfile.DisplayName
 				for _, text := range texts {
 					contents += text + "\n"
