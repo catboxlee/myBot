@@ -98,5 +98,6 @@ func GetSenderInfo(event *linebot.Event) *linebot.UserProfileResponse {
 		}
 		//return event.Source.UserID
 	}
-	return ""
+	var senderProfile *linebot.UserProfileResponse
+	return senderProfile
 }
