@@ -35,7 +35,7 @@ type lineUser struct {
 }
 
 // LineUser ...
-var LineUser *lineUser
+var LineUser lineUser
 
 // GetSenderInfo ...
 func (u *lineUser) GetSenderInfo(event *linebot.Event) {
@@ -54,9 +54,9 @@ func (u *lineUser) GetSenderInfo(event *linebot.Event) {
 		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
 		}
-
 		//return event.Source.UserID
 	}
+	log.Println(u)
 }
 
 func getJSON() {
