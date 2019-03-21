@@ -69,7 +69,6 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				input := strings.TrimSpace(string(message.Text))
 				texts := boomgame1.Boom.Run(input)
 				var contents []linebot.SendingMessage
-				contents = append(contents, linebot.NewTextMessage("Push"))
 				GetSenderInfo(event)
 				if len(texts) > 0 {
 					for _, text := range texts {
@@ -77,9 +76,9 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					}
 					if _, err = bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
 						log.Print(err)
-					} else if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
+					} /* else if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
 						log.Print(err)
-					}
+					}*/
 				}
 			}
 		}
@@ -107,7 +106,6 @@ func GetSenderInfo(event *linebot.Event) {
 		//return event.Source.UserID
 	}
 }
-
 
 // GetSenderID - Get event sender's id
 func GetSenderID(event *linebot.Event) string {
