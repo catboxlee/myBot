@@ -6,6 +6,7 @@ import (
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/user"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -37,10 +38,21 @@ func (b *boomType) Run(input string) []string {
 	if strings.HasPrefix(input, "/") {
 		// 字串 - 執行指令
 		b.checkCommand(strings.TrimLeft(input, "/"))
-	} else if x, err := strconv.Atoi(input); err == nil {
+		return texts
+	}
+	re := regexp.MustCompile(`(\d*)`)
+	matches := re.FindStringSubmatch(input)
+	if x, err := strconv.Atoi(matches[1]); err == nil {
 		// 數字 - 檢查炸彈
 		b.checkBoom(x)
+		return texts
 	}
+	/*
+		} else if x, err := strconv.Atoi(input); err == nil {
+			// 數字 - 檢查炸彈
+			b.checkBoom(x)
+		}
+	*/
 	return texts
 }
 
