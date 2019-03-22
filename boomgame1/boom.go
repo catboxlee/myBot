@@ -41,7 +41,7 @@ var Boom gameType
 var texts []string
 
 func init() {
-	rank.loadRank()
+	//rank.loadRank()
 }
 
 // Run ...
