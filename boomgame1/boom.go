@@ -197,6 +197,6 @@ func (r *rankType) loadRank() {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	json.Unmarshal(byteValue, &rank)
+	json.Unmarshal(byteValue, r)
 	log.Println("JSON data load : ", jsonFile.Name())
 }
