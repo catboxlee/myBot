@@ -34,14 +34,16 @@ type rankUser struct {
 	Boom        int    `json:"boom"`
 }
 
-var rank *rankType
+var rank rankType
 
 // Boom ...
 var Boom gameType
 var texts []string
 
 func init() {
-	//rank.loadRank()
+
+	rank.rankUser = make(map[string]*rankUser)
+	rank.loadRank()
 }
 
 // Run ...
@@ -126,21 +128,25 @@ func (b *gameType) show() {
 
 func (r *rankType) addUserBoom() {
 
-	if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
+	if len(r.rankUser) == 0 {
+		r.rankUser = map[string]*rankUser{user.LineUser.UserProfile.UserID: {user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName, 1}}
+	} else if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
 		r.rankUser[user.LineUser.UserProfile.UserID].Boom++
 	} else {
-		r.rankUser[user.LineUser.UserProfile.UserID].UserID = user.LineUser.UserProfile.UserID
-		r.rankUser[user.LineUser.UserProfile.UserID].DisplayName = user.LineUser.UserProfile.DisplayName
-		r.rankUser[user.LineUser.UserProfile.UserID].Boom = 1
+		r.rankUser[user.LineUser.UserProfile.UserID] = &rankUser{user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName, 1}
 
 	}
 }
 
 func (r *rankType) checkBoomKing() {
-	if r.rankUser[user.LineUser.UserProfile.UserID].Boom >= 100 {
-		texts = append(texts, fmt.Sprintf("%sS%d 爆爆王：%s%s", emoji.Emoji(":confetti_ball:"), r.Season, user.LineUser.UserProfile.DisplayName, emoji.Emoji(":confetti_ball:")))
-		r.Season++
-		r.rankUser = nil
+	if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
+		if r.rankUser[user.LineUser.UserProfile.UserID].Boom >= 100 {
+			texts = append(texts, fmt.Sprintf("%sS%d 爆爆王：%s%s", emoji.Emoji(":confetti_ball:"), r.Season, user.LineUser.UserProfile.DisplayName, emoji.Emoji(":confetti_ball:")))
+			r.Season++
+			r.rankUser = nil
+		}
+	} else {
+		texts = append(texts, fmt.Sprintf("UserID:%s 不存在", user.LineUser.UserProfile.UserID))
 	}
 }
 
@@ -163,8 +169,7 @@ func (r *rankType) rank() {
 }
 
 func (r *rankType) resetRank() {
-	r.Season = 0
-	r.rankUser = nil
+	rank.rankUser = make(map[string]*rankUser)
 }
 
 func (r *rankType) saveRank() {
@@ -196,8 +201,9 @@ func (r *rankType) loadRank() {
 		log.Println("JSON data create : ", jsonFile.Name())
 	} else {
 		byteValue, _ := ioutil.ReadAll(jsonFile)
-
-		json.Unmarshal(byteValue, r)
+		if len(byteValue) > 0 {
+			json.Unmarshal(byteValue, r)
+		}
 		log.Println("JSON data load : ", jsonFile.Name())
 	}
 	defer jsonFile.Close()
