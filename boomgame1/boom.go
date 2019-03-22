@@ -1,17 +1,22 @@
 package boomgame1
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/user"
+	"os"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-type boomType struct {
+type gameType struct {
 	hit     int
 	current int
 	min     int
@@ -19,17 +24,29 @@ type boomType struct {
 }
 
 type rankType struct {
-	userID      string
-	displayName string
-	boom        int
+	Season   int `json:"season"`
+	rankUser map[string]*rankUser
 }
 
+type rankUser struct {
+	UserID      string `json:"userID"`
+	DisplayName string `json:"displayName"`
+	Boom        int    `json:"boom"`
+}
+
+var rank *rankType
+
 // Boom ...
-var Boom boomType
+var Boom gameType
 var texts []string
 
+func init() {
+	rank.loadRank()
+}
+
 // Run ...
-func (b *boomType) Run(input string) []string {
+func (b *gameType) Run(input string) []string {
+	rank.Season = helper.Max(12, rank.Season)
 	if b.hit == 0 {
 		b.reset()
 	}
@@ -54,29 +71,32 @@ func (b *boomType) Run(input string) []string {
 	return texts
 }
 
-func (b *boomType) checkCommand(input string) {
+func (b *gameType) checkCommand(input string) {
 	switch input {
 	case "reset":
 		b.reset()
 		b.show()
 	case "rank":
-		b.rank()
+		rank.rank()
 		b.show()
-
+	case "resetRank":
+		rank.resetRank()
+		rank.saveRank()
 	}
 }
 
-func (b *boomType) checkBoom(x int) {
+func (b *gameType) checkBoom(x int) {
 	if x > b.min && x < b.max {
 		b.current = x
 		switch {
 		case b.current == b.hit:
 			b.show()
-			b.boomUser()
-			b.rank()
+			rank.addUserBoom()
+			rank.rank()
+			rank.checkBoomKing()
+			rank.saveRank()
 			b.reset()
 			b.show()
-			b.save()
 		case b.current < b.hit:
 			b.min = b.current
 			b.show()
@@ -87,14 +107,7 @@ func (b *boomType) checkBoom(x int) {
 	}
 }
 
-func (b *boomType) boomUser() {
-}
-
-func (b *boomType) rank() {
-
-}
-
-func (b *boomType) reset() {
+func (b *gameType) reset() {
 	hit := &dice.Dice
 	hit.Roll("1d100")
 	b.hit = hit.N
@@ -103,7 +116,7 @@ func (b *boomType) reset() {
 	b.max = 101
 }
 
-func (b *boomType) show() {
+func (b *gameType) show() {
 	if b.current == b.hit {
 		texts = append(texts, fmt.Sprintf("%s %s %d", user.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.hit))
 	} else {
@@ -111,10 +124,79 @@ func (b *boomType) show() {
 	}
 }
 
-func (b *boomType) save() {
+func (r *rankType) addUserBoom() {
 
+	if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
+		r.rankUser[user.LineUser.UserProfile.UserID].Boom++
+	} else {
+		r.rankUser[user.LineUser.UserProfile.UserID].UserID = user.LineUser.UserProfile.UserID
+		r.rankUser[user.LineUser.UserProfile.UserID].DisplayName = user.LineUser.UserProfile.DisplayName
+		r.rankUser[user.LineUser.UserProfile.UserID].Boom = 1
+
+	}
 }
 
-func loadProfile(userID string) {
+func (r *rankType) checkBoomKing() {
+	if r.rankUser[user.LineUser.UserProfile.UserID].Boom >= 100 {
+		texts = append(texts, fmt.Sprintf("%sS%d 爆爆王：%s%s", emoji.Emoji(":confetti_ball:"), r.Season, user.LineUser.UserProfile.DisplayName, emoji.Emoji(":confetti_ball:")))
+		r.Season++
+		r.rankUser = nil
+	}
+}
 
+func (r *rankType) rank() {
+
+	tmpRank := make([]*rankUser, 0, len(r.rankUser))
+	for _, val := range r.rankUser {
+		tmpRank = append(tmpRank, val)
+	}
+
+	sort.SliceStable(tmpRank, func(i, j int) bool {
+		return tmpRank[i].Boom > tmpRank[j].Boom
+	})
+
+	text := fmt.Sprintf("爆爆王 S%d Rank：", r.Season)
+	for _, v := range tmpRank {
+		text += fmt.Sprintf("\n%s %s %d", v.DisplayName, emoji.Emoji(":collision:"), v.Boom)
+	}
+	texts = append(texts, text)
+}
+
+func (r *rankType) resetRank() {
+	r.Season = 0
+	r.rankUser = nil
+}
+
+func (r *rankType) saveRank() {
+
+	jsonData, _ := json.Marshal(rank)
+
+	// sanity check
+	//fmt.Println(string(jsonData))
+
+	// write to JSON file
+	jsonFile, err := os.Create("savedata/common/boomRank.json")
+	if err != nil {
+		panic(err)
+	}
+	defer jsonFile.Close()
+
+	jsonFile.Write(jsonData)
+	jsonFile.Close()
+	log.Println("JSON data written to ", jsonFile.Name())
+}
+
+func (r *rankType) loadRank() {
+	// Open our jsonFile
+	jsonFile, err := os.Open("savedata/common/boomRank.json")
+	// if we os.Open returns an error then handle it
+	if err != nil && os.IsNotExist(err) {
+		//log.Println(err)
+		jsonFile, _ = os.Create("savedata/common/boomRank.json")
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	json.Unmarshal(byteValue, &rank)
+	log.Println("JSON data load : ", jsonFile.Name())
 }

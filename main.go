@@ -29,6 +29,15 @@ import (
 
 var bot *linebot.Client
 
+// SysConfig ...
+var SysConfig struct {
+	Game int
+}
+
+func init() {
+	SysConfig.Game = 1
+}
+
 func main() {
 
 	var err error
@@ -66,19 +75,26 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			//displayName := GetSenderInfo(event)
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				input := strings.TrimSpace(string(message.Text))
-				texts := boomgame1.Boom.Run(input)
-				var contents []linebot.SendingMessage
 				GetSenderInfo(event)
+				input := strings.TrimSpace(string(message.Text))
+				var texts []string
+				switch SysConfig.Game {
+				case 1:
+					texts = boomgame1.Boom.Run(input)
+				}
+				var contents []linebot.SendingMessage
 				if len(texts) > 0 {
 					for _, text := range texts {
 						contents = append(contents, linebot.NewTextMessage(text))
 					}
-					if _, err = bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
+					/*
+						if _, err = bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
+							log.Print(err)
+						}
+					*/
+					if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
 						log.Print(err)
-					} /* else if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
-						log.Print(err)
-					}*/
+					}
 				}
 			}
 		}
