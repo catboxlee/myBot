@@ -35,7 +35,7 @@ var SysConfig struct {
 }
 
 func init() {
-	SysConfig.Game = 1
+	SysConfig.Game = 0
 	checkPath("savedata")
 	checkPath("savedata/common")
 }
@@ -83,6 +83,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				switch SysConfig.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
+				default:
+					texts = append(texts, input)
 				}
 				var contents []linebot.SendingMessage
 				if len(texts) > 0 {
