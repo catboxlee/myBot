@@ -43,7 +43,7 @@ var texts []string
 func init() {
 
 	rank.rankUser = make(map[string]*rankUser)
-	rank.loadRank()
+	//rank.loadRank()
 }
 
 // Run ...
