@@ -193,10 +193,12 @@ func (r *rankType) loadRank() {
 	if err != nil && os.IsNotExist(err) {
 		//log.Println(err)
 		jsonFile, _ = os.Create("savedata/common/boomRank.json")
+		log.Println("JSON data create : ", jsonFile.Name())
+	} else {
+		byteValue, _ := ioutil.ReadAll(jsonFile)
+
+		json.Unmarshal(byteValue, r)
+		log.Println("JSON data load : ", jsonFile.Name())
 	}
 	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	json.Unmarshal(byteValue, r)
-	log.Println("JSON data load : ", jsonFile.Name())
 }
