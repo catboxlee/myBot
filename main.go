@@ -13,10 +13,10 @@
 package main
 
 import (
-	"MyLine/mydb"
 	"fmt"
 	"log"
 	"math/rand"
+	"myBot/mydb"
 	"net/http"
 	"os"
 	"strings"
