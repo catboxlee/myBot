@@ -34,13 +34,8 @@ var SysConfig struct {
 	Game int
 }
 
-func init() {
-	SysConfig.Game = 1
-	checkPath("savedata")
-	checkPath("savedata/common")
-}
-
 func main() {
+	SysConfig.Game = 1
 
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
@@ -140,18 +135,4 @@ func GetSenderID(event *linebot.Event) string {
 	}
 	log.Printf("Can not get sender id. type: %v\n", event.Source.Type)
 	return ""
-}
-
-func checkPath(_dir string) {
-	if _, err := os.Stat(_dir); err != nil {
-		if os.IsNotExist(err) {
-			err := os.Mkdir(_dir, os.ModePerm)
-			if err != nil {
-				log.Printf("mkdir failed![%v]\n", err)
-			} else {
-				log.Printf("mkdir success!\n")
-			}
-		}
-	}
-
 }
