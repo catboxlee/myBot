@@ -13,6 +13,7 @@
 package main
 
 import (
+	"MyLine/mydb"
 	"fmt"
 	"log"
 	"math/rand"
@@ -36,6 +37,8 @@ var SysConfig struct {
 
 func main() {
 	SysConfig.Game = 1
+	mydb.DbStart()
+	defer mydb.Db.Close()
 
 	var err error
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
