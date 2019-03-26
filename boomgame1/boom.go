@@ -1,17 +1,14 @@
 package boomgame1
 
 import (
-	"encoding/json"
+	"database/sql"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
+	"myBot/mydb"
 	"myBot/user"
-	"os"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -21,14 +18,10 @@ type gameType struct {
 	current int
 	min     int
 	max     int
+	season  int
 }
 
 type rankType struct {
-	Season   int `json:"season"`
-	rankUser map[string]*rankUser
-}
-
-type rankUser struct {
 	UserID      string `json:"userID"`
 	DisplayName string `json:"displayName"`
 	Boom        int    `json:"boom"`
@@ -40,17 +33,21 @@ var rank rankType
 var Boom gameType
 var texts []string
 
-func init() {
-
-	rank.rankUser = make(map[string]*rankUser)
-	//rank.loadRank()
+func checkError(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Run ...
 func (b *gameType) Run(input string) []string {
-	rank.Season = helper.Max(12, rank.Season)
 	if b.hit == 0 {
-		b.reset()
+		Boom.reset()
+		//fmt.Println(Boom.hit)
+	}
+	if b.season == 0 {
+		Boom.getInfo()
+		//fmt.Println(Boom)
 	}
 	texts = nil
 
@@ -83,7 +80,20 @@ func (b *gameType) checkCommand(input string) {
 		b.show()
 	case "resetRank":
 		rank.resetRank()
-		rank.saveRank()
+		//rank.saveRank()
+	}
+}
+
+func (b *gameType) getInfo() {
+	row := mydb.Db.QueryRow("select season from boom_info limit 1")
+	var season int
+	switch err := row.Scan(&season); err {
+	case sql.ErrNoRows:
+		//fmt.Println("No rows were returned")
+	case nil:
+		b.season = season
+	default:
+		checkError(err)
 	}
 }
 
@@ -96,7 +106,6 @@ func (b *gameType) checkBoom(x int) {
 			rank.addUserBoom()
 			rank.rank()
 			rank.checkBoomKing()
-			rank.saveRank()
 			b.reset()
 			b.show()
 		case b.current < b.hit:
@@ -128,83 +137,47 @@ func (b *gameType) show() {
 
 func (r *rankType) addUserBoom() {
 
-	if len(r.rankUser) == 0 {
-		r.rankUser = map[string]*rankUser{user.LineUser.UserProfile.UserID: {user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName, 1}}
-	} else if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
-		r.rankUser[user.LineUser.UserProfile.UserID].Boom++
-	} else {
-		r.rankUser[user.LineUser.UserProfile.UserID] = &rankUser{user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName, 1}
-
-	}
+	query := `insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
+					on conflict(userid)
+					do update set displayname = $2, boom = boom_rank.boom + 1`
+	mydb.Db.QueryRow(query, user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName)
 }
 
 func (r *rankType) checkBoomKing() {
-	if _, exist := r.rankUser[user.LineUser.UserProfile.UserID]; exist {
-		if r.rankUser[user.LineUser.UserProfile.UserID].Boom >= 100 {
-			texts = append(texts, fmt.Sprintf("%sS%d 爆爆王：%s%s", emoji.Emoji(":confetti_ball:"), r.Season, user.LineUser.UserProfile.DisplayName, emoji.Emoji(":confetti_ball:")))
-			r.Season++
-			r.rankUser = nil
-		}
-	} else {
-		texts = append(texts, fmt.Sprintf("UserID:%s 不存在", user.LineUser.UserProfile.UserID))
+	row := mydb.Db.QueryRow("select userid, displayname, boom from boom_rank where boom >= 5 limit 1")
+	switch err := row.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
+	case sql.ErrNoRows:
+		//fmt.Println("No rows were returned")
+	case nil:
+		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), Boom.season, r.DisplayName, emoji.Emoji(":confetti_ball:")))
+
+		mydb.Db.QueryRow("truncate table boom_rank")
+		Boom.season++
+		mydb.Db.QueryRow("update boom_info set season = $1", Boom.season)
+	default:
+		checkError(err)
 	}
 }
 
 func (r *rankType) rank() {
 
-	tmpRank := make([]*rankUser, 0, len(r.rankUser))
-	for _, val := range r.rankUser {
-		tmpRank = append(tmpRank, val)
-	}
-
-	sort.SliceStable(tmpRank, func(i, j int) bool {
-		return tmpRank[i].Boom > tmpRank[j].Boom
-	})
-
-	text := fmt.Sprintf("爆爆王 S%d Rank：", r.Season)
-	for _, v := range tmpRank {
-		text += fmt.Sprintf("\n%s %s %d", v.DisplayName, emoji.Emoji(":collision:"), v.Boom)
+	text := fmt.Sprintf("爆爆王 S%d Rank：", Boom.season)
+	rows, err := mydb.Db.Query("SELECT userid, displayname, boom FROM boom_rank order by boom desc")
+	checkError(err)
+	defer rows.Close()
+	for rows.Next() {
+		switch err := rows.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
+		case sql.ErrNoRows:
+			//fmt.Println("No rows were returned")
+		case nil:
+			text += fmt.Sprintf("\n%s %s x %d", r.DisplayName, emoji.Emoji(":boom:"), r.Boom)
+		default:
+			checkError(err)
+		}
 	}
 	texts = append(texts, text)
 }
 
 func (r *rankType) resetRank() {
-	rank.rankUser = make(map[string]*rankUser)
-}
 
-func (r *rankType) saveRank() {
-
-	jsonData, _ := json.Marshal(rank)
-
-	// sanity check
-	//fmt.Println(string(jsonData))
-
-	// write to JSON file
-	jsonFile, err := os.Create("savedata/common/boomRank.json")
-	if err != nil {
-		panic(err)
-	}
-	defer jsonFile.Close()
-
-	jsonFile.Write(jsonData)
-	jsonFile.Close()
-	log.Println("JSON data written to ", jsonFile.Name())
-}
-
-func (r *rankType) loadRank() {
-	// Open our jsonFile
-	jsonFile, err := os.Open("savedata/common/boomRank.json")
-	// if we os.Open returns an error then handle it
-	if err != nil && os.IsNotExist(err) {
-		//log.Println(err)
-		jsonFile, _ = os.Create("savedata/common/boomRank.json")
-		log.Println("JSON data create : ", jsonFile.Name())
-	} else {
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-		if len(byteValue) > 0 {
-			json.Unmarshal(byteValue, r)
-		}
-		log.Println("JSON data load : ", jsonFile.Name())
-	}
-	defer jsonFile.Close()
 }

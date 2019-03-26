@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"myBot/mydb"
 	"os"
 
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -55,6 +56,13 @@ func (u *CurrentUserProfile) GetSenderInfo(bot *linebot.Client) {
 		}
 		//return event.Source.UserID
 	}
+}
+
+func (u *CurrentUserProfile) SaveUserData() {
+	query := `insert into users(userid, displayname, money) values($1, $2, 0)
+					on conflict(userid)
+					do update set displayname = $2`
+	mydb.Db.QueryRow(query, u.UserProfile.UserID, u.UserProfile.DisplayName)
 }
 
 func getJSON() {
