@@ -123,7 +123,7 @@ func GetSenderInfo(event *linebot.Event) {
 		}
 		//return event.Source.UserID
 	}
-	//user.LineUser.SaveUserData()
+	user.LineUser.SaveUserData()
 }
 
 // GetSenderID - Get event sender's id
