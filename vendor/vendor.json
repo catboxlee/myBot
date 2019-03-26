@@ -3,6 +3,18 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "51V1n77NB8aHhnAhC6TuBMZyj5w=",
+			"path": "github.com/lib/pq",
+			"revision": "5ccc9857e3a95a4233a13e445831cb31b90e73a6",
+			"revisionTime": "2019-03-21T21:06:58Z"
+		},
+		{
+			"checksumSHA1": "QPjV8nrnzjkHGgLYwlqYCOSbwH4=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "5ccc9857e3a95a4233a13e445831cb31b90e73a6",
+			"revisionTime": "2019-03-21T21:06:58Z"
+		},
+		{
 			"checksumSHA1": "f86jxdA4GFZYZAKha8pDQPzvTCE=",
 			"path": "github.com/line/line-bot-sdk-go/linebot",
 			"revision": "08dff4e3851e68450b22e6f97c35ac6c6f389df6",
