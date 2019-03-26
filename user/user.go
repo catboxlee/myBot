@@ -62,7 +62,7 @@ func (u *CurrentUserProfile) SaveUserData() {
 	query := `insert into users(userid, displayname, money) values($1, $2, 0)
 					on conflict(userid)
 					do update set displayname = $2`
-	mydb.Db.QueryRow(query, u.UserProfile.UserID, u.UserProfile.DisplayName)
+	mydb.Db.QueryRow(query, &u.UserProfile.UserID, &u.UserProfile.DisplayName)
 }
 
 func getJSON() {
