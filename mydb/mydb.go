@@ -2,8 +2,8 @@ package mydb
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -29,11 +29,11 @@ func checkError(err error) {
 func DbStart() {
 
 	// Initialize connection string.
-	var connectionString = fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
+	//var connectionString = fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
 
 	// Initialize connection object.
 	var err error
-	Db, err = sql.Open("postgres", connectionString)
+	Db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
