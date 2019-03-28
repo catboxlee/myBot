@@ -77,7 +77,7 @@ func doLinebotEvents(events []*linebot.Event) {
 			//displayName := GetSenderInfo(event)
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				//users.LineUser.GetSenderInfo(event, bot)
+				users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
 
