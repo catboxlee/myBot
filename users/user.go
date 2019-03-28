@@ -64,6 +64,7 @@ func (u *CurrentUserProfile) sveUserData() {
 
 func (u *CurrentUserProfile) checkUserExist() {
 	if _, exist := UsersList.Data[u.UserProfile.UserID]; !exist {
+		UsersList.Data[u.UserProfile.UserID] = &UserDataType{}
 		UsersList.Data[u.UserProfile.UserID].UserID = u.UserProfile.UserID
 		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
 		UsersList.Data[u.UserProfile.UserID].Money = 10
