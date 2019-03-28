@@ -7,18 +7,20 @@ import (
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/mydb"
-	"myBot/user"
+	"myBot/users"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 type gameType struct {
-	hit     int
-	current int
-	min     int
-	max     int
-	season  int
+	hit      int
+	current  int
+	min      int
+	max      int
+	season   int
+	sourceID string
+	rank     rankType
 }
 
 type rankType struct {
@@ -26,8 +28,6 @@ type rankType struct {
 	DisplayName string `json:"displayName"`
 	Boom        int    `json:"boom"`
 }
-
-var rank rankType
 
 // Boom ...
 var Boom gameType
@@ -42,11 +42,11 @@ func checkError(err error) {
 // Run ...
 func (b *gameType) Run(input string) []string {
 	if b.hit == 0 {
-		Boom.reset()
+		b.reset()
 		//fmt.Println(Boom.hit)
 	}
 	if b.season == 0 {
-		Boom.getInfo()
+		b.getInfo()
 		//fmt.Println(Boom)
 	}
 	texts = nil
@@ -76,10 +76,10 @@ func (b *gameType) checkCommand(input string) {
 		b.reset()
 		b.show()
 	case "rank":
-		rank.rank()
+		b.rank.rank()
 		b.show()
 	case "resetRank":
-		rank.resetRank()
+		b.rank.resetRank()
 		//rank.saveRank()
 	}
 }
@@ -103,9 +103,9 @@ func (b *gameType) checkBoom(x int) {
 		switch {
 		case b.current == b.hit:
 			b.show()
-			rank.addUserBoom()
-			rank.rank()
-			rank.checkBoomKing()
+			b.rank.addUserBoom()
+			b.rank.rank()
+			b.rank.checkBoomKing()
 			b.reset()
 			b.show()
 		case b.current < b.hit:
@@ -129,7 +129,7 @@ func (b *gameType) reset() {
 
 func (b *gameType) show() {
 	if b.current == b.hit {
-		texts = append(texts, fmt.Sprintf("%s %s %d", user.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.hit))
+		texts = append(texts, fmt.Sprintf("%s %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.hit))
 	} else {
 		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), emoji.Emoji(":bomb:"), helper.Min(100, b.max)))
 	}
@@ -140,7 +140,7 @@ func (r *rankType) addUserBoom() {
 	query := `insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
 					on conflict(userid)
 					do update set displayname = $2, boom = boom_rank.boom + 1`
-	mydb.Db.QueryRow(query, user.LineUser.UserProfile.UserID, user.LineUser.UserProfile.DisplayName)
+	mydb.Db.QueryRow(query, users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName)
 }
 
 func (r *rankType) checkBoomKing() {

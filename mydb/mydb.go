@@ -25,19 +25,23 @@ func checkError(err error) {
 	}
 }
 
+func init() {
+	DbStart()
+}
+
 // DbStart ...
 func DbStart() {
 
 	// Initialize connection string.
-	//var connectionString = fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", HOST, USER, PASSWORD, DATABASE)
+	//var connectionString = fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=require", HOST, USER, PASSWORD, DATABASE)
 
 	// Initialize connection object.
 	var err error
+	log.Println("Start creat connection to database...")
 	Db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
-
 	err = Db.Ping()
 	if err != nil {
 		panic(err)

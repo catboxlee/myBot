@@ -17,13 +17,13 @@ import (
 	"log"
 	"math/rand"
 	"myBot/mydb"
+	"myBot/users"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
 	"myBot/boomgame1"
-	"myBot/user"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -37,7 +37,6 @@ var SysConfig struct {
 
 func main() {
 	SysConfig.Game = 1
-	mydb.DbStart()
 	defer mydb.Db.Close()
 
 	var err error
@@ -49,7 +48,6 @@ func main() {
 	//port = "8080"
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
-
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
@@ -67,6 +65,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	doLinebotEvents(events)
+}
+
+func doLinebotEvents(events []*linebot.Event) {
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -75,7 +77,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 			//displayName := GetSenderInfo(event)
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				GetSenderInfo(event)
+				//users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
 
@@ -84,21 +86,31 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					texts = boomgame1.Boom.Run(input)
 				default:
 				}
-				var contents []linebot.SendingMessage
-				if len(texts) > 0 {
-					for _, text := range texts {
-						contents = append(contents, linebot.NewTextMessage(text))
-					}
-					/*
-						if _, err = bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
-							log.Print(err)
-						}
-					*/
-					if _, err = bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
-						log.Print(err)
-					}
-				}
+				replyMsg(event, texts)
 			}
+		}
+	}
+}
+
+func pushMsg(event *linebot.Event, texts []string) {
+	var contents []linebot.SendingMessage
+	if len(texts) > 0 {
+		for _, text := range texts {
+			contents = append(contents, linebot.NewTextMessage(text))
+		}
+		if _, err := bot.PushMessage(GetSenderID(event), contents...).Do(); err != nil {
+			log.Print(err)
+		}
+	}
+}
+func replyMsg(event *linebot.Event, texts []string) {
+	var contents []linebot.SendingMessage
+	if len(texts) > 0 {
+		for _, text := range texts {
+			contents = append(contents, linebot.NewTextMessage(text))
+		}
+		if _, err := bot.ReplyMessage(event.ReplyToken, contents...).Do(); err != nil {
+			log.Print(err)
 		}
 	}
 }
@@ -108,22 +120,22 @@ func GetSenderInfo(event *linebot.Event) {
 	switch event.Source.Type {
 	case linebot.EventSourceTypeGroup:
 		if senderProfile, err := bot.GetGroupMemberProfile(event.Source.GroupID, event.Source.UserID).Do(); err == nil {
-			user.LineUser.UserProfile = senderProfile
-			user.LineUser.Event = event
+			users.LineUser.UserProfile = senderProfile
+			users.LineUser.Event = event
 		}
 	case linebot.EventSourceTypeRoom:
 		if senderProfile, err := bot.GetRoomMemberProfile(event.Source.RoomID, event.Source.UserID).Do(); err == nil {
-			user.LineUser.UserProfile = senderProfile
-			user.LineUser.Event = event
+			users.LineUser.UserProfile = senderProfile
+			users.LineUser.Event = event
 		}
 	case linebot.EventSourceTypeUser:
 		if senderProfile, err := bot.GetProfile(event.Source.UserID).Do(); err == nil {
-			user.LineUser.UserProfile = senderProfile
-			user.LineUser.Event = event
+			users.LineUser.UserProfile = senderProfile
+			users.LineUser.Event = event
 		}
 		//return event.Source.UserID
 	}
-	user.LineUser.SaveUserData()
+	//user.LineUser.SaveUserData()
 }
 
 // GetSenderID - Get event sender's id
