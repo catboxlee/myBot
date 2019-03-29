@@ -30,6 +30,7 @@ func (w *WorldType) loadWorldData() {
 		case nil:
 			w = &data
 			log.Println("World data load.")
+			log.Println(&w)
 		default:
 			checkError(err)
 		}
