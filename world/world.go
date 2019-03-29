@@ -28,6 +28,7 @@ func (w *WorldType) loadWorldData() {
 			//fmt.Println("No rows were returned")
 		case nil:
 			w = &data
+			log.Println("World data load.")
 		default:
 			checkError(err)
 		}
