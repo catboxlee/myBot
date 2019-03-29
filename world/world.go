@@ -3,6 +3,7 @@ package world
 import (
 	"database/sql"
 	"myBot/mydb"
+	"log"
 )
 
 // WorldType ...
