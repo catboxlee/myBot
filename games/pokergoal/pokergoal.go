@@ -66,7 +66,7 @@ func (p *gameType) Run(input string) []string {
 		p.pot = 10
 	}
 
-	p.showAllCard()
+	//p.showAllCard()
 
 	if strings.HasPrefix(input, "/") {
 		// 字串 - 執行指令
@@ -97,13 +97,16 @@ func (p *gameType) Run(input string) []string {
 		currentPlayer := p.players[users.LineUser.UserProfile.UserID]
 
 		if len(currentPlayer.cards) < 2 {
-			texts = append(texts, fmt.Sprintf("開啟遊戲: %s -%d", emoji.Emoji(":money_bag:"), p.antes))
+			texts = append(texts, fmt.Sprintf("開啟遊戲：%s -%d", emoji.Emoji(":money_bag:"), p.antes))
 			p.pot++
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money--
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SaveUserData()
 			p.showPot()
 			text = p.dealGate(currentPlayer)
-			text += fmt.Sprintf("\n請喊注: +%d ~ +%d (預設+2)", 0, p.pot)
+			text += fmt.Sprintf("\n%s 剩餘資金：%d", users.LineUser.UserProfile.DisplayName, users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
+			text += fmt.Sprintf("\n請喊注：+%d ~ +%d (預設+2)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			texts = append(texts, text)
-			users.UsersList.Data[u.UserProfile.UserID].SaveUserData()
+			
 		} else {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
@@ -169,26 +172,39 @@ func (p *gameType) dealGate(currentPlayer *playerType) string {
 func (p *gameType) hit(currentPlayer *playerType) {
 	// 發球
 	currentPlayer.cards = append(currentPlayer.cards, p.deal())
-	texts = append(texts, fmt.Sprintf("球: %s", convCard(currentPlayer.cards[2])))
+	str := fmt.Sprintf("%s", convCard(currentPlayer.cards[2]))
 	// 結算
 	if currentPlayer.cards[2].number == currentPlayer.cards[0].number || currentPlayer.cards[2].number == currentPlayer.cards[1].number {
 		// 撞柱
-		p.pot += currentPlayer.bets * 2
-		texts = append(texts, fmt.Sprintf("撞柱"))
+		bets := -(currentPlayer.bets * 2)
+		p.pot -= bets
+		texts = append(texts, fmt.Sprintf("%s 撞柱", str))
 	} else if currentPlayer.cards[2].number < helper.Min(currentPlayer.cards[0].number, currentPlayer.cards[1].number) || currentPlayer.cards[2].number > helper.Max(currentPlayer.cards[0].number, currentPlayer.cards[1].number) {
 		// 未入門
-		p.pot += currentPlayer.bets
-		texts = append(texts, fmt.Sprintf("不中"))
+		bets := -currentPlayer.bets
+		p.pot -= bets
+		texts = append(texts, fmt.Sprintf("%s 不中", str))
 	} else {
-		p.pot -= currentPlayer.bets
-		texts = append(texts, fmt.Sprintf("Goal!!!"))
+		bets := currentPlayer.bets
+		p.pot -= bets
+		texts = append(texts, fmt.Sprintf("%s Goal!!!", str))
+	}
+	// 結算
+	p.endGame(currentPlayer, bets)
+}
+
+func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
+	users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += bets
+	users.UsersList.Data[users.LineUser.UserProfile.UserID].SaveUserData()
+	if p.pot <= 0 {
+		p.pot = 10
+		texts = append(texts, "補充獎池：10")
 	}
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.cards...)
 	currentPlayer.cards = nil
 	currentPlayer.bets = 0
 	//log.Println(p.discardPile)
-
 }
 
 // 發牌

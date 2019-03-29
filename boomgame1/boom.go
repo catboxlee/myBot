@@ -144,7 +144,7 @@ func (r *rankType) addUserBoom() {
 }
 
 func (r *rankType) checkBoomKing() {
-	row := mydb.Db.QueryRow("select userid, displayname, boom from boom_rank where boom >= 5 limit 1")
+	row := mydb.Db.QueryRow("select userid, displayname, boom from boom_rank where boom >= 100 limit 1")
 	switch err := row.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
 	case sql.ErrNoRows:
 		//fmt.Println("No rows were returned")
