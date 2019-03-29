@@ -50,6 +50,7 @@ func (u *UsersType) loadUsersData() {
 		case nil:
 			u.Data[data.UserID] = &data
 			log.Println("Users data load.")
+			log.Println(u.Data)
 		default:
 			checkError(err)
 		}
