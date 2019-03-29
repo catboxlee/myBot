@@ -26,7 +26,7 @@ func (w *WorldType) loadWorldData() {
 	var data WorldType
 		switch err := row.Scan(&data.Game, &data.Bank); err {
 		case sql.ErrNoRows:
-			//fmt.Println("No rows were returned")
+			log.Println("world - No rows were returned")
 		case nil:
 			w = &data
 			log.Println("World data load.")

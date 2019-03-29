@@ -49,12 +49,12 @@ func (u *UsersType) loadUsersData() {
 			log.Println("No rows were returned")
 		case nil:
 			u.Data[data.UserID] = &data
-			log.Println("Users data load.")
-			log.Println(u.Data)
 		default:
 			checkError(err)
 		}
 	}
+	log.Println("Users data load.")
+	log.Println(u.Data)
 }
 
 func (u *CurrentUserProfile) SaveUserData() {
