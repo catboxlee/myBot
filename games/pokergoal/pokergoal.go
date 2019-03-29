@@ -208,8 +208,8 @@ func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
 		p.pot = 10
 		texts = append(texts, "補充獎池：10")
 	}
-	world.World.Bank = p.pot
-	world.World.SaveWorldData()
+	//world.World.Bank = p.pot
+	//world.World.SaveWorldData()
 	
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.cards...)
