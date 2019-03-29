@@ -78,12 +78,12 @@ func (p *gameType) Run(input string) []string {
 			if len(p.players[users.LineUser.UserProfile.UserID].cards) > 0 {
 				p.discardPile = append(p.discardPile, p.players[users.LineUser.UserProfile.UserID].cards...)
 				p.players[users.LineUser.UserProfile.UserID].cards = nil
+				p.pot += p.players[users.LineUser.UserProfile.UserID].bets
+				p.players[users.LineUser.UserProfile.UserID].bets = 0
+				texts = append(texts, "棄牌")
+				p.showPot()
+				return texts
 			}
-			p.pot += p.players[users.LineUser.UserProfile.UserID].bets
-			p.players[users.LineUser.UserProfile.UserID].bets = 0
-			texts = append(texts, "棄牌")
-			p.showPot()
-			return texts
 		}
 	} else if strings.HasPrefix(input, "+") {
 		// New Player
@@ -97,30 +97,33 @@ func (p *gameType) Run(input string) []string {
 		currentPlayer := p.players[users.LineUser.UserProfile.UserID]
 
 		if len(currentPlayer.cards) < 2 {
-			texts = append(texts, fmt.Sprintf("開啟遊戲：%s -%d", emoji.Emoji(":money_bag:"), p.antes))
 			p.pot++
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money--
 			users.LineUser.SaveUserData()
 			p.showPot()
+			text = fmt.Sprintf("%s 下注：%s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), p.antes)
 			text = p.dealGate(currentPlayer)
-			text += fmt.Sprintf("\n%s 剩餘資金：%d", users.LineUser.UserProfile.DisplayName, users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
-			text += fmt.Sprintf("\n請喊注：+%d ~ +%d (預設+2)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			text += fmt.Sprintf("\n剩餘資金：%d",  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
+			if len(currentPlayer.cards) < 2 {
+				text += fmt.Sprintf("\n可加注：+%d ~ +%d (預設+0)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			}
 			texts = append(texts, text)
 			
 		} else {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
 			matches := re.FindStringSubmatch(input)
-			bet := 2
+			bet := 0
 			if len(matches) > 1 {
 				// 喊注
 				if bet, _ = strconv.Atoi(matches[1]); bet < 0 {
-					texts = append(texts, fmt.Sprintf("喊注金額錯誤: %d", bet))
+					texts = append(texts, fmt.Sprintf("%s 加注金額錯誤: %d", users.LineUser.UserProfile.DisplayName, bet))
 					return texts
 				}
 			}
+			bet = helper.Min(helper.Max(0, bet), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			currentPlayer.bets = bet
-			texts = append(texts, fmt.Sprintf("喊注: %s %d", emoji.Emoji(":money_bag:"), helper.Max(0, bet)))
+			texts = append(texts, fmt.Sprintf("%s 加注: %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), helper.Max(0, bet)))
 			p.hit(currentPlayer)
 			p.showPot()
 		}
@@ -177,16 +180,16 @@ func (p *gameType) hit(currentPlayer *playerType) {
 	bets := 0
 	if currentPlayer.cards[2].number == currentPlayer.cards[0].number || currentPlayer.cards[2].number == currentPlayer.cards[1].number {
 		// 撞柱
-		bets = -(currentPlayer.bets * 2)
+		bets = -((currentPlayer.bets + p.antes) * 2)
 		p.pot -= bets
 		texts = append(texts, fmt.Sprintf("%s 撞柱", str))
 	} else if currentPlayer.cards[2].number < helper.Min(currentPlayer.cards[0].number, currentPlayer.cards[1].number) || currentPlayer.cards[2].number > helper.Max(currentPlayer.cards[0].number, currentPlayer.cards[1].number) {
 		// 未入門
-		bets = -currentPlayer.bets
+		bets = -(currentPlayer.bets + p.antes)
 		p.pot -= bets
 		texts = append(texts, fmt.Sprintf("%s 不中", str))
 	} else {
-		bets = currentPlayer.bets
+		bets = (currentPlayer.bets + p.antes)
 		p.pot -= bets
 		texts = append(texts, fmt.Sprintf("%s Goal!!!", str))
 	}
