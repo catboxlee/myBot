@@ -46,9 +46,10 @@ func (u *UsersType) loadUsersData() {
 	for rows.Next() {
 		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money); err {
 		case sql.ErrNoRows:
-			//fmt.Println("No rows were returned")
+			log.Println("No rows were returned")
 		case nil:
 			u.Data[data.UserID] = &data
+			log.Println("Users data load.")
 		default:
 			checkError(err)
 		}
