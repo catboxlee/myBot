@@ -18,6 +18,7 @@ import (
 	"math/rand"
 	"myBot/games/pokergoal"
 	"myBot/mydb"
+	"myBot/world"
 	"myBot/users"
 	"net/http"
 	"os"
@@ -31,13 +32,7 @@ import (
 
 var bot *linebot.Client
 
-// SysConfig ...
-var SysConfig struct {
-	Game int
-}
-
 func main() {
-	SysConfig.Game = 2
 	defer mydb.Db.Close()
 
 	var err error
@@ -82,7 +77,7 @@ func doLinebotEvents(events []*linebot.Event) {
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
 
-				switch SysConfig.Game {
+				switch world.World.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
 				case 2:

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
+	"myBot/world"
 	"myBot/users"
 	"regexp"
 	"strconv"
@@ -56,6 +57,7 @@ func init() {
 	Shuffle(Pokergoal.deck)
 	Pokergoal.players = make(map[string]*playerType)
 	Pokergoal.antes = 1
+	Pokergoal.pot = world.World.Bank
 	//Shuffle(p.deck)
 }
 
@@ -101,8 +103,8 @@ func (p *gameType) Run(input string) []string {
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money--
 			users.LineUser.SaveUserData()
 			p.showPot()
-			text = fmt.Sprintf("%s 下注：%s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), p.antes)
-			text = p.dealGate(currentPlayer)
+			text = fmt.Sprintf("%s 下注：%s %d\n", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), p.antes)
+			text += p.dealGate(currentPlayer)
 			text += fmt.Sprintf("\n剩餘資金：%d",  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
 			if len(currentPlayer.cards) < 2 {
 				text += fmt.Sprintf("\n可加注：+%d ~ +%d (預設+0)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
@@ -164,9 +166,10 @@ func (p *gameType) dealGate(currentPlayer *playerType) string {
 	currentPlayer.cards = append(currentPlayer.cards, p.deal())
 	if currentPlayer.cards[0].number == currentPlayer.cards[1].number {
 		p.discardPile = append(p.discardPile, currentPlayer.cards...)
+		text := fmt.Sprintf("%s %s %s\n同數字判定未完工，此局賭金充公", convCard(currentPlayer.cards[0]), emoji.Emoji(":goal_net:"), convCard(currentPlayer.cards[1]))
 		currentPlayer.cards = nil
 		currentPlayer.bets = 0
-		return fmt.Sprintf("%s %s %s\n同數字判定未完工，此局賭金充公", convCard(currentPlayer.cards[0]), emoji.Emoji(":goal_net:"), convCard(currentPlayer.cards[1]))
+		return text
 	}
 	return fmt.Sprintf("%s %s %s", convCard(currentPlayer.cards[0]), emoji.Emoji(":goal_net:"), convCard(currentPlayer.cards[1]))
 }
@@ -200,10 +203,14 @@ func (p *gameType) hit(currentPlayer *playerType) {
 func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
 	users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += bets
 	users.LineUser.SaveUserData()
+	
 	if p.pot <= 0 {
 		p.pot = 10
 		texts = append(texts, "補充獎池：10")
 	}
+	world.World.Bank = p.pot
+	world.World.SaveWorldData()
+	
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.cards...)
 	currentPlayer.cards = nil

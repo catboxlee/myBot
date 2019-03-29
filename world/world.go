@@ -7,6 +7,7 @@ import (
 
 // WorldType ...
 type WorldType struct {
+	Game int
 	Bank int
 }
 
@@ -19,12 +20,11 @@ func init() {
 
 func (w *WorldType) loadWorldData() {
 
-	rows, err := mydb.Db.Query("SELECT bank FROM world_info")
+	row := mydb.Db.QueryRow("SELECT game, bank FROM world_info limit 1")
 	checkError(err)
-	defer rows.Close()
+	// defer row.Close()
 	var data WorldType
-	for rows.Next() {
-		switch err := rows.Scan(&data.Bank); err {
+		switch err := row.Scan(&data.Game, &data.Bank); err {
 		case sql.ErrNoRows:
 			//fmt.Println("No rows were returned")
 		case nil:
@@ -32,7 +32,10 @@ func (w *WorldType) loadWorldData() {
 		default:
 			checkError(err)
 		}
-	}
+}
+
+func (w *WorldType) SaveWorldData() {
+	mydb.Db.QueryRow("update world_info set game = $1, bank = $2", w.Game, w.Bank)
 }
 
 func checkError(err error) {
