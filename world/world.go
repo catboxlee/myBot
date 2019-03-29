@@ -21,7 +21,6 @@ func init() {
 func (w *WorldType) loadWorldData() {
 
 	row := mydb.Db.QueryRow("SELECT game, bank FROM world_info limit 1")
-	checkError(err)
 	// defer row.Close()
 	var data WorldType
 		switch err := row.Scan(&data.Game, &data.Bank); err {
