@@ -65,7 +65,7 @@ func (p *gameType) Run(input string) []string {
 	texts = nil
 	var text string
 	if p.pot == 0 {
-		p.pot = world.World.Bank
+		p.pot = 10
 	}
 
 	//p.showAllCard()

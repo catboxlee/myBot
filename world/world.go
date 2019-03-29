@@ -30,13 +30,14 @@ func (w *WorldType) loadWorldData() {
 		case nil:
 			w = &data
 			log.Println("World data load.")
-			log.Println(&w)
+			log.Println(w.Game)
 		default:
 			checkError(err)
 		}
 }
 
 func (w *WorldType) SaveWorldData() {
+	log.Println("save world data")
 	mydb.Db.QueryRow("update world_info set game = $1, bank = $2", w.Game, w.Bank)
 }
 
