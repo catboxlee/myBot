@@ -100,7 +100,7 @@ func (p *gameType) Run(input string) []string {
 			texts = append(texts, fmt.Sprintf("開啟遊戲：%s -%d", emoji.Emoji(":money_bag:"), p.antes))
 			p.pot++
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money--
-			users.LineUser[users.LineUser.UserProfile.UserID].SaveUserData()
+			users.LineUser.SaveUserData()
 			p.showPot()
 			text = p.dealGate(currentPlayer)
 			text += fmt.Sprintf("\n%s 剩餘資金：%d", users.LineUser.UserProfile.DisplayName, users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
@@ -196,7 +196,7 @@ func (p *gameType) hit(currentPlayer *playerType) {
 
 func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
 	users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += bets
-	users.LineUser[users.LineUser.UserProfile.UserID].SaveUserData()
+	users.LineUser.SaveUserData()
 	if p.pot <= 0 {
 		p.pot = 10
 		texts = append(texts, "補充獎池：10")
