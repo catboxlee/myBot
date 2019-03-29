@@ -55,11 +55,11 @@ func (u *UsersType) loadUsersData() {
 	}
 }
 
-func (u *CurrentUserProfile) sveUserData() {
-	query := `insert into users(userid, displayname, money) values($1, $2, 0)
+func (u *CurrentUserProfile) SaveUserData() {
+	query := `insert into users(userid, displayname, money) values($1, $2, $3)
 					on conflict(userid)
-					do update set displayname = $2`
-	mydb.Db.QueryRow(query, u.UserProfile.UserID, u.UserProfile.DisplayName)
+					do update set displayname = $2, money = $3`
+	mydb.Db.QueryRow(query, u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money)
 }
 
 func (u *CurrentUserProfile) checkUserExist() {
@@ -68,7 +68,7 @@ func (u *CurrentUserProfile) checkUserExist() {
 		UsersList.Data[u.UserProfile.UserID].UserID = u.UserProfile.UserID
 		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
 		UsersList.Data[u.UserProfile.UserID].Money = 10
-		u.sveUserData()
+		u.SaveUserData()
 	}
 }
 

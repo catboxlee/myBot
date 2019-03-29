@@ -103,6 +103,7 @@ func (p *gameType) Run(input string) []string {
 			text = p.dealGate(currentPlayer)
 			text += fmt.Sprintf("\n請喊注: +%d ~ +%d (預設+2)", 0, p.pot)
 			texts = append(texts, text)
+			users.UsersList.Data[u.UserProfile.UserID].SaveUserData()
 		} else {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
