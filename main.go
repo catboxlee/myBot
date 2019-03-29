@@ -68,6 +68,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 func doLinebotEvents(events []*linebot.Event) {
 
 	rand.Seed(time.Now().UnixNano())
+	log.Println("1111")
 
 	for _, event := range events {
 		if event.Type == linebot.EventTypeMessage {
@@ -77,7 +78,7 @@ func doLinebotEvents(events []*linebot.Event) {
 				users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
-
+				log.Println("2222")
 				switch world.World.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
