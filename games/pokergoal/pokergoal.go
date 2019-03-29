@@ -57,7 +57,7 @@ func init() {
 	Shuffle(Pokergoal.deck)
 	Pokergoal.players = make(map[string]*playerType)
 	Pokergoal.antes = 1
-	Pokergoal.pot = world.World.Bank
+	//Pokergoal.pot = world.World.Bank
 	//Shuffle(p.deck)
 }
 
@@ -65,7 +65,7 @@ func (p *gameType) Run(input string) []string {
 	texts = nil
 	var text string
 	if p.pot == 0 {
-		p.pot = 10
+		p.pot = world.World.Bank
 	}
 
 	//p.showAllCard()
