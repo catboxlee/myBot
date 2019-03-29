@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 // DiceType type
@@ -17,6 +18,7 @@ var Dice diceType
 
 // Roll dice
 func (d *diceType) Roll(s string) {
+	rand.Seed(time.Now().UnixNano())
 	d.N = 0
 	d.Rolls = nil
 

@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"myBot/games/pokergoal"
 	"myBot/mydb"
 	"myBot/users"
 	"net/http"
@@ -36,7 +37,7 @@ var SysConfig struct {
 }
 
 func main() {
-	SysConfig.Game = 1
+	SysConfig.Game = 2
 	defer mydb.Db.Close()
 
 	var err error
@@ -84,6 +85,8 @@ func doLinebotEvents(events []*linebot.Event) {
 				switch SysConfig.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
+				case 2:
+					texts = pokergoal.Pokergoal.Run(input)
 				default:
 				}
 				replyMsg(event, texts)
