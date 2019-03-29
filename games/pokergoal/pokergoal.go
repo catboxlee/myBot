@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
-	"myBot/world"
+	//"myBot/world"
 	"myBot/users"
 	"regexp"
 	"strconv"
