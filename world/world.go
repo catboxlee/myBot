@@ -23,12 +23,12 @@ func (w *WorldType) loadWorldData() {
 
 	row := mydb.Db.QueryRow("SELECT game, bank FROM world_info limit 1")
 	// defer row.Close()
-	var data *WorldType
+	var data WorldType
 		switch err := row.Scan(&data.Game, &data.Bank); err {
 		case sql.ErrNoRows:
 			log.Println("world - No rows were returned")
 		case nil:
-			w = data
+			w = &data
 			log.Println("World data load.")
 			//log.Println(w.Game)
 		default:
