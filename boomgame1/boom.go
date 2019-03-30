@@ -20,7 +20,7 @@ type gameType struct {
 	max      int
 	season   int
 	sourceID string
-	rank     rankType
+	//rank     rankType
 }
 
 type rankType struct {
@@ -76,10 +76,10 @@ func (b *gameType) checkCommand(input string) {
 		b.reset()
 		b.show()
 	case "rank":
-		b.rank.rank()
+		b.rank()
 		b.show()
 	case "resetRank":
-		b.rank.resetRank()
+		b.resetRank()
 		//rank.saveRank()
 	}
 }
@@ -103,9 +103,9 @@ func (b *gameType) checkBoom(x int) {
 		switch {
 		case b.current == b.hit:
 			b.show()
-			b.rank.addUserBoom()
-			b.rank.rank()
-			b.rank.checkBoomKing()
+			b.addUserBoom()
+			b.rank()
+			b.checkBoomKing()
 			b.reset()
 			b.show()
 		case b.current < b.hit:
@@ -135,7 +135,7 @@ func (b *gameType) show() {
 	}
 }
 
-func (r *rankType) addUserBoom() {
+func (b *gameType) addUserBoom() {
 
 	query := `insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
 					on conflict(userid)
@@ -143,29 +143,31 @@ func (r *rankType) addUserBoom() {
 	mydb.Db.QueryRow(query, users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName)
 }
 
-func (r *rankType) checkBoomKing() {
+func (b *gameType) checkBoomKing() {
+	var r rankType
 	row := mydb.Db.QueryRow("select userid, displayname, boom from boom_rank where boom >= 100 limit 1")
 	switch err := row.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
 	case sql.ErrNoRows:
 		//fmt.Println("No rows were returned")
 	case nil:
-		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), Boom.season, r.DisplayName, emoji.Emoji(":confetti_ball:")))
+		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.season, r.DisplayName, emoji.Emoji(":confetti_ball:")))
 
 		mydb.Db.QueryRow("truncate table boom_rank")
-		Boom.season++
-		mydb.Db.QueryRow("update boom_info set season = $1", Boom.season)
+		b.season++
+		mydb.Db.QueryRow("update boom_info set season = $1", b.season)
 	default:
 		checkError(err)
 	}
 }
 
-func (r *rankType) rank() {
+func (b *gameType) rank() {
 
 	text := fmt.Sprintf("爆爆王 S%d Rank：", Boom.season)
 	rows, err := mydb.Db.Query("SELECT userid, displayname, boom FROM boom_rank order by boom desc")
 	checkError(err)
 	defer rows.Close()
 	for rows.Next() {
+		var r rankType
 		switch err := rows.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
 		case sql.ErrNoRows:
 			//fmt.Println("No rows were returned")
