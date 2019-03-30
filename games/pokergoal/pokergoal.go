@@ -57,6 +57,7 @@ func init() {
 	Shuffle(Pokergoal.deck)
 	Pokergoal.players = make(map[string]*playerType)
 	Pokergoal.antes = 1
+	log.Println("pokergoal init")
 	//Pokergoal.pot = world.World.Bank
 	//Shuffle(p.deck)
 }

@@ -42,8 +42,9 @@ func (u *UsersType) loadUsersData() {
 	rows, err := mydb.Db.Query("SELECT userid, displayname, money FROM users")
 	checkError(err)
 	defer rows.Close()
-	var data UserDataType
+	
 	for rows.Next() {
+		var data UserDataType
 		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
@@ -54,7 +55,7 @@ func (u *UsersType) loadUsersData() {
 		}
 	}
 	log.Println("Users data load.")
-	log.Println(u.Data)
+	//log.Println(u.Data)
 }
 
 func (u *CurrentUserProfile) SaveUserData() {
