@@ -17,7 +17,8 @@ import (
 type gameType struct {
 	pot         int
 	antes       int
-	gate		[]*cardType
+	gate1		cardType
+	gate2		cardType
 	deck        []cardType
 	discardPile []cardType
 	players     map[string]*playerType
@@ -146,9 +147,9 @@ func (p *gameType) showPot() {
 
 func (p *gameType) dealGate() {
 	// 發門柱
-	p.gate = append(p.gate, p.deal())
-	p.gate = append(p.gate, p.deal())
-	str := fmt.Sprintf("%s %s %s", convCard(p.gate[0]), emoji.Emoji(":goal_net:"), convCard(p.gate[1]))
+	p.gate1 = p.deal()
+	p.gate2 = p.deal()
+	str := fmt.Sprintf("%s %s %s", convCard(p.gate1), emoji.Emoji(":goal_net:"), convCard(p.gate2))
 	if len(p.players) > 0 {
 		for _,v := range p.players {
 			str += p.hit(v)
@@ -157,16 +158,16 @@ func (p *gameType) dealGate() {
 }
 
 // 要牌
-func (p *gameType) hit(currentPlayer *playerType) {
+func (p *gameType) hit(currentPlayer *playerType) string {
 	// 結算
-	str = fmt.Sprintf("\n%s %s", currentPlayer.DisplayName, convCard(currentPlayer.ball))
+	str := fmt.Sprintf("\n%s %s", currentPlayer.DisplayName, convCard(currentPlayer.ball))
 	bets := 0
-	if currentPlayer.ball.number == p.gate[0].number || currentPlayer.ball.number == p.gate[1].number {
+	if currentPlayer.ball.number == p.gate1.number || currentPlayer.ball.number == p.gate2.number {
 		// 撞柱
 		bets = -(currentPlayer.bets)
 		p.pot -= bets
 		str += " 撞柱"
-	} else if currentPlayer.ball.number < helper.Min(p.gate[0].number, p.gate[1].number) || currentPlayer.ball.number > helper.Max(p.gate[0].number, p.gate[1].number) {
+	} else if currentPlayer.ball.number < helper.Min(p.gate1.number, p.gate2.number) || currentPlayer.ball.number > helper.Max(p.gate1.number, p.gate2.number) {
 		// 未入門
 		//bets = -(currentPlayer.bets)
 		//p.pot -= bets
@@ -192,8 +193,9 @@ func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
 	
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.ball)
-	p.discardPile = append(p.discardPile, p.gate...)
-	p.gate = nil
+	p.discardPile = append(p.discardPile, p.gate1)
+	p.discardPile = append(p.discardPile, p.gate2)
+	//p.gate = nil
 	currentPlayer.bets = 0
 	//log.Println(p.discardPile)
 }
