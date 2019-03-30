@@ -20,6 +20,7 @@ import (
 	"myBot/mydb"
 	"myBot/world"
 	"myBot/users"
+	"myBot/common"
 	
 	"net/http"
 	"os"
@@ -77,13 +78,15 @@ func doLinebotEvents(events []*linebot.Event) {
 				users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
-				
-				switch world.World.Game {
-				case 1:
-					texts = boomgame1.Boom.Run(input)
-				case 2:
-					texts = pokergoal.Pokergoal.Run(input)
-				default:
+				texts = common.Cmd(input)
+				if len(texts) == 0 {
+					switch world.World.Game {
+					case 1:
+						texts = boomgame1.Boom.Run(input)
+					case 2:
+						texts = pokergoal.Pokergoal.Run(input)
+					default:
+					}
 				}
 				replyMsg(event, texts)
 			}

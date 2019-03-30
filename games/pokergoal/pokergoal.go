@@ -107,7 +107,7 @@ func (p *gameType) Run(input string) []string {
 			text = fmt.Sprintf("%s 下注：%s %d\n", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), p.antes)
 			text += p.dealGate(currentPlayer)
 			text += fmt.Sprintf("\n剩餘資金：%d",  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
-			if len(currentPlayer.cards) < 2 {
+			if len(currentPlayer.cards) == 2 {
 				text += fmt.Sprintf("\n可加注：+%d ~ +%d (預設+0)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			}
 			texts = append(texts, text)
