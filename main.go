@@ -18,7 +18,7 @@ import (
 	"math/rand"
 	
 	"myBot/mydb"
-	//"myBot/world"
+	"myBot/world"
 	"myBot/users"
 	
 	"net/http"
@@ -77,7 +77,7 @@ func doLinebotEvents(events []*linebot.Event) {
 				users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
-				switch 2 {
+				switch world.World.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
 				case 2:
