@@ -155,6 +155,7 @@ func (p *gameType) dealGate() {
 			str += p.hit(v)
 		}
 	}
+	texts = append(texts, str)
 }
 
 // 要牌
