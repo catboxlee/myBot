@@ -57,7 +57,7 @@ func setBank(s string) []string{
 			if n, err := strconv.Atoi(matches[2]); err == nil {
 				world.World.Bank = n
 				world.World.SaveWorldData()
-				pokergoal.Pokergoal.pot = n
+				//pokergoal.Pokergoal.pot = n
 				return []string{"ok"}
 			}
 		}
