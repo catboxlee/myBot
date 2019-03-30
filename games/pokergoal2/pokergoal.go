@@ -94,11 +94,9 @@ func (p *gameType) Run(input string) []string {
 			matches := re.FindStringSubmatch(input)
 			bets := 1
 			if len(matches) > 1 {
-				if bet, err := strconv.Atoi(matches[1]); err != nil {
-					texts = append(texts, fmt.Sprintf("%s 加注金額錯誤: %d", 	users.LineUser.UserProfile.DisplayName, bet))
-					return texts
+				if bet, err := strconv.Atoi(matches[1]); err == nil {
+					bets = helper.Max(bets, bet)
 				}
-				bets = helper.Max(bets, bet)
 			}
 			currentPlayer.bets = bets
 			p.pot += bets
@@ -150,6 +148,11 @@ func (p *gameType) dealGate() {
 	// 發門柱
 	p.gate = append(p.gate, p.deal())
 	p.gate = append(p.gate, p.deal())
+	if len(p.players) > 0 {
+		for _,v := range p.players {
+			p.hit(v)
+		}
+	}
 }
 
 // 要牌
