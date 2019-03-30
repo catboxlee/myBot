@@ -3,6 +3,7 @@ package common
 import (
 	"regexp"
 	"strings"
+	"strconv"
 	"myBot/world"
 )
 
@@ -28,7 +29,7 @@ func Cmd(input string) []string {
 	return texts
 }
 
-func changeGame(s string) {
+func changeGame(s string) []string{
 	if n, err := strconv.Atoi(s); err == nil {
 		switch n {
 		case 1:
