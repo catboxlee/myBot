@@ -108,7 +108,7 @@ func (p *gameType) Run(input string) []string {
 			text += p.dealGate(currentPlayer)
 			text += fmt.Sprintf("\n剩餘資金：%s %d", emoji.Emoji(":money_bag:"),  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
 			if len(currentPlayer.cards) == 2 {
-				text += fmt.Sprintf("\n可加注：+%d ~ +%d (預設+0)", 0, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+				text += fmt.Sprintf("\n加注：+%d ~ +%d (預設+1) | 棄牌：-", 1, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			}
 			texts = append(texts, text)
 			
@@ -116,7 +116,7 @@ func (p *gameType) Run(input string) []string {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
 			matches := re.FindStringSubmatch(input)
-			bet := 0
+			bet := 1
 			if len(matches) > 1 {
 				// 喊注
 				if bet, _ = strconv.Atoi(matches[1]); bet < 0 {
@@ -124,9 +124,9 @@ func (p *gameType) Run(input string) []string {
 					return texts
 				}
 			}
-			bet = helper.Min(helper.Max(0, bet), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			bet = helper.Min(helper.Max(1, bet), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			currentPlayer.bets = bet
-			texts = append(texts, fmt.Sprintf("%s 加注: %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), helper.Max(0, bet)))
+			texts = append(texts, fmt.Sprintf("%s 加注: %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), helper.Max(1, bet)))
 			p.hit(currentPlayer)
 			p.showPot()
 		}
