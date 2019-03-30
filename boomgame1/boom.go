@@ -80,7 +80,7 @@ func (b *gameType) checkCommand(input string) {
 		b.show()
 	case "resetRank":
 		b.resetRank()
-		//rank.saveRank()
+		b.show()
 	}
 }
 
@@ -180,6 +180,6 @@ func (b *gameType) rank() {
 	texts = append(texts, text)
 }
 
-func (r *rankType) resetRank() {
-
+func (b *gameType) resetRank() {
+	mydb.Db.QueryRow("truncate table boom_rank")
 }
