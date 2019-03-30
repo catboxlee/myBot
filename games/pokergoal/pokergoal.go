@@ -187,16 +187,16 @@ func (p *gameType) hit(currentPlayer *playerType) {
 		// 撞柱
 		bets = -(currentPlayer.bets * 2 + 1)
 		p.pot -= bets
-		str += fmt.Sprintf("%s 撞柱", str)
+		str += " 撞柱"
 	} else if currentPlayer.cards[2].number < helper.Min(currentPlayer.cards[0].number, currentPlayer.cards[1].number) || currentPlayer.cards[2].number > helper.Max(currentPlayer.cards[0].number, currentPlayer.cards[1].number) {
 		// 未入門
 		bets = -(currentPlayer.bets)
 		p.pot -= bets
-		str += fmt.Sprintf("%s 不中", str)
+		str += " 不中"
 	} else {
 		bets = (currentPlayer.bets) +1
 		p.pot -= bets
-		str += fmt.Sprintf("%s Goal!!!", str)
+		str += " Goal!!!"
 	}
 	
 	// 結算
