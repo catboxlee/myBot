@@ -17,7 +17,7 @@ import (
 type gameType struct {
 	pot         int
 	antes       int
-	gate		[]cardType
+	gate		[]*cardType
 	deck        []cardType
 	discardPile []cardType
 	players     map[string]*playerType
@@ -106,7 +106,7 @@ func (p *gameType) Run(input string) []string {
 			currentPlayer.ball = p.deal()
 			text = fmt.Sprintf("%s 下注：%s%d (%s%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), bets, emoji.Emoji(":money_bag:"),  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
 			text += fmt.Sprintf("\n目前獎池：%s%d(%+d)", emoji.Emoji(":money_bag:"), p.pot, bets)
-			text += fmt.Sprintf("%s", convCard(currentPlayer.ball))
+			text += fmt.Sprintf("\n%s", convCard(currentPlayer.ball))
 			texts = append(texts, text)
 			
 		} else {
@@ -148,9 +148,10 @@ func (p *gameType) dealGate() {
 	// 發門柱
 	p.gate = append(p.gate, p.deal())
 	p.gate = append(p.gate, p.deal())
+	str := fmt.Sprintf("%s %s %s", convCard(p.gate[0]), emoji.Emoji(":goal_net:"), convCard(p.gate[1]))
 	if len(p.players) > 0 {
 		for _,v := range p.players {
-			p.hit(v)
+			str += p.hit(v)
 		}
 	}
 }
@@ -158,7 +159,6 @@ func (p *gameType) dealGate() {
 // 要牌
 func (p *gameType) hit(currentPlayer *playerType) {
 	// 結算
-	str := fmt.Sprintf("%s %s %s", convCard(p.gate[0]), emoji.Emoji(":goal_net:"), convCard(p.gate[1]))
 	str = fmt.Sprintf("\n%s %s", currentPlayer.DisplayName, convCard(currentPlayer.ball))
 	bets := 0
 	if currentPlayer.ball.number == p.gate[0].number || currentPlayer.ball.number == p.gate[1].number {
@@ -181,8 +181,9 @@ func (p *gameType) hit(currentPlayer *playerType) {
 	// 結算
 	users.LineUser.SaveUserData()
 
-	texts = append(texts, str)
+	//texts = append(texts, str)
 	p.endGame(currentPlayer, bets)
+	return str
 }
 
 func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
