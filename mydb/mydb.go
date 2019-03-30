@@ -37,7 +37,7 @@ func DbStart() {
 
 	// Initialize connection object.
 	var err error
-	log.Println("Start creat connection to database...")
+	//log.Println("Start creat connection to database...")
 	Db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
