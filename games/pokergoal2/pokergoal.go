@@ -105,8 +105,8 @@ func (p *gameType) Run(input string) []string {
 			//users.LineUser.SaveUserData()
 			// 拿牌
 			currentPlayer.ball = p.deal()
-			text = fmt.Sprintf("%s 下注：%s%d (%s%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), bets, emoji.Emoji(":money_bag:"),  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
-			text += fmt.Sprintf("\n目前獎池：%s%d(%+d)", emoji.Emoji(":money_bag:"), p.pot, bets)
+			text = fmt.Sprintf("%s 下注：%s%d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), bets)
+			//text += fmt.Sprintf("\n目前獎池：%s%d(%+d)", emoji.Emoji(":money_bag:"), p.pot, bets)
 			text += fmt.Sprintf("\n%s", convCard(currentPlayer.ball))
 			texts = append(texts, text)
 			
