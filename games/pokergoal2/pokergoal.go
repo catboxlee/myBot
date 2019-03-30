@@ -159,7 +159,7 @@ func (p *gameType) dealGate() {
 func (p *gameType) hit(currentPlayer *playerType) {
 	// 結算
 	str := fmt.Sprintf("%s %s %s", convCard(p.gate[0]), emoji.Emoji(":goal_net:"), convCard(p.gate[1]))
-	str = fmt.Sprintf("\n%s %s", currentPlayer.DisplayerName, convCard(currentPlayer.ball))
+	str = fmt.Sprintf("\n%s %s", currentPlayer.DisplayName, convCard(currentPlayer.ball))
 	bets := 0
 	if currentPlayer.ball.number == p.gate[0].number || currentPlayer.ball.number == p.gate[1].number {
 		// 撞柱
