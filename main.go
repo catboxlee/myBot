@@ -26,6 +26,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"myBot/games/pokergoal2"
 	"myBot/games/pokergoal"
 	"myBot/boomgame1"
 
@@ -85,6 +86,8 @@ func doLinebotEvents(events []*linebot.Event) {
 						texts = boomgame1.Boom.Run(input)
 					case 2:
 						texts = pokergoal.Pokergoal.Run(input)
+					case 3:
+						texts = pokergoal2.Pokergoal.Run(input)
 					default:
 					}
 				}
