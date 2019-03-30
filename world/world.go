@@ -28,7 +28,7 @@ func (w *WorldType) loadWorldData() {
 		case sql.ErrNoRows:
 			log.Println("world - No rows were returned")
 		case nil:
-			w = &data
+			w = data
 			log.Println("World data load.")
 			//log.Println(w.Game)
 		default:
