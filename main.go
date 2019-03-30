@@ -77,8 +77,8 @@ func doLinebotEvents(events []*linebot.Event) {
 				users.LineUser.GetSenderInfo(event, bot)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
-				log.Println(world.World.Game)
-				switch 1 {
+				
+				switch world.World.Game {
 				case 1:
 					texts = boomgame1.Boom.Run(input)
 				case 2:

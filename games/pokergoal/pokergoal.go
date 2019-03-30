@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
-	//"myBot/world"
+	"myBot/world"
 	"myBot/users"
 	"regexp"
 	"strconv"
@@ -58,7 +58,7 @@ func init() {
 	Pokergoal.players = make(map[string]*playerType)
 	Pokergoal.antes = 1
 	log.Println("pokergoal init")
-	//Pokergoal.pot = world.World.Bank
+	Pokergoal.pot = world.World.Bank
 	//Shuffle(p.deck)
 }
 
@@ -209,8 +209,8 @@ func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
 		p.pot = 10
 		texts = append(texts, "補充獎池：10")
 	}
-	//world.World.Bank = p.pot
-	//world.World.SaveWorldData()
+	world.World.Bank = p.pot
+	world.World.SaveWorldData()
 	
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.cards...)
