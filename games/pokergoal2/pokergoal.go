@@ -152,7 +152,9 @@ func (p *gameType) dealGate() {
 	str := fmt.Sprintf("%s %s %s", convCard(p.gate1), emoji.Emoji(":goal_net:"), convCard(p.gate2))
 	if len(p.players) > 0 {
 		for _,v := range p.players {
-			str += p.hit(v)
+			if v.bets > 0 {
+				str += p.hit(v)
+			}
 		}
 	}
 	texts = append(texts, str)
