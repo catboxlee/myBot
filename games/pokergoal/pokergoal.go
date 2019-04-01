@@ -129,7 +129,7 @@ func (p *gameType) Run(input string) []string {
 					return texts
 				}
 			}
-			bet = helper.Min(helper.Max(1, bet), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			bet = helper.Max(1, helper.Min(bet, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot)))
 			currentPlayer.bets = bet
 
 			p.hit(currentPlayer)
