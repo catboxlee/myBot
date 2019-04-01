@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
-	"myBot/world"
 	"myBot/users"
+	"myBot/world"
 	"regexp"
 	"strconv"
 	"strings"
@@ -52,14 +52,19 @@ func checkError(err error) {
 }
 
 func init() {
-	Pokergoal.createDeck()
+	Pokergoal.start()
+}
 
-	Shuffle(Pokergoal.deck)
-	Pokergoal.players = make(map[string]*playerType)
-	Pokergoal.antes = 1
+func (p *gameType) start() {
+	p.createDeck()
+
+	Shuffle(p.deck)
+	p.players = make(map[string]*playerType)
+	p.antes = 1
 	log.Println("pokergoal init")
-	Pokergoal.pot = world.World.Pot
+	p.pot = world.World.Pot
 	//Shuffle(p.deck)
+
 }
 
 func (p *gameType) Run(input string) []string {
@@ -106,12 +111,12 @@ func (p *gameType) Run(input string) []string {
 			p.showPot()
 			text = fmt.Sprintf("%s 下注：%s %d\n", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), p.antes)
 			text += p.dealGate(currentPlayer)
-			text += fmt.Sprintf("\n剩餘資金：%s %d", emoji.Emoji(":money_bag:"),  users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
+			text += fmt.Sprintf("\n剩餘資金：%s %d", emoji.Emoji(":money_bag:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].Money)
 			if len(currentPlayer.cards) == 2 {
 				text += fmt.Sprintf("\n加注：+%d ~ +%d (預設+1) | 棄牌：-", 1, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			}
 			texts = append(texts, text)
-			
+
 		} else {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
@@ -126,7 +131,7 @@ func (p *gameType) Run(input string) []string {
 			}
 			bet = helper.Min(helper.Max(1, bet), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
 			currentPlayer.bets = bet
-			
+
 			p.hit(currentPlayer)
 			p.showPot()
 		}
@@ -137,6 +142,9 @@ func (p *gameType) Run(input string) []string {
 // 指令
 func (p *gameType) checkCommand(input string) {
 	switch input {
+	case "start":
+		p.start()
+		p.showPot()
 	case "reset":
 		p.createDeck()
 		Shuffle(p.deck)
@@ -185,7 +193,7 @@ func (p *gameType) hit(currentPlayer *playerType) {
 	bets := 0
 	if currentPlayer.cards[2].number == currentPlayer.cards[0].number || currentPlayer.cards[2].number == currentPlayer.cards[1].number {
 		// 撞柱
-		bets = -(currentPlayer.bets * 2 + 1)
+		bets = -(currentPlayer.bets*2 + 1)
 		p.pot -= bets
 		str += " 撞柱"
 	} else if currentPlayer.cards[2].number < helper.Min(currentPlayer.cards[0].number, currentPlayer.cards[1].number) || currentPlayer.cards[2].number > helper.Max(currentPlayer.cards[0].number, currentPlayer.cards[1].number) {
@@ -194,31 +202,30 @@ func (p *gameType) hit(currentPlayer *playerType) {
 		p.pot -= bets
 		str += " 不中"
 	} else {
-		bets = (currentPlayer.bets) +1
+		bets = (currentPlayer.bets) + 1
 		p.pot -= bets
 		str += " Goal!!!"
 	}
-	
+
 	// 結算
 	users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += bets
 	users.LineUser.SaveUserData()
-	
+
 	str += fmt.Sprintf("\n剩餘資金：%s%d(%+d)", emoji.Emoji(":money_bag:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, bets)
 	texts = append(texts, str)
 	p.endGame(currentPlayer, bets)
 }
 
-func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
-	
-	
+func (p *gameType) endGame(currentPlayer *playerType, bets int) {
+
 	if p.pot <= 0 {
 		world.World.Bank -= 10
 		p.pot += 10
-		texts = append(texts, fmt.Sprintf("%s補充獎池：%s%d(+10)",emoji.Emoji(":bank:"), emoji.Emoji(":money_bag:"), p.pot))
+		texts = append(texts, fmt.Sprintf("%s補充獎池：%s%d(+10)", emoji.Emoji(":bank:"), emoji.Emoji(":money_bag:"), p.pot))
 	}
 	world.World.Pot = p.pot
 	world.World.SaveWorldData()
-	
+
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.cards...)
 	currentPlayer.cards = nil

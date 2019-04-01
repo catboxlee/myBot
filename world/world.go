@@ -44,11 +44,11 @@ func (w *WorldType) loadWorldData() {
 func (w *WorldType) SaveWorldData() {
 	log.Println("save world data")
 	//mydb.Db.QueryRow("update world_info set game = $1, bank = $2, pot = $3, pot2 = $4", w.Game, w.Bank, w.Pot, w.Pot2)
-	stmt, err := mydb.Db.Prepare("update world_info set game = $1, bank = $2, pot = $3")
+	stmt, err := mydb.Db.Prepare("update world_info set game = $1, bank = $2, pot = $3, pot2 = $4")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(w.Game, w.Bank, w.Pot)
+	_, err = stmt.Exec(w.Game, w.Bank, w.Pot, w.Pot2)
 	if err != nil {
 		log.Fatal(err)
 	}
