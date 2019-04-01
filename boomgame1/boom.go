@@ -137,10 +137,12 @@ func (b *gameType) show() {
 
 func (b *gameType) addUserBoom() {
 
-	query := `insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
-					on conflict(userid)
-					do update set displayname = $2, boom = boom_rank.boom + 1`
-	mydb.Db.QueryRow(query, users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName)
+	if _, err := mydb.Db.Exec(`insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
+						on conflict(userid)
+						do update set displayname = $2, boom = boom_rank.boom + 1`,
+		users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName); err != nil {
+		panic(err)
+	}
 }
 
 func (b *gameType) checkBoomKing() {
@@ -152,9 +154,15 @@ func (b *gameType) checkBoomKing() {
 	case nil:
 		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.season, r.DisplayName, emoji.Emoji(":confetti_ball:")))
 
-		mydb.Db.QueryRow("truncate table boom_rank")
+		if _, err := mydb.Db.Exec(`truncate table boom_rank`); err != nil {
+			panic(err)
+		}
 		b.season++
-		mydb.Db.QueryRow("update boom_info set season = $1", b.season)
+		//mydb.Db.QueryRow("update boom_info set season = $1", b.season)
+		if _, err := mydb.Db.Exec(`update boom_info set season = $1`, b.season); err != nil {
+			panic(err)
+		}
+
 	default:
 		checkError(err)
 	}
@@ -181,5 +189,8 @@ func (b *gameType) rank() {
 }
 
 func (b *gameType) resetRank() {
-	mydb.Db.QueryRow("truncate table boom_rank")
+	//mydb.Db.QueryRow("truncate table boom_rank")
+	if _, err := mydb.Db.Exec(`truncate table boom_rank`); err != nil {
+		panic(err)
+	}
 }
