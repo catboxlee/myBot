@@ -42,7 +42,7 @@ func (u *UsersType) loadUsersData() {
 	rows, err := mydb.Db.Query("SELECT userid, displayname, money FROM users")
 	checkError(err)
 	defer rows.Close()
-	
+
 	for rows.Next() {
 		var data UserDataType
 		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money); err {
@@ -58,11 +58,20 @@ func (u *UsersType) loadUsersData() {
 	//log.Println(u.Data)
 }
 
+// SaveUserData ...
 func (u *CurrentUserProfile) SaveUserData() {
-	query := `insert into users(userid, displayname, money) values($1, $2, $3)
-					on conflict(userid)
-					do update set displayname = $2, money = $3`
-	mydb.Db.QueryRow(query, u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money)
+
+	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money) values($1, $2, $3)
+	on conflict(userid)
+	do update set displayname = $2, money = $3`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money)
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt.Close()
 }
 
 func (u *CurrentUserProfile) checkUserExist() {
