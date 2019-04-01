@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
-	"myBot/world"
 	"myBot/users"
+	"myBot/world"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,8 +17,8 @@ import (
 type gameType struct {
 	pot         int
 	antes       int
-	gate1		cardType
-	gate2		cardType
+	gate1       cardType
+	gate2       cardType
 	deck        []cardType
 	discardPile []cardType
 	players     map[string]*playerType
@@ -28,7 +28,7 @@ type playerType struct {
 	UserID      string
 	DisplayName string
 	bets        int
-	ball 		cardType
+	ball        cardType
 }
 
 type cardType struct {
@@ -54,13 +54,16 @@ func checkError(err error) {
 }
 
 func init() {
-	Pokergoal.createDeck()
+	Pokergoal.start()
+}
 
-	Shuffle(Pokergoal.deck)
-	Pokergoal.players = make(map[string]*playerType)
-	Pokergoal.antes = 1
+func (p *gameType) start() {
+	p.createDeck()
+	Shuffle(p.deck)
+	p.players = make(map[string]*playerType)
+	p.antes = 1
 	log.Println("pokergoal init")
-	Pokergoal.pot = world.World.Pot
+	p.pot = world.World.Pot
 	//Shuffle(p.deck)
 }
 
@@ -77,7 +80,7 @@ func (p *gameType) Run(input string) []string {
 		p.dealGate()
 		p.showPot()
 		return texts
-		
+
 	} else if strings.HasPrefix(input, "+") {
 		// New Player
 		if _, exist := p.players[users.LineUser.UserProfile.UserID]; !exist {
@@ -88,7 +91,7 @@ func (p *gameType) Run(input string) []string {
 			log.Println("新玩家")
 		}
 		currentPlayer := p.players[users.LineUser.UserProfile.UserID]
-		
+
 		if currentPlayer.bets <= 0 {
 			// 下注
 			re := regexp.MustCompile(`^\+(\d+)`)
@@ -109,7 +112,7 @@ func (p *gameType) Run(input string) []string {
 			//text += fmt.Sprintf("\n目前獎池：%s%d(%+d)", emoji.Emoji(":money_bag:"), p.pot, bets)
 			text += fmt.Sprintf("\n%s", convCard(currentPlayer.ball))
 			texts = append(texts, text)
-			
+
 		} else {
 			text = fmt.Sprintf("%s %s", currentPlayer.DisplayName, convCard(currentPlayer.ball))
 			texts = append(texts, text)
@@ -121,6 +124,9 @@ func (p *gameType) Run(input string) []string {
 // 指令
 func (p *gameType) checkCommand(input string) {
 	switch input {
+	case "start":
+		p.start()
+		p.showPot()
 	case "reset":
 		p.createDeck()
 		Shuffle(p.deck)
@@ -151,7 +157,7 @@ func (p *gameType) dealGate() {
 	p.gate2 = p.deal()
 	str := fmt.Sprintf("%s %s %s", convCard(p.gate1), emoji.Emoji(":goal_net:"), convCard(p.gate2))
 	if len(p.players) > 0 {
-		for _,v := range p.players {
+		for _, v := range p.players {
 			if v.bets > 0 {
 				str += p.hit(v)
 			}
@@ -190,10 +196,10 @@ func (p *gameType) hit(currentPlayer *playerType) string {
 	return str
 }
 
-func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
+func (p *gameType) endGame(currentPlayer *playerType, bets int) {
 	world.World.Pot = p.pot
 	world.World.SaveWorldData()
-	
+
 	// 清理桌面
 	p.discardPile = append(p.discardPile, currentPlayer.ball)
 	p.discardPile = append(p.discardPile, p.gate1)
