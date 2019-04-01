@@ -106,7 +106,7 @@ func (p *gameType) Run(input string) []string {
 					bets = helper.Max(bets, bet)
 				}
 			}
-			bets = helper.Min(helper.Max(1, bets), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			bets = helper.Max(1, helper.Min(bets, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot)))
 			currentPlayer.bets += bets
 			p.pot += bets
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money -= bets
@@ -127,7 +127,7 @@ func (p *gameType) Run(input string) []string {
 					bets = helper.Max(bets, bet)
 				}
 			}
-			bets = helper.Min(helper.Max(1, bets), helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot))
+			bets = helper.Max(1, helper.Min(bets, helper.Min(users.UsersList.Data[users.LineUser.UserProfile.UserID].Money, p.pot)))
 			currentPlayer.bets += bets
 			p.pot += bets
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money -= bets
