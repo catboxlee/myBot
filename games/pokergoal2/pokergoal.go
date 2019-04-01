@@ -60,7 +60,7 @@ func init() {
 	Pokergoal.players = make(map[string]*playerType)
 	Pokergoal.antes = 1
 	log.Println("pokergoal init")
-	Pokergoal.pot = world.World.Pot2
+	Pokergoal.pot = world.World.Pot
 	//Shuffle(p.deck)
 }
 
@@ -191,7 +191,7 @@ func (p *gameType) hit(currentPlayer *playerType) string {
 }
 
 func (p *gameType) endGame(currentPlayer *playerType, bets int) (){
-	world.World.Pot2 = p.pot
+	world.World.Pot = p.pot
 	world.World.SaveWorldData()
 	
 	// 清理桌面
