@@ -66,5 +66,5 @@ func setBank(s string) []string{
 			}
 		}
 	}
-	return []string{fmt.Sprintf("%s 銀行\n%s%d[1]借款\n[2]還款", emoji.Emoji(":bank:"),emoji.Emoji(":money_bag:"),world.World.Bank)}
+	return []string{fmt.Sprintf("%s 銀行\n%s%d\n[1]借款\n[2]還款", emoji.Emoji(":bank:"),emoji.Emoji(":money_bag:"),world.World.Bank)}
 }
