@@ -52,6 +52,7 @@ func (w *WorldType) SaveWorldData() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	stmt.Close()
 }
 
 func checkError(err error) {
