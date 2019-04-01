@@ -97,18 +97,18 @@ func (p *gameType) Run(input string) []string {
 		currentPlayer := p.players[users.LineUser.UserProfile.UserID]
 
 		// 下注
-		re := regexp.MustCompile(`^\+(\d+)`)
-		matches := re.FindStringSubmatch(input)
-		bets := 1
-		if len(matches) > 1 {
-			if bet, err := strconv.Atoi(matches[1]); err == nil {
-				bets = helper.Max(bets, bet)
-			}
-		}
-		currentPlayer.bets += bets
-		p.pot += bets
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].Money -= bets
 		if currentPlayer.bets <= 0 {
+			re := regexp.MustCompile(`^\+(\d+)`)
+			matches := re.FindStringSubmatch(input)
+			bets := 1
+			if len(matches) > 1 {
+				if bet, err := strconv.Atoi(matches[1]); err == nil {
+					bets = helper.Max(bets, bet)
+				}
+			}
+			currentPlayer.bets += bets
+			p.pot += bets
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money -= bets
 			//users.LineUser.SaveUserData()
 			// 拿牌
 			currentPlayer.ball = p.deal()
@@ -118,6 +118,17 @@ func (p *gameType) Run(input string) []string {
 			texts = append(texts, text)
 
 		} else {
+			re := regexp.MustCompile(`^\+(\d+)`)
+			matches := re.FindStringSubmatch(input)
+			bets := 1
+			if len(matches) > 1 {
+				if bet, err := strconv.Atoi(matches[1]); err == nil {
+					bets = helper.Max(bets, bet)
+				}
+			}
+			currentPlayer.bets += bets
+			p.pot += bets
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].Money -= bets
 			text = fmt.Sprintf("%s 加注：%s%d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":money_bag:"), bets)
 			text += fmt.Sprintf("\n%s", convCard(currentPlayer.ball))
 			texts = append(texts, text)
