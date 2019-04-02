@@ -163,7 +163,7 @@ func (d *DicepkType) endTurn() string {
 			case d.players[0].HP == d.players[1].HP:
 				users.UsersList.Data[d.players[0].UserID].Money -= d.bets
 				users.UsersList.Data[d.players[1].UserID].Money -= d.bets
-				text += fmt.Sprintf("\n同歸餘盡\n%s %d(%+d)%s(%+d)%d %s",
+				text += fmt.Sprintf("\n同歸於盡\n%s %d(%+d)%s(%+d)%d %s",
 					d.players[0].DisplayName,
 					users.UsersList.Data[d.players[0].UserID].Money,
 					-(d.bets),
