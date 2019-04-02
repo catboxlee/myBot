@@ -5,6 +5,7 @@ import (
 	"log"
 	"myBot/emoji"
 	"myBot/mydb"
+	"myBot/users"
 	"myBot/world"
 	"regexp"
 	"strconv"
@@ -76,7 +77,7 @@ func setBank(s string) []string {
 func bonusDay(s string) []string {
 
 	if n, err := strconv.Atoi(s); err == nil {
-		stmt, err := mydb.Db.Prepare("update users set money = users.money + $1")
+		stmt, err := mydb.Db.Prepare("update users set money = $1 where money < $1")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -85,6 +86,12 @@ func bonusDay(s string) []string {
 			log.Fatal(err)
 		}
 		stmt.Close()
+
+		for i := range users.UsersList.Data {
+			if users.UsersList.Data[i].Money < n {
+				users.UsersList.Data[i].Money = n
+			}
+		}
 		return []string{"ok"}
 	}
 	return []string{"Input Error"}
