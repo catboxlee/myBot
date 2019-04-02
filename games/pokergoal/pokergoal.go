@@ -152,6 +152,8 @@ func (p *gameType) checkCommand(input string) {
 		Shuffle(p.deck)
 	case "pot":
 		p.showPot()
+	case "showallcard":
+		p.showAllCard()
 	}
 }
 

@@ -53,9 +53,13 @@ func changeGame(s string) []string {
 			world.World.Game = n
 			world.World.SaveWorldData()
 			return []string{"切換遊戲：[3]射龍門祥師版"}
+		case 4:
+			world.World.Game = n
+			world.World.SaveWorldData()
+			return []string{"切換遊戲：[4]骰子PK測試版"}
 		}
 	}
-	return []string{"[1]終極密碼\n[2]射龍門\n[3]射龍門祥師版"}
+	return []string{"[1]終極密碼\n[2]射龍門\n[3]射龍門祥師版\n[4]骰子PK測試版"}
 }
 func setBank(s string) []string {
 	re := regexp.MustCompile(`(^\w+)\s?(.*)`)

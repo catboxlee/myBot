@@ -16,19 +16,20 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	
-	"myBot/mydb"
-	"myBot/world"
-	"myBot/users"
+
 	"myBot/common"
-	
+	"myBot/mydb"
+	"myBot/users"
+	"myBot/world"
+
+	"myBot/boomgame1"
+	"myBot/games/dicepk"
+	"myBot/games/pokergoal"
+	"myBot/games/pokergoal2"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-	"myBot/games/pokergoal2"
-	"myBot/games/pokergoal"
-	"myBot/boomgame1"
 
 	"github.com/line/line-bot-sdk-go/linebot"
 )
@@ -88,6 +89,11 @@ func doLinebotEvents(events []*linebot.Event) {
 						texts = pokergoal.Pokergoal.Run(input)
 					case 3:
 						texts = pokergoal2.Pokergoal.Run(input)
+					case 4:
+						if _, exist := dicepk.DicePK["group1"]; !exist {
+							dicepk.DicePK["group1"] = &dicepk.DicepkType{}
+						}
+						texts = dicepk.DicePK["group1"].Run(input)
 					default:
 					}
 				}
