@@ -86,12 +86,7 @@ func bonusDay(s string) []string {
 			log.Fatal(err)
 		}
 		stmt.Close()
-
-		for i := range users.UsersList.Data {
-			if users.UsersList.Data[i].Money < n {
-				users.UsersList.Data[i].Money = n
-			}
-		}
+		users.UsersList.LoadUsersData()
 		return []string{"ok"}
 	}
 	return []string{"Input Error"}
