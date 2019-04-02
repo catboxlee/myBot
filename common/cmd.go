@@ -1,12 +1,14 @@
 package common
 
 import (
-	"regexp"
-	"strings"
-	"strconv"
+	"MyLine/mydb"
 	"fmt"
-	"myBot/world"
+	"log"
 	"myBot/emoji"
+	"myBot/world"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // Cmd ...
@@ -22,10 +24,12 @@ func Cmd(input string) []string {
 
 		if len(matches) > 1 {
 			switch matches[1] {
-				case "game":
-					texts = changeGame(matches[2])
-				case "bank":
-					texts = setBank(matches[2])
+			case "game":
+				texts = changeGame(matches[2])
+			case "bank":
+				texts = setBank(matches[2])
+			case "bonusday":
+				texts = bonusDay(matches[2])
 			}
 		}
 		return texts
@@ -33,7 +37,7 @@ func Cmd(input string) []string {
 	return texts
 }
 
-func changeGame(s string) []string{
+func changeGame(s string) []string {
 	if n, err := strconv.Atoi(s); err == nil {
 		switch n {
 		case 1:
@@ -52,7 +56,7 @@ func changeGame(s string) []string{
 	}
 	return []string{"[1]終極密碼\n[2]射龍門\n[3]射龍門祥師版"}
 }
-func setBank(s string) []string{
+func setBank(s string) []string {
 	re := regexp.MustCompile(`(^\w+)\s?(.*)`)
 	matches := re.FindStringSubmatch(s)
 	if len(matches) > 1 {
@@ -66,5 +70,22 @@ func setBank(s string) []string{
 			}
 		}
 	}
-	return []string{fmt.Sprintf("%s 銀行\n%s%d\n[1]借款\n[2]還款", emoji.Emoji(":bank:"),emoji.Emoji(":money_bag:"),world.World.Bank)}
+	return []string{fmt.Sprintf("%s 銀行\n%s%d\n[1]借款\n[2]還款", emoji.Emoji(":bank:"), emoji.Emoji(":money_bag:"), world.World.Bank)}
+}
+
+func bonusDay(s string) []string {
+
+	if n, err := strconv.Atoi(s); err == nil {
+		stmt, err := mydb.Db.Prepare("update users set money = users.money + $1")
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = stmt.Exec(n)
+		if err != nil {
+			log.Fatal(err)
+		}
+		stmt.Close()
+		return []string{"ok"}
+	}
+	return []string{"Input Error"}
 }
