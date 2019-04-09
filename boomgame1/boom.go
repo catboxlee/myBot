@@ -129,8 +129,16 @@ func (b *GameType) addUserBoom() {
 }
 
 func (b *GameType) checkBoomKing() {
-	if b.data.rank[users.LineUser.UserProfile.UserID].Boom >= 100 {
-		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.data.season, b.data.rank[users.LineUser.UserProfile.UserID].DisplayName, emoji.Emoji(":confetti_ball:")))
+	var text string
+	boomKing := false
+	for _, v := range b.data.rank {
+		if v.Boom >= 100 {
+			boomKing = true
+			text += fmt.Sprintf("\n%s %sx%d", v.DisplayName, emoji.Emoji(":boom:"), v.Boom)
+		}
+	}
+	if boomKing {
+		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王 %s%s", emoji.Emoji(":confetti_ball:"), b.data.season, emoji.Emoji(":confetti_ball:"), text))
 		b.data.season++
 		b.resetRank()
 	}
