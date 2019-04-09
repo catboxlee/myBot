@@ -1,10 +1,10 @@
 package boomgame1
 
 import (
+	"fmt"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/users"
-	"fmt"
 	"strings"
 )
 
@@ -18,7 +18,6 @@ func (b *GameType) scene(phase string) {
 }
 
 func (b *GameType) scene0(phase string) {
-	b.bombEmoji = emoji.Emoji(":bomb:")
 	switch phase {
 	case "start":
 	case "show":
@@ -38,7 +37,6 @@ func (b *GameType) scene0(phase string) {
 }
 
 func (b *GameType) scene1(phase string) {
-	b.bombEmoji = emoji.Emoji(":closed_umbrella:")
 	switch phase {
 	case "start":
 		texts = append(texts, fmt.Sprintf("%s%s%s 你在3萬5千英呎的高空上，一顆隱藏的炸彈即將引爆，找到唯一的降落傘。", emoji.Emoji(":balloon:"), emoji.Emoji(":house:"), emoji.Emoji(":balloon:")))
@@ -46,7 +44,11 @@ func (b *GameType) scene1(phase string) {
 		if b.current == b.data.hit {
 			var str []string
 			for _, u := range b.data.players {
-				str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), b.data.hit))
+				if u.UserID == users.LineUser.UserProfile.UserID {
+					str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), b.data.hit))
+				} else {
+					str = append(str, fmt.Sprintf("%s %s", u.DisplayName, emoji.Emoji(":boom:")))
+				}
 			}
 			strings.Join(str, "\n")
 			texts = append(texts, strings.Join(str, "\n"))

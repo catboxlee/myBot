@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"myBot/dice"
 	"myBot/emoji"
-	"myBot/helper"
 	"myBot/mydb"
 	"myBot/users"
 	"sort"
