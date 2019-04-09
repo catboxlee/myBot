@@ -9,7 +9,7 @@ import (
 
 // DiceType type
 type diceType struct {
-	N     int
+	Hit   int
 	Rolls []int
 }
 
@@ -19,7 +19,7 @@ var Dice diceType
 // Roll dice
 func (d *diceType) Roll(s string) {
 	rand.Seed(time.Now().UnixNano())
-	d.N = 0
+	d.Hit = 0
 	d.Rolls = nil
 
 	re := regexp.MustCompile(`(\d*)d(\d*)\+?(\d*)`)
@@ -31,9 +31,9 @@ func (d *diceType) Roll(s string) {
 
 	for i := 0; i < nbr; i++ {
 		d.Rolls = append(d.Rolls, rand.Intn(sided)+1)
-		d.N += d.Rolls[i]
+		d.Hit += d.Rolls[i]
 	}
 
-	d.N += modifiers
+	d.Hit += modifiers
 
 }

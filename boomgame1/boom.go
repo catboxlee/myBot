@@ -2,53 +2,48 @@ package boomgame1
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/mydb"
 	"myBot/users"
+	"sort"
+
+	"fmt"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-type gameType struct {
-	hit      int
-	current  int
-	min      int
-	max      int
-	season   int
-	sourceID string
-	//rank     rankType
+// GameType ...
+type GameType struct {
+	current int
+	data    *gameDataType
+}
+
+type gameDataType struct {
+	sourceid string `db:"sourceid"`
+	hit      int    `db:"hit"`
+	min      int    `db:"min"`
+	max      int    `db:"max"`
+	season   int    `db:"season"`
+	rank     map[string]*rankType
 }
 
 type rankType struct {
-	UserID      string `json:"userID"`
-	DisplayName string `json:"displayName"`
+	UserID      string `json:"userid"`
+	DisplayName string `json:"displayname"`
 	Boom        int    `json:"boom"`
 }
 
 // Boom ...
-var Boom gameType
+var Boom = make(map[string]*GameType)
 var texts []string
 
-func checkError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 // Run ...
-func (b *gameType) Run(input string) []string {
-	if b.hit == 0 {
-		b.reset()
-		//fmt.Println(Boom.hit)
-	}
-	if b.season == 0 {
-		b.getInfo()
-		//fmt.Println(Boom)
-	}
+func (b *GameType) Run(input string) []string {
 	texts = nil
 
 	if strings.HasPrefix(input, "/") {
@@ -70,127 +65,172 @@ func (b *gameType) Run(input string) []string {
 	return texts
 }
 
-func (b *gameType) checkCommand(input string) {
+func (b *GameType) checkCommand(input string) {
 	switch input {
 	case "reset":
 		b.reset()
 		b.show()
+		b.data.updateData()
 	case "rank":
 		b.rank()
 		b.show()
 	case "resetRank":
 		b.resetRank()
-		b.show()
+		//rank.saveRank()
+		b.data.updateData()
 	}
 }
 
-func (b *gameType) getInfo() {
-	row := mydb.Db.QueryRow("select season from boom_info limit 1")
-	var season int
-	switch err := row.Scan(&season); err {
-	case sql.ErrNoRows:
-		//fmt.Println("No rows were returned")
-	case nil:
-		b.season = season
-	default:
-		checkError(err)
-	}
-}
-
-func (b *gameType) checkBoom(x int) {
-	if x > b.min && x < b.max {
+func (b *GameType) checkBoom(x int) {
+	if x > b.data.min && x < b.data.max {
 		b.current = x
 		switch {
-		case b.current == b.hit:
+		case b.current == b.data.hit:
 			b.show()
 			b.addUserBoom()
 			b.rank()
 			b.checkBoomKing()
 			b.reset()
 			b.show()
-		case b.current < b.hit:
-			b.min = b.current
+		case b.current < b.data.hit:
+			b.data.min = b.current
 			b.show()
-		case b.current > b.hit:
-			b.max = b.current
+		case b.current > b.data.hit:
+			b.data.max = b.current
 			b.show()
 		}
+		b.data.updateData()
 	}
 }
 
-func (b *gameType) reset() {
-	hit := &dice.Dice
-	hit.Roll("1d100")
-	b.hit = hit.N
+func (b *GameType) reset() {
+	boomNumber := &dice.Dice
+	boomNumber.Roll("1d100")
+	b.data.hit = boomNumber.Hit
 	b.current = 0
-	b.min = 0
-	b.max = 101
+	b.data.min = 0
+	b.data.max = 101
 }
 
-func (b *gameType) show() {
-	if b.current == b.hit {
-		texts = append(texts, fmt.Sprintf("%s %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.hit))
+func (b *GameType) show() {
+	if b.current == b.data.hit {
+		texts = append(texts, fmt.Sprintf("%s %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.data.hit))
 	} else {
-		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.min), emoji.Emoji(":bomb:"), helper.Min(100, b.max)))
+		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.data.min), emoji.Emoji(":bomb:"), helper.Min(100, b.data.max)))
 	}
 }
 
-func (b *gameType) addUserBoom() {
-
-	if _, err := mydb.Db.Exec(`insert into boom_rank(userid, displayname, boom) values($1, $2, 1)
-						on conflict(userid)
-						do update set displayname = $2, boom = boom_rank.boom + 1`,
-		users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName); err != nil {
-		panic(err)
+func (b *GameType) addUserBoom() {
+	if _, exist := b.data.rank[users.LineUser.UserProfile.UserID]; exist {
+		b.data.rank[users.LineUser.UserProfile.UserID].Boom++
+	} else {
+		b.data.rank[users.LineUser.UserProfile.UserID] = &rankType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, Boom: 1}
 	}
 }
 
-func (b *gameType) checkBoomKing() {
-	var r rankType
-	row := mydb.Db.QueryRow("select userid, displayname, boom from boom_rank where boom >= 100 limit 1")
-	switch err := row.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
+func (b *GameType) checkBoomKing() {
+	if b.data.rank[users.LineUser.UserProfile.UserID].Boom >= 100 {
+		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.data.season, b.data.rank["userid1"].DisplayName, emoji.Emoji(":confetti_ball:")))
+		b.data.season++
+		b.resetRank()
+	}
+}
+
+func (b *GameType) rank() {
+	text := fmt.Sprintf("爆爆王 S%d Rank：", b.data.season)
+	values := make([]*rankType, 0, len(b.data.rank))
+	for _, v := range b.data.rank {
+		values = append(values, v)
+	}
+	sort.SliceStable(values, func(i, j int) bool {
+		return values[i].Boom > values[j].Boom
+	})
+	for _, v := range values {
+		text += fmt.Sprintf("\n%s %s x %d", v.DisplayName, emoji.Emoji(":boom:"), v.Boom)
+		texts = append(texts, text)
+	}
+}
+
+func (b *GameType) resetRank() {
+	b.data.rank = make(map[string]*rankType)
+}
+
+// CheckExistData ...
+func CheckExistData(SourceID string) {
+	if _, exist := Boom[SourceID]; !exist {
+		loadData(SourceID)
+	}
+}
+
+func loadData(SourceID string) {
+	row := mydb.Db.QueryRow("SELECT sourceid, hit, min, max, season, rank FROM boom_game where sourceid = $1 limit 1", SourceID)
+	var data gameDataType
+	var rank json.RawMessage
+	switch err := row.Scan(&data.sourceid, &data.hit, &data.min, &data.max, &data.season, &rank); err {
 	case sql.ErrNoRows:
-		//fmt.Println("No rows were returned")
+		log.Println("No rows were returned")
+		Boom[SourceID] = &GameType{}
+		Boom[SourceID].data = &gameDataType{}
+		Boom[SourceID].data.sourceid = SourceID
+		Boom[SourceID].data.rank = make(map[string]*rankType)
+		Boom[SourceID].reset()
+		Boom[SourceID].data.addData()
 	case nil:
-		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.season, r.DisplayName, emoji.Emoji(":confetti_ball:")))
-
-		if _, err := mydb.Db.Exec(`truncate table boom_rank`); err != nil {
-			panic(err)
-		}
-		b.season++
-		//mydb.Db.QueryRow("update boom_info set season = $1", b.season)
-		if _, err := mydb.Db.Exec(`update boom_info set season = $1`, b.season); err != nil {
-			panic(err)
-		}
-
+		Boom[SourceID] = &GameType{}
+		Boom[SourceID].data = &gameDataType{}
+		Boom[SourceID].data.sourceid = data.sourceid
+		Boom[SourceID].data.hit = data.hit
+		Boom[SourceID].data.min = data.min
+		Boom[SourceID].data.max = data.max
+		Boom[SourceID].data.season = data.season
+		Boom[SourceID].data.rank = make(map[string]*rankType)
+		json.Unmarshal(rank, &Boom[SourceID].data.rank)
+		log.Println("Boom data load.", Boom[SourceID].data)
+		//Boom[SourceID].data.updateData()
 	default:
 		checkError(err)
 	}
 }
 
-func (b *gameType) rank() {
-
-	text := fmt.Sprintf("爆爆王 S%d Rank：", Boom.season)
-	rows, err := mydb.Db.Query("SELECT userid, displayname, boom FROM boom_rank order by boom desc")
-	checkError(err)
-	defer rows.Close()
-	for rows.Next() {
-		var r rankType
-		switch err := rows.Scan(&r.UserID, &r.DisplayName, &r.Boom); err {
-		case sql.ErrNoRows:
-			//fmt.Println("No rows were returned")
-		case nil:
-			text += fmt.Sprintf("\n%s %s x %d", r.DisplayName, emoji.Emoji(":boom:"), r.Boom)
-		default:
-			checkError(err)
-		}
+func (b *gameDataType) addData() {
+	stmt, err := mydb.Db.Prepare("insert into boom_game (sourceid, hit, min, max, season, rank) values ($1, $2, $3, $4, $5, $6)")
+	if err != nil {
+		log.Fatal(err)
 	}
-	texts = append(texts, text)
+	rank, err := json.Marshal(b.rank)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = stmt.Exec(b.sourceid, b.hit, b.min, b.max, b.season, rank)
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt.Close()
+	log.Println("Boom Data Create...")
 }
 
-func (b *gameType) resetRank() {
-	//mydb.Db.QueryRow("truncate table boom_rank")
-	if _, err := mydb.Db.Exec(`truncate table boom_rank`); err != nil {
+func (b *gameDataType) updateData() {
+	stmt, err := mydb.Db.Prepare("update boom_game set hit = $2, min = $3, max = $4, season = $5, rank = $6 where sourceid = $1")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//b.rank[users.LineUser.UserProfile.UserID] = &rankType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, Boom: 1}
+
+	rank, err := json.Marshal(b.rank)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = stmt.Exec(b.sourceid, b.hit, b.min, b.max, b.season, rank)
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt.Close()
+	log.Println("Boom Data Update...")
+}
+
+func checkError(err error) {
+	if err != nil {
 		panic(err)
 	}
 }

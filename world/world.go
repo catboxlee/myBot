@@ -6,49 +6,65 @@ import (
 	"myBot/mydb"
 )
 
-// WorldType ...
-type WorldType struct {
-	Game int
-	Bank int
-	Pot  int
-	Pot2 int
+// CfgType ...
+type CfgType struct {
+	SourceID string
+	Game     int
 }
 
-// World ...
-var World WorldType
+// ConfigsData ...
+var ConfigsData = make(map[string]*CfgType)
 
 func init() {
-	World.loadWorldData()
+
 }
 
-func (w *WorldType) loadWorldData() {
+// LoadConfigData ...
+func LoadConfigData(sourceid string) {
+	if _, exist := ConfigsData[sourceid]; exist {
+		return
+	}
+	rows, err := mydb.Db.Query("SELECT sourceid, game FROM base_config where sourceid = $1 limit 1", sourceid)
+	checkError(err)
+	defer rows.Close()
 
-	row := mydb.Db.QueryRow("SELECT game, bank, pot, pot2 FROM world_info limit 1")
-	// defer row.Close()
-	var data WorldType
-	switch err := row.Scan(&data.Game, &data.Bank, &data.Pot, &data.Pot2); err {
-	case sql.ErrNoRows:
-		log.Println("world - No rows were returned")
-	case nil:
-		w.Game = data.Game
-		w.Bank = data.Bank
-		w.Pot = data.Pot
-		w.Pot2 = data.Pot2
-		log.Println("World data load.")
-		//log.Println(w.Game)
-	default:
-		checkError(err)
+	for rows.Next() {
+		var data CfgType
+		switch err := rows.Scan(&data.SourceID, &data.Game); err {
+		case sql.ErrNoRows:
+			log.Println("No rows were returned")
+		case nil:
+			ConfigsData[data.SourceID] = &data
+			log.Println("Config data load.", ConfigsData[data.SourceID])
+		default:
+			checkError(err)
+		}
+	}
+	if _, exist := ConfigsData[sourceid]; !exist {
+		ConfigsData[sourceid] = &CfgType{sourceid, 1}
+		ConfigsData[sourceid].addNewConfigData()
 	}
 }
 
-func (w *WorldType) SaveWorldData() {
-	log.Println("save world data")
-	//mydb.Db.QueryRow("update world_info set game = $1, bank = $2, pot = $3, pot2 = $4", w.Game, w.Bank, w.Pot, w.Pot2)
-	stmt, err := mydb.Db.Prepare("update world_info set game = $1, bank = $2, pot = $3, pot2 = $4")
+func (c *CfgType) addNewConfigData() {
+	stmt, err := mydb.Db.Prepare("insert into base_config (sourceid, game) values ($1, $2)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(w.Game, w.Bank, w.Pot, w.Pot2)
+	_, err = stmt.Exec(c.SourceID, c.Game)
+	if err != nil {
+		log.Fatal(err)
+	}
+	stmt.Close()
+}
+
+// UpdateConfigData ...
+func (c *CfgType) UpdateConfigData() {
+	stmt, err := mydb.Db.Prepare("update base_config set game = $1 where sourceid = $2")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = stmt.Exec(c.Game, c.SourceID)
 	if err != nil {
 		log.Fatal(err)
 	}

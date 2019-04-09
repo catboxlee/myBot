@@ -23,9 +23,6 @@ import (
 	"myBot/world"
 
 	"myBot/boomgame1"
-	"myBot/games/dicepk"
-	"myBot/games/pokergoal"
-	"myBot/games/pokergoal2"
 	"net/http"
 	"os"
 	"strings"
@@ -78,22 +75,16 @@ func doLinebotEvents(events []*linebot.Event) {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				users.LineUser.GetSenderInfo(event, bot)
+				sourceID := GetSenderID(event)
+				world.LoadConfigData(sourceID)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
-				texts = common.Cmd(input)
+				texts = common.Cmd(sourceID, input)
 				if len(texts) == 0 {
-					switch world.World.Game {
+					switch world.ConfigsData[sourceID].Game {
 					case 1:
-						texts = boomgame1.Boom.Run(input)
-					case 2:
-						texts = pokergoal.Pokergoal.Run(input)
-					case 3:
-						texts = pokergoal2.Pokergoal.Run(input)
-					case 4:
-						if _, exist := dicepk.DicePK["group1"]; !exist {
-							dicepk.DicePK["group1"] = &dicepk.DicepkType{}
-						}
-						texts = dicepk.DicePK["group1"].Run(input)
+						boomgame1.CheckExistData(sourceID)
+						texts = boomgame1.Boom[sourceID].Run(input)
 					default:
 					}
 				}
