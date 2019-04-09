@@ -130,7 +130,7 @@ func (b *GameType) addUserBoom() {
 
 func (b *GameType) checkBoomKing() {
 	if b.data.rank[users.LineUser.UserProfile.UserID].Boom >= 100 {
-		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.data.season, b.data.rank["userid1"].DisplayName, emoji.Emoji(":confetti_ball:")))
+		texts = append(texts, fmt.Sprintf("%s S%d 爆爆王：%s %s", emoji.Emoji(":confetti_ball:"), b.data.season, b.data.rank[users.LineUser.UserProfile.UserID].DisplayName, emoji.Emoji(":confetti_ball:")))
 		b.data.season++
 		b.resetRank()
 	}
@@ -147,8 +147,8 @@ func (b *GameType) rank() {
 	})
 	for _, v := range values {
 		text += fmt.Sprintf("\n%s %s x %d", v.DisplayName, emoji.Emoji(":boom:"), v.Boom)
-		texts = append(texts, text)
 	}
+	texts = append(texts, text)
 }
 
 func (b *GameType) resetRank() {
