@@ -29,13 +29,20 @@ type gameDataType struct {
 	min      int    `db:"min"`
 	max      int    `db:"max"`
 	season   int    `db:"season"`
+	scene    int    `db:"scene"`
 	rank     map[string]*rankType
+	players  map[string]*playerType
 }
 
 type rankType struct {
 	UserID      string `json:"userid"`
 	DisplayName string `json:"displayname"`
 	Boom        int    `json:"boom"`
+}
+
+type playerType struct {
+	UserID      string `json:"userid"`
+	DisplayName string `json:"displayname"`
 }
 
 // Boom ...
@@ -78,6 +85,13 @@ func (b *GameType) checkCommand(input string) {
 		b.resetRank()
 		//rank.saveRank()
 		b.data.updateData()
+	case "boom":
+		texts = append(texts, fmt.Sprintf("%s %s自爆", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":bomb:")))
+		b.gameOver()
+		b.rank()
+		b.checkBoomKing()
+		b.reset()
+		b.show()
 	}
 }
 
@@ -87,7 +101,7 @@ func (b *GameType) checkBoom(x int) {
 		switch {
 		case b.current == b.data.hit:
 			b.show()
-			b.addUserBoom()
+			b.gameOver()
 			b.rank()
 			b.checkBoomKing()
 			b.reset()
@@ -110,22 +124,16 @@ func (b *GameType) reset() {
 	b.current = 0
 	b.data.min = 0
 	b.data.max = 101
+	b.data.scene = 0
+	b.scene("start")
 }
 
 func (b *GameType) show() {
-	if b.current == b.data.hit {
-		texts = append(texts, fmt.Sprintf("%s %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), b.data.hit))
-	} else {
-		texts = append(texts, fmt.Sprintf("%d - %s - %d", helper.Max(1, b.data.min), emoji.Emoji(":bomb:"), helper.Min(100, b.data.max)))
-	}
+	b.scene("show")
 }
 
-func (b *GameType) addUserBoom() {
-	if _, exist := b.data.rank[users.LineUser.UserProfile.UserID]; exist {
-		b.data.rank[users.LineUser.UserProfile.UserID].Boom++
-	} else {
-		b.data.rank[users.LineUser.UserProfile.UserID] = &rankType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, Boom: 1}
-	}
+func (b *GameType) gameOver() {
+	b.scene("end")
 }
 
 func (b *GameType) checkBoomKing() {
