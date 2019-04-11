@@ -1,10 +1,10 @@
 package boomgame
 
 import (
-	"MyLine/dice"
-	"MyLine/emoji"
-	"MyLine/helper"
-	"MyLine/users"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/helper"
+	"myBot/users"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -16,6 +16,8 @@ type scene0InfoType struct {
 
 func (g *GameType) setSceneInfo() {
 	switch g.scene {
+	case 3:
+		g.data.sceneInfo = &scene3InfoType{}
 	case 2:
 		g.data.sceneInfo = &scene2InfoType{}
 	default:

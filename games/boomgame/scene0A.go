@@ -1,10 +1,10 @@
 package boomgame
 
 import (
-	"MyLine/dice"
-	"MyLine/emoji"
-	"MyLine/helper"
-	"MyLine/users"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/helper"
+	"myBot/users"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -16,10 +16,6 @@ type scene0AInfoType struct {
 }
 
 func (b *scene0AInfoType) startPhase(g *GameType) {
-	var p []string
-	for _, v := range g.data.players.Queue {
-		p = append(p, v.DisplayName)
-	}
 	texts = append(texts,
 		fmt.Sprintf("[%s炸彈狂魔 %s]\n阻止他獲得炸彈!\n%s",
 			g.data.players.List[b.Info["Betrayal"].(string)].UserID,

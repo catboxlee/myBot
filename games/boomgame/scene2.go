@@ -1,10 +1,10 @@
 package boomgame
 
 import (
-	"MyLine/dice"
-	"MyLine/emoji"
-	"MyLine/helper"
-	"MyLine/users"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/helper"
+	"myBot/users"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -21,7 +21,7 @@ func (b *scene2InfoType) startPhase(g *GameType) {
 		p = append(p, v.DisplayName)
 	}
 	texts = append(texts,
-		fmt.Sprintf("[%s%s%s天外奇蹟]\n%s\n你們在3萬5千英呎的高空上，房子即將墜落，幸運的是這裡還藏有一件降落傘...\n%s",
+		fmt.Sprintf("[%s%s%s天外奇蹟]\n你們在3萬5千英呎的高空上，房子即將墜落，幸運的是這裡還藏有一件降落傘...\n%s\n%s",
 			emoji.Emoji(":balloon:"),
 			emoji.Emoji(":house:"),
 			emoji.Emoji(":balloon:"),

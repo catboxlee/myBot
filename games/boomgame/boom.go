@@ -1,10 +1,10 @@
 package boomgame
 
 import (
-	"MyLine/dice"
-	"MyLine/emoji"
-	"MyLine/mydb"
-	"MyLine/users"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/mydb"
+	"myBot/users"
 	"database/sql"
 	"encoding/json"
 	"fmt"
