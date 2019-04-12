@@ -44,10 +44,7 @@ var (
 var diceFace = [6]diceFaces{DAMAGE, BOOM, FOOTPRINTS, FOOTPRINTS, BOOM, DAMAGE}
 
 func (b *scene4InfoType) startPhase(g *GameType) {
-	var p []string
-	for _, v := range g.data.players.Queue {
-		p = append(p, g.data.players.List[v].DisplayName)
-	}
+	
 	texts = append(texts,
 		fmt.Sprintf("[%s屍速列車%s]\n逃往第%d節車廂...[+]擲骰 [-]結束回合",
 			emoji.Emoji(":bullet_train:"),
