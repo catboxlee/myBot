@@ -104,7 +104,6 @@ func (b *GameType) reset() {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d6")
 	b.scene = boomDice.Hit
-	b.scene = 3
 	b.setSceneInfo()
 	b.data.sceneInfo.reset()
 }
