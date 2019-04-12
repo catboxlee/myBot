@@ -145,16 +145,36 @@ func (b *scene4InfoType) show(g *GameType) string {
 	var str []string
 	for _, v := range g.data.players.Queue {
 		if b.Players[v.UserID].Footprints >= b.TargetPoint {
-			str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":smiling_face_with_smiling_eyes:"), b.Players[v.UserID].Footprints))
+			str = append(str, fmt.Sprintf("<%s%d>%s %s %d",
+					emoji.Emoji(":hourglass_not_done:"),
+					b.Players[v.UserID].Turn,
+					b.Players[v.UserID].DisplayName, 
+					emoji.Emoji(":smiling_face_with_smiling_eyes:"), 
+					b.Players[v.UserID].Footprints))
 		} else {
 			if b.Last > 0 {
 				if b.Players[v.UserID].Turn < b.Last {
-					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":zombie:"), b.Players[v.UserID].Footprints))
+					str = append(str, fmt.Sprintf("<%s%d>%s %s %d", 
+							emoji.Emoji(":hourglass_not_done:"),
+							b.Players[v.UserID].Turn, 
+							b.Players[v.UserID].DisplayName, 
+							emoji.Emoji(":zombie:"), 
+							b.Players[v.UserID].Footprints))
 				} else {
-					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":face_screaming_in_fear:"), b.Players[v.UserID].Footprints))
+					str = append(str, fmt.Sprintf("<%s%d>%s %s %d",
+							emoji.Emoji(":hourglass_not_done:"),
+							b.Players[v.UserID].Turn,
+							b.Players[v.UserID].DisplayName, 
+							emoji.Emoji(":face_screaming_in_fear:"), 
+							b.Players[v.UserID].Footprints))
 				}
 			} else {
-				str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, FOOTPRINTS.emoji, b.Players[v.UserID].Footprints))
+				str = append(str, fmt.Sprintf("<%s%d>%s %s %d", 
+						emoji.Emoji(":hourglass_not_done:"),
+						b.Players[v.UserID].Turn,
+						b.Players[v.UserID].DisplayName, 
+						FOOTPRINTS.emoji, 
+						b.Players[v.UserID].Footprints))
 			}
 		}
 	}
@@ -188,7 +208,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 			}
 		}
 	}
-
+	g.showRank()
 	g.checkRank()
 	g.reset()
 	g.startPhase()
