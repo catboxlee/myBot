@@ -1,9 +1,9 @@
 package boomgame
 
 import (
-	"MyLine/dice"
-	"MyLine/emoji"
-	"MyLine/users"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/users"
 	"fmt"
 	"log"
 	"strings"
@@ -36,9 +36,9 @@ type diceFaces struct {
 
 // ...
 var (
-	DAMAGE     = diceFaces{emoji.Emoji(":crossed_swords:"), "damage"}
+	DAMAGE     = diceFaces{emoji.Emoji(":dizzy_face:"), "damage"}
 	FOOTPRINTS = diceFaces{emoji.Emoji(":footprints:"), "footprints"}
-	BOOM       = diceFaces{emoji.Emoji(":boom:"), "boom"}
+	BOOM       = diceFaces{emoji.Emoji(":zombie:"), "boom"}
 )
 
 var diceFace = [6]diceFaces{DAMAGE, BOOM, FOOTPRINTS, FOOTPRINTS, BOOM, DAMAGE}
@@ -107,7 +107,7 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 
 func (b *scene4InfoType) checkPlayerBoom(g *GameType) bool {
 	if _, exist := b.Players[users.LineUser.UserProfile.UserID]; exist {
-		if b.Last > 0 && b.Players[users.LineUser.UserProfile.UserID].Turn <= b.Turn {
+		if b.Last > 0 && b.Players[users.LineUser.UserProfile.UserID].Turn < b.Turn {
 			return true
 		}
 	} else {
@@ -151,7 +151,7 @@ func (b *scene4InfoType) show(g *GameType) string {
 			str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":smiling_face_with_smiling_eyes:"), b.Players[v].Footprints))
 		} else {
 			if b.Last > 0 {
-				if b.Players[v].Turn <= b.Last {
+				if b.Players[v].Turn < b.Last {
 					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":zombie:"), b.Players[v].Footprints))
 				} else {
 					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":face_screaming_in_fear:"), b.Players[v].Footprints))
@@ -183,7 +183,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 		return
 	}
 	for _, v := range g.data.players.List {
-		if b.Players[v.UserID].Turn <= b.Last && b.Players[v.UserID].Footprints < b.TargetPoint {
+		if b.Players[v.UserID].Turn >= b.Last && b.Players[v.UserID].Footprints < b.TargetPoint {
 			if _, exist := g.rank[v.UserID]; exist {
 				g.rank[v.UserID].Boom++
 			} else {

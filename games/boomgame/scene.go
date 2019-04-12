@@ -17,6 +17,10 @@ type scene0InfoType struct {
 
 func (g *GameType) setSceneInfo() {
 	switch g.scene {
+	case 4:
+		g.data.sceneInfo = &scene4InfoType{}
+		g.data.players.List = make(map[string]playerType)
+		g.data.players.Queue = nil
 	case 3:
 		g.data.sceneInfo = &scene3InfoType{}
 	case 2:
