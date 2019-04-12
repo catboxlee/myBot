@@ -144,17 +144,17 @@ func (b *scene4InfoType) intoStage(g *GameType) {
 func (b *scene4InfoType) show(g *GameType) string {
 	var str []string
 	for _, v := range g.data.players.Queue {
-		if b.Players[v].Footprints >= b.TargetPoint {
-			str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":smiling_face_with_smiling_eyes:"), b.Players[v].Footprints))
+		if b.Players[v.UserID].Footprints >= b.TargetPoint {
+			str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":smiling_face_with_smiling_eyes:"), b.Players[v.UserID].Footprints))
 		} else {
 			if b.Last > 0 {
-				if b.Players[v].Turn < b.Last {
-					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":zombie:"), b.Players[v].Footprints))
+				if b.Players[v.UserID].Turn < b.Last {
+					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":zombie:"), b.Players[v.UserID].Footprints))
 				} else {
-					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, emoji.Emoji(":face_screaming_in_fear:"), b.Players[v].Footprints))
+					str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, emoji.Emoji(":face_screaming_in_fear:"), b.Players[v.UserID].Footprints))
 				}
 			} else {
-				str = append(str, fmt.Sprintf("%s %s %d", b.Players[v].DisplayName, FOOTPRINTS.emoji, b.Players[v].Footprints))
+				str = append(str, fmt.Sprintf("%s %s %d", b.Players[v.UserID].DisplayName, FOOTPRINTS.emoji, b.Players[v.UserID].Footprints))
 			}
 		}
 	}
@@ -176,7 +176,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 	if b.Last == 0 {
 		return
 	}
-	if users.LineUser.UserProfile.UserID != g.data.players.Queue[len(g.data.players.Queue)-1] {
+	if users.LineUser.UserProfile.UserID != g.data.players.Queue[len(g.data.players.Queue)-1].UserID {
 		return
 	}
 	for _, v := range g.data.players.List {
