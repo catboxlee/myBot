@@ -66,7 +66,7 @@ func (b *scene0AInfoType) show(g *GameType) string {
 func (b *scene0AInfoType) reset() {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
-	b.Info = make(map[string]interface{})
+	//b.Info = make(map[string]interface{})
 	b.Info["Hit"] = float64(boomDice.Hit)
 	b.Info["Current"] = float64(0)
 	b.Info["Min"] = float64(0)
