@@ -98,7 +98,6 @@ func (b *scene0InfoType) intoStage(g *GameType) {
 			b.Info["Betrayal"] = users.LineUser.UserProfile.UserID
 			g.data.sceneInfo.(*scene0AInfoType).Info = b.Info
 			g.startPhase()
-			g.updateData()
 		}
 	}
 }

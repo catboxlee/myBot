@@ -87,7 +87,6 @@ func (b *scene2InfoType) intoStage(g *GameType) {
 	g.data.sceneInfo.(*scene2AInfoType).Info = b.Info
 	g.data.sceneInfo.(*scene2AInfoType).reset()
 	g.startPhase()
-	g.updateData()
 }
 
 func (b *scene2InfoType) show(g *GameType) string {

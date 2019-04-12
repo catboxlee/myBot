@@ -23,8 +23,8 @@ func (b *scene0AInfoType) startPhase(g *GameType) {
 	}
 	texts = append(texts,
 		fmt.Sprintf("[%s炸彈狂魔 %s]\n阻止他獲得炸彈!\n%s",
-			g.data.players.List[b.Info["Betrayal"].(string)].DisplayName,
 			emoji.Emoji(":smiling_face_with_horns:"),
+			g.data.players.List[b.Info["Betrayal"].(string)].DisplayName,
 			b.show(g)))
 }
 
