@@ -36,7 +36,7 @@ type diceFaces struct {
 
 // ...
 var (
-	DAMAGE     = diceFaces{emoji.Emoji(":dizzy_face:"), "damage"}
+	DAMAGE     = diceFaces{emoji.Emoji(":sleeping_face:"), "damage"}
 	FOOTPRINTS = diceFaces{emoji.Emoji(":footprints:"), "footprints"}
 	BOOM       = diceFaces{emoji.Emoji(":zombie:"), "boom"}
 )
@@ -46,7 +46,7 @@ var diceFace = [6]diceFaces{DAMAGE, BOOM, FOOTPRINTS, FOOTPRINTS, BOOM, DAMAGE}
 func (b *scene4InfoType) startPhase(g *GameType) {
 	
 	texts = append(texts,
-		fmt.Sprintf("[%s屍速列車%s]\n逃往第%d節車廂...[+]擲骰 [-]結束回合",
+		fmt.Sprintf("[%s屍速列車%s]\n逃往第%d節車廂...\n[+]擲骰 [-]結束回合",
 			emoji.Emoji(":bullet_train:"),
 			emoji.Emoji(":zombie:"),
 			b.TargetPoint))
@@ -75,7 +75,7 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 		}
 
 		text += fmt.Sprintf("%s: %s %s %s", b.Players[users.LineUser.UserProfile.UserID].DisplayName, diceFace[pkDices.Rolls[0]-1].emoji, diceFace[pkDices.Rolls[1]-1].emoji, diceFace[pkDices.Rolls[2]-1].emoji)
-		text += fmt.Sprintf("\n%s - %d(+%d)/%s%d", FOOTPRINTS.emoji, b.Players[users.LineUser.UserProfile.UserID].Footprints+b.Players[users.LineUser.UserProfile.UserID].TmpDice.Footprints, b.Players[users.LineUser.UserProfile.UserID].TmpDice.Footprints, BOOM.emoji, b.Players[users.LineUser.UserProfile.UserID].TmpDice.Booms)
+		text += fmt.Sprintf("\n%s%d(+%d)/%s%d", FOOTPRINTS.emoji, b.Players[users.LineUser.UserProfile.UserID].Footprints+b.Players[users.LineUser.UserProfile.UserID].TmpDice.Footprints, b.Players[users.LineUser.UserProfile.UserID].TmpDice.Footprints, BOOM.emoji, b.Players[users.LineUser.UserProfile.UserID].TmpDice.Booms)
 
 		if b.Players[users.LineUser.UserProfile.UserID].TmpDice.Booms < 3 {
 			texts = append(texts, text)
