@@ -22,7 +22,7 @@ import (
 	"myBot/users"
 	"myBot/world"
 
-	"myBot/boomgame1"
+	"myBot/games/boomgame"
 	"net/http"
 	"os"
 	"strings"
@@ -83,8 +83,8 @@ func doLinebotEvents(events []*linebot.Event) {
 				if len(texts) == 0 {
 					switch world.ConfigsData[sourceID].Game {
 					case 1:
-						boomgame1.CheckExistData(sourceID)
-						texts = boomgame1.Boom[sourceID].Run(input)
+						boomgame.CheckExistData(sourceID)
+						texts = boomgame.Boom[sourceID].Command(input)
 					default:
 					}
 				}
