@@ -1,14 +1,14 @@
 package boomgame
 
 import (
-	"myBot/dice"
-	"myBot/emoji"
-	"myBot/mydb"
-	"myBot/users"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
+	"myBot/dice"
+	"myBot/emoji"
+	"myBot/mydb"
+	"myBot/users"
 	"sort"
 	"strings"
 )
@@ -96,7 +96,7 @@ func (b *GameType) startPhase() {
 }
 
 func (b *GameType) runPhase(input string) {
-	fmt.Println(b.data.sceneInfo)
+	log.Println(b.data.sceneInfo)
 	b.data.sceneInfo.runPhase(input, b)
 }
 
@@ -104,6 +104,7 @@ func (b *GameType) reset() {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d6")
 	b.scene = boomDice.Hit
+	b.scene = 3
 	b.setSceneInfo()
 	b.data.sceneInfo.reset()
 }

@@ -1,11 +1,12 @@
 package boomgame
 
 import (
+	"fmt"
+	"log"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/users"
-	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -78,6 +79,11 @@ func (b *scene0InfoType) stage(g *GameType) {
 }
 
 func (b *scene0InfoType) intoStage(g *GameType) {
+	b.Info["Turn"] = b.Info["Turn"].(float64) + float64(1)
+
+	if b.Info["Turn"].(float64) > float64(3) {
+		return
+	}
 	boomDice := &dice.Dice
 	boomDice.Roll("1d6")
 
@@ -92,6 +98,7 @@ func (b *scene0InfoType) intoStage(g *GameType) {
 			b.Info["Betrayal"] = users.LineUser.UserProfile.UserID
 			g.data.sceneInfo.(*scene0AInfoType).Info = b.Info
 			g.startPhase()
+			g.updateData()
 		}
 	}
 }
@@ -108,7 +115,8 @@ func (b *scene0InfoType) reset() {
 	b.Info["Current"] = float64(0)
 	b.Info["Min"] = float64(0)
 	b.Info["Max"] = float64(101)
-	fmt.Println(b.Info)
+	b.Info["Turn"] = float64(0)
+	log.Println(b.Info)
 }
 
 func (b *scene0InfoType) gameOver(g *GameType) {

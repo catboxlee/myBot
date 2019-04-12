@@ -1,11 +1,12 @@
 package boomgame
 
 import (
+	"fmt"
+	"log"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/users"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,9 +17,13 @@ type scene0AInfoType struct {
 }
 
 func (b *scene0AInfoType) startPhase(g *GameType) {
+	var p []string
+	for _, v := range g.data.players.Queue {
+		p = append(p, v.DisplayName)
+	}
 	texts = append(texts,
 		fmt.Sprintf("[%s炸彈狂魔 %s]\n阻止他獲得炸彈!\n%s",
-			g.data.players.List[b.Info["Betrayal"].(string)].UserID,
+			g.data.players.List[b.Info["Betrayal"].(string)].DisplayName,
 			emoji.Emoji(":smiling_face_with_horns:"),
 			b.show(g)))
 }
@@ -66,7 +71,7 @@ func (b *scene0AInfoType) reset() {
 	b.Info["Current"] = float64(0)
 	b.Info["Min"] = float64(0)
 	b.Info["Max"] = float64(101)
-	fmt.Println(b.Info)
+	log.Println(b.Info)
 	//b.info = nil
 }
 
