@@ -42,6 +42,7 @@ func (b *scene2InfoType) runPhase(input string, g *GameType) {
 				g.recordPlayers()
 				switch {
 				case b.Info["Current"] == b.Info["Hit"]:
+				/*
 					boomDice := &dice.Dice
 					boomDice.Roll("1d6")
 
@@ -50,6 +51,7 @@ func (b *scene2InfoType) runPhase(input string, g *GameType) {
 						g.updateData()
 						return
 					}
+					*/
 					b.gameOver(g)
 					g.showRank()
 					g.checkRank()
