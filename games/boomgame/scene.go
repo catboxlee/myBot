@@ -83,6 +83,7 @@ func (b *scene0InfoType) stage(g *GameType) {
 }
 
 func (b *scene0InfoType) intoStage(g *GameType) {
+/*
 	b.Info["Turn"] = b.Info["Turn"].(float64) + float64(1)
 
 	if b.Info["Turn"].(float64) > float64(3) {
@@ -93,7 +94,7 @@ func (b *scene0InfoType) intoStage(g *GameType) {
 
 	if boomDice.Hit == 6 {
 		boomDice := &dice.Dice
-		boomDice.Roll("1d1")
+		boomDice.Roll("1d6")
 
 		switch boomDice.Hit {
 		case 1:
@@ -104,6 +105,7 @@ func (b *scene0InfoType) intoStage(g *GameType) {
 			g.startPhase()
 		}
 	}
+	*/
 }
 
 func (b *scene0InfoType) show(g *GameType) string {
