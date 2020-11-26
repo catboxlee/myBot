@@ -71,6 +71,9 @@ func (b *GameType) checkCommand(input string) {
 		b.reset()
 		b.startPhase()
 		b.updateData()
+	case "resetRank":
+		b.resetRank()
+		b.updateData()
 	case "rank":
 		b.showRank()
 	}
@@ -141,6 +144,7 @@ func (b *GameType) checkRank() {
 
 func (b *GameType) resetRank() {
 	b.rank = make(map[string]*rankType)
+	b.season = b.season + 1
 }
 
 // CheckExistData ...
