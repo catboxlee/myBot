@@ -42,12 +42,14 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 						g.startPhase()
 					case b.Info["Current"].(float64) < b.Info["Hit"].(float64):
 						b.Info["Min"] = b.Info["Current"].(float64)
+						b.Info["CurrentPlayerID"] = users.LineUser.UserProfile.UserID
 						b.Info["LastPlayerID"] = users.LineUser.UserProfile.UserID
 						b.chkFate(g)
 						g.show()
 						b.intoStage(g)
 					case b.Info["Current"].(float64) > b.Info["Hit"].(float64):
 						b.Info["Max"] = b.Info["Current"].(float64)
+						b.Info["CurrentPlayerID"] = users.LineUser.UserProfile.UserID
 						b.Info["LastPlayerID"] = users.LineUser.UserProfile.UserID
 						b.chkFate(g)
 						g.show()
@@ -114,11 +116,11 @@ func (b *scene4InfoType) chkChance(g *GameType) {
 			boomDice.Roll("1d2")
 			switch int(boomDice.Hit) {
 			case 2:
-				texts = append(texts, fmt.Sprintf("%s %s 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
+				texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
 				b.chkChance(g)
 			default:
-				texts = append(texts, fmt.Sprintf("%s %s Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
+				texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
 				b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 			}
 		}
@@ -131,16 +133,16 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	lucky := boomDice.Hit
 	if 30 >= lucky {
 		if 2 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
-			texts = append(texts, fmt.Sprintf("%s %s 「信仰之躍！！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
+			texts = append(texts, fmt.Sprintf("%s 「信仰之躍！！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
 		} else {
 			boomDice.Roll("1d2")
 			switch int(boomDice.Hit) {
 			case 2:
-				texts = append(texts, fmt.Sprintf("%s %s 嘴平伊之助「豬突猛進！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
+				texts = append(texts, fmt.Sprintf("嘴平伊之助「豬突猛進！」"))
 				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) + 1
 			default:
-				texts = append(texts, fmt.Sprintf("%s %s 漩渦鳴人「影分身之術！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
+				texts = append(texts, fmt.Sprintf("漩渦鳴人「影分身之術！！」"))
 				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 2
 			}
 		}
