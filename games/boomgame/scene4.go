@@ -108,21 +108,21 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 }
 
 func (b *scene4InfoType) chkChance(g *GameType) {
-	if len(b.Info["LastPlayerID"].(string)) > 0 {
-		boomDice := &dice.Dice
-		boomDice.Roll("1d100")
-		lucky := boomDice.Hit
-		if 30 >= lucky {
-			boomDice.Roll("1d2")
-			switch int(boomDice.Hit) {
-			case 2:
+	boomDice := &dice.Dice
+	boomDice.Roll("1d100")
+	lucky := boomDice.Hit
+	if 30 >= lucky {
+		boomDice.Roll("1d2")
+		switch int(boomDice.Hit) {
+		case 2:
+			if len(b.Info["LastPlayerID"].(string)) > 0 {
 				texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
 				b.chkChance(g)
-			default:
-				texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
-				b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 			}
+		default:
+			texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 		}
 	}
 }
@@ -136,8 +136,15 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 			texts = append(texts, fmt.Sprintf("%s 「信仰之躍！！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
 		} else {
-			boomDice.Roll("1d2")
+			boomDice.Roll("1d3")
 			switch int(boomDice.Hit) {
+			case 4:
+				users.UsersList.Data[users.LineUser.UserProfile.UserID].Money++
+				texts = append(texts, fmt.Sprintf("%s 獲得金幣%s+1(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":money_bag:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].Money))
+				users.LineUser.SaveUserData()
+			case 3:
+				texts = append(texts, fmt.Sprintf("惠惠「Explosion！」"))
+				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
 			case 2:
 				texts = append(texts, fmt.Sprintf("嘴平伊之助「豬突猛進！」"))
 				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) + 1
