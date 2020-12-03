@@ -71,7 +71,7 @@ func (b *scene4InfoType) intoStage(g *GameType) {
 
 func (b *scene4InfoType) show(g *GameType) string {
 	str := ""
-	if b.Info["Min"].(float64) > float64(0) {
+	if b.Info["BoomCnt"].(float64) > float64(1) {
 		str = fmt.Sprintf("\n%s(%d)", strings.Repeat(emoji.Emoji(":bomb:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64)))
 	}
 	return fmt.Sprintf("%d - %s - %d%s", helper.Max(1, int(b.Info["Min"].(float64))), emoji.Emoji(":bomb:"), helper.Min(100, int(b.Info["Max"].(float64))), str)
