@@ -97,33 +97,88 @@ func (b *scene4InfoType) reset() {
 }
 
 func (b *scene4InfoType) gameOver(g *GameType) {
-	b.chkChance(g)
 
-	texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
-	if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
-		g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
+	boomDice := &dice.Dice
+	boomDice.Roll("1d100")
+	lucky := boomDice.Hit
+	if 10 >= lucky {
+		var str []string
+		reBooms := 0
+		boomDice := &dice.Dice
+		str = append(str, fmt.Sprintf("%s 翻開陷阱卡「神聖慧星。反射力量」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+		for _, u := range g.data.players.List {
+			if u.UserID != b.Info["CurrentPlayerID"].(string) {
+				boomDice.Roll("1d3")
+				switch int(boomDice.Hit) {
+				case 2:
+					str = append(str, fmt.Sprintf("%s 「雪花之壁！」", u.DisplayName))
+					if _, exist := g.rank[u.UserID]; exist {
+						g.rank[u.UserID].Boom += int(math.Ceil(b.Info["BoomCnt"].(float64) / 3))
+					} else {
+						g.rank[u.UserID] = &rankType{UserID: u.UserID, DisplayName: u.DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+					}
+				case 1:
+					str = append(str, fmt.Sprintf("%s 「燕返！」", u.DisplayName))
+					reBooms += int(b.Info["BoomCnt"].(float64))
+				default:
+					str = append(str, fmt.Sprintf("%s %s", u.DisplayName, emoji.Emoji(":collision:")))
+					if _, exist := g.rank[u.UserID]; exist {
+						g.rank[u.UserID].Boom += int(b.Info["BoomCnt"].(float64))
+					} else {
+						g.rank[u.UserID] = &rankType{UserID: u.UserID, DisplayName: u.DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+					}
+				}
+			}
+		}
+		if reBooms > 0 {
+			boomDice.Roll("1d3")
+			if int(boomDice.Hit) == 1 {
+				str = append(str, fmt.Sprintf("%s 「雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+				reBooms = int(math.Ceil(float64(reBooms) / 3))
+			}
+			if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
+				g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += reBooms
+			} else {
+				g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: reBooms}
+			}
+		}
+		texts = append(texts, strings.Join(str, "\n"))
+	} else if 30 >= lucky {
+		b.chkChance(g)
+
+		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
+			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
+		} else {
+			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+		}
 	} else {
-		g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
+			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
+		} else {
+			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+		}
 	}
+
 }
 
 func (b *scene4InfoType) chkChance(g *GameType) {
 	boomDice := &dice.Dice
-	boomDice.Roll("1d100")
-	lucky := boomDice.Hit
-	if 30 >= lucky {
-		boomDice.Roll("1d2")
-		switch int(boomDice.Hit) {
-		case 2:
-			if len(b.Info["LastPlayerID"].(string)) > 0 {
-				texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
-				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
+	boomDice.Roll("1d2")
+	switch int(boomDice.Hit) {
+	case 2:
+		if len(b.Info["LastPlayerID"].(string)) > 0 {
+			texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+			b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
+			boomDice.Roll("1d100")
+			if 30 >= int(boomDice.Hit) {
 				b.chkChance(g)
 			}
-		default:
-			texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
-			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 		}
+	default:
+		texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+		b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 	}
 }
 
