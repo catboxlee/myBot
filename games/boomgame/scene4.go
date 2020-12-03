@@ -43,13 +43,13 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 					case b.Info["Current"].(float64) < b.Info["Hit"].(float64):
 						b.Info["Min"] = b.Info["Current"].(float64)
 						b.Info["LastPlayerID"] = users.LineUser.UserProfile.UserID
-						b.chkFate()
+						b.chkFate(g)
 						g.show()
 						b.intoStage(g)
 					case b.Info["Current"].(float64) > b.Info["Hit"].(float64):
 						b.Info["Max"] = b.Info["Current"].(float64)
 						b.Info["LastPlayerID"] = users.LineUser.UserProfile.UserID
-						b.chkFate()
+						b.chkFate(g)
 						g.show()
 						b.intoStage(g)
 					}
