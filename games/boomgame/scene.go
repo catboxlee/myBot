@@ -17,7 +17,11 @@ type scene0InfoType struct {
 
 func (g *GameType) setSceneInfo() {
 	switch g.scene {
-	
+	case 2:
+		g.scene = 2
+		g.data.sceneInfo = &scene4InfoType{}
+		g.data.players.List = make(map[string]playerType)
+		g.data.players.Queue = nil
 	default:
 		g.scene = 1
 		g.data.sceneInfo = &scene0InfoType{}
@@ -25,6 +29,7 @@ func (g *GameType) setSceneInfo() {
 		g.data.players.Queue = nil
 	}
 }
+
 func (b *scene0InfoType) startPhase(g *GameType) {
 	texts = append(texts, fmt.Sprintf("[%s終極密碼]\n%s", emoji.Emoji(":bomb:"), b.show(g)))
 }
@@ -76,28 +81,25 @@ func (b *scene0InfoType) stage(g *GameType) {
 }
 
 func (b *scene0InfoType) intoStage(g *GameType) {
-/*
-	b.Info["Turn"] = b.Info["Turn"].(float64) + float64(1)
-
-	if b.Info["Turn"].(float64) > float64(3) {
-		return
-	}
-	boomDice := &dice.Dice
-	boomDice.Roll("1d6")
-
-	if boomDice.Hit == 6 {
+	/*
+		b.Info["Turn"] = b.Info["Turn"].(float64) + float64(1)
+		if b.Info["Turn"].(float64) > float64(3) {
+			return
+		}
 		boomDice := &dice.Dice
 		boomDice.Roll("1d6")
-
-		switch boomDice.Hit {
-		case 1:
-			g.data.sceneInfo = &scene0AInfoType{}
-			b.Info["Stage"] = "A"
-			b.Info["Betrayal"] = users.LineUser.UserProfile.UserID
-			g.data.sceneInfo.(*scene0AInfoType).Info = b.Info
-			g.startPhase()
+		if boomDice.Hit == 6 {
+			boomDice := &dice.Dice
+			boomDice.Roll("1d6")
+			switch boomDice.Hit {
+			case 1:
+				g.data.sceneInfo = &scene0AInfoType{}
+				b.Info["Stage"] = "A"
+				b.Info["Betrayal"] = users.LineUser.UserProfile.UserID
+				g.data.sceneInfo.(*scene0AInfoType).Info = b.Info
+				g.startPhase()
+			}
 		}
-	}
 	*/
 }
 
@@ -118,6 +120,7 @@ func (b *scene0InfoType) reset() {
 }
 
 func (b *scene0InfoType) gameOver(g *GameType) {
+
 	texts = append(texts, fmt.Sprintf("%s %s %d", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":collision:"), int(b.Info["Hit"].(float64))))
 	if _, exist := g.rank[users.LineUser.UserProfile.UserID]; exist {
 		g.rank[users.LineUser.UserProfile.UserID].Boom++

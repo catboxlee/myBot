@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"myBot/dice"
 	"myBot/emoji"
 	"myBot/mydb"
 	"myBot/users"
@@ -73,6 +72,7 @@ func (b *GameType) checkCommand(input string) {
 		b.updateData()
 	case "resetRank":
 		b.resetRank()
+		b.season++
 		b.updateData()
 	case "rank":
 		b.showRank()
@@ -104,9 +104,12 @@ func (b *GameType) runPhase(input string) {
 }
 
 func (b *GameType) reset() {
-	boomDice := &dice.Dice
-	boomDice.Roll("1d6")
-	b.scene = boomDice.Hit
+	/*
+		boomDice := &dice.Dice
+		boomDice.Roll("1d6")
+		b.scene = boomDice.Hit
+	*/
+	b.scene = 2
 	b.setSceneInfo()
 	b.data.sceneInfo.reset()
 }
@@ -144,7 +147,6 @@ func (b *GameType) checkRank() {
 
 func (b *GameType) resetRank() {
 	b.rank = make(map[string]*rankType)
-	b.season = b.season + 1
 }
 
 // CheckExistData ...
