@@ -108,7 +108,7 @@ func (b *scene4InfoType) chkChance(g *GameType) {
 		boomDice := &dice.Dice
 		boomDice.Roll("1d100")
 		lucky := boomDice.Hit
-		if 10 >= lucky {
+		if 15 >= lucky {
 			boomDice.Roll("1d2")
 			switch int(boomDice.Hit) {
 			case 2:
@@ -127,7 +127,7 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
 	lucky := boomDice.Hit
-	if 10 >= lucky {
+	if 15 >= lucky {
 		if 2 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
 			texts = append(texts, fmt.Sprintf("%s %s 「信仰之躍！！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":bomb:")))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
