@@ -111,7 +111,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 				boomDice.Roll("1d3")
 				switch int(boomDice.Hit) {
 				case 2:
-					str = append(str, fmt.Sprintf("%s 「雪花之壁！」", u.DisplayName))
+					str = append(str, fmt.Sprintf("%s 「雪花之壁！」 %s(%d)", u.DisplayName, emoji.Emoji(":collision:"), int(math.Ceil(b.Info["BoomCnt"].(float64)/3))))
 					if _, exist := g.rank[u.UserID]; exist {
 						g.rank[u.UserID].Boom += int(math.Ceil(b.Info["BoomCnt"].(float64) / 3))
 					} else {
@@ -121,7 +121,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 					str = append(str, fmt.Sprintf("%s 「燕返！」", u.DisplayName))
 					reBooms += int(b.Info["BoomCnt"].(float64))
 				default:
-					str = append(str, fmt.Sprintf("%s %s", u.DisplayName, emoji.Emoji(":collision:")))
+					str = append(str, fmt.Sprintf("%s %s(%d)", u.DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
 					if _, exist := g.rank[u.UserID]; exist {
 						g.rank[u.UserID].Boom += int(b.Info["BoomCnt"].(float64))
 					} else {
@@ -133,8 +133,10 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 		if reBooms > 0 {
 			boomDice.Roll("1d3")
 			if int(boomDice.Hit) == 1 {
-				str = append(str, fmt.Sprintf("%s 「雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+				str = append(str, fmt.Sprintf("%s 「雪花之壁！」 %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(math.Ceil(float64(reBooms)/3))))
 				reBooms = int(math.Ceil(float64(reBooms) / 3))
+			} else {
+				str = append(str, fmt.Sprintf("%s 「雪花之壁！」 %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(reBooms)))
 			}
 			if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 				g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += reBooms
@@ -187,8 +189,8 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice.Roll("1d100")
 	lucky := boomDice.Hit
 	if 30 >= lucky {
-		if 2 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
-			texts = append(texts, fmt.Sprintf("%s 「信仰之躍！！！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+		if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
+			texts = append(texts, fmt.Sprintf("「信仰之躍！！！」"))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
 		} else {
 			boomDice.Roll("1d3")
