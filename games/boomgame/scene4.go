@@ -136,7 +136,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 				str = append(str, fmt.Sprintf("%s 「雪花之壁！」 %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(math.Ceil(float64(reBooms)/3))))
 				reBooms = int(math.Ceil(float64(reBooms) / 3))
 			} else {
-				str = append(str, fmt.Sprintf("%s 「雪花之壁！」 %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(reBooms)))
+				str = append(str, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(reBooms)))
 			}
 			if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 				g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += reBooms
