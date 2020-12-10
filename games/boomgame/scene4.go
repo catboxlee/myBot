@@ -203,23 +203,19 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
 	lucky := boomDice.Hit
-	if 30 >= lucky {
+	if 100 >= lucky {
 		if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
 			texts = append(texts, fmt.Sprintf("「信仰之躍！！！」"))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
 		} else {
 			boomDice.Roll("1d3")
 			switch int(boomDice.Hit) {
-			case 4:
-				users.UsersList.Data[users.LineUser.UserProfile.UserID].Money++
-				texts = append(texts, fmt.Sprintf("%s 獲得金幣%s+1(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":money_bag:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].Money))
-				users.LineUser.SaveUserData()
 			case 3:
+				texts = append(texts, fmt.Sprintf("御坂美琴「超電磁砲！」"))
+				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 5
+			case 2:
 				texts = append(texts, fmt.Sprintf("惠惠「Explosion！」"))
 				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
-			case 2:
-				texts = append(texts, fmt.Sprintf("嘴平伊之助「豬突猛進！」"))
-				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) + 1
 			default:
 				texts = append(texts, fmt.Sprintf("漩渦鳴人「影分身之術！！」"))
 				b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 2
