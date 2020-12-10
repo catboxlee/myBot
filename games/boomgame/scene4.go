@@ -203,7 +203,7 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
 	lucky := boomDice.Hit
-	if 100 >= lucky {
+	if 50 >= lucky {
 		if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
 			texts = append(texts, fmt.Sprintf("「信仰之躍！！！」"))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
