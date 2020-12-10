@@ -76,7 +76,11 @@ func (b *scene4InfoType) intoStage(g *GameType) {
 func (b *scene4InfoType) show(g *GameType) string {
 	str := ""
 	if b.Info["BoomCnt"].(float64) > float64(1) {
-		str = fmt.Sprintf("\n%s(%d)", strings.Repeat(emoji.Emoji(":bomb:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64)))
+		if b.Info["BoomCnt"].(float64) > float64(99) {
+			str = fmt.Sprintf("\n%s(%d)", strings.Repeat(emoji.Emoji(":bomb:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64)))
+		} else {
+			str = fmt.Sprintf("\n%s(%d)", emoji.Emoji(":bomb:"), int(b.Info["BoomCnt"].(float64)))
+		}
 	}
 	return fmt.Sprintf("%d - %s - %d%s", helper.Max(1, int(b.Info["Min"].(float64))), emoji.Emoji(":bomb:"), helper.Min(100, int(b.Info["Max"].(float64))), str)
 }
@@ -148,14 +152,22 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 	} else if 30 >= lucky {
 		b.chkChance(g)
 
-		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		if b.Info["BoomCnt"].(float64) > float64(99) {
+			texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+		} else {
+			texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		}
 		if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
 		} else {
 			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
 		}
 	} else {
-		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		if b.Info["BoomCnt"].(float64) > float64(99) {
+			texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+		} else {
+			texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		}
 		if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 			g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
 		} else {
@@ -167,8 +179,18 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 
 func (b *scene4InfoType) chkChance(g *GameType) {
 	boomDice := &dice.Dice
-	boomDice.Roll("1d2")
+	boomDice.Roll("1d3")
 	switch int(boomDice.Hit) {
+	case 3:
+		if len(b.Info["LastPlayerID"].(string)) > 0 {
+			texts = append(texts, fmt.Sprintf("【%s】 半澤直樹「加倍奉還！」%s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+			b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
+			b.Info["BoomCnt"] = b.Info["BoomCnt"].(float64) * 2
+			boomDice.Roll("1d100")
+			if 30 >= int(boomDice.Hit) {
+				b.chkChance(g)
+			}
+		}
 	case 2:
 		if len(b.Info["LastPlayerID"].(string)) > 0 {
 			texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
@@ -188,7 +210,7 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
 	lucky := boomDice.Hit
-	if 50 >= lucky {
+	if 30 >= lucky {
 		if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
 			texts = append(texts, fmt.Sprintf("「信仰之躍！！！」"))
 			b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) * 3
