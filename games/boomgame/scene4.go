@@ -119,7 +119,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 					if _, exist := g.rank[u.UserID]; exist {
 						g.rank[u.UserID].Boom += int(math.Ceil(b.Info["BoomCnt"].(float64) / 3))
 					} else {
-						g.rank[u.UserID] = &rankType{UserID: u.UserID, DisplayName: u.DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
+						g.rank[u.UserID] = &rankType{UserID: u.UserID, DisplayName: u.DisplayName, Boom: int(math.Ceil(b.Info["BoomCnt"].(float64) / 3))}
 					}
 				case 1:
 					str = append(str, fmt.Sprintf("%s 「燕返！」", u.DisplayName))
