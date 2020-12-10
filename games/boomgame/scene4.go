@@ -150,7 +150,8 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 		}
 		texts = append(texts, strings.Join(str, "\n"))
 	} else if 30 >= lucky {
-		b.chkChance(g)
+
+		texts = append(texts, b.chkChance(g))
 
 		if b.Info["BoomCnt"].(float64) > float64(99) {
 			texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
@@ -177,33 +178,25 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 
 }
 
-func (b *scene4InfoType) chkChance(g *GameType) {
+func (b *scene4InfoType) chkChance(g *GameType) string {
 	boomDice := &dice.Dice
-	boomDice.Roll("1d3")
+	var strs string
+	boomDice.Roll("1d32")
 	switch int(boomDice.Hit) {
-	case 3:
-		if len(b.Info["LastPlayerID"].(string)) > 0 {
-			texts = append(texts, fmt.Sprintf("【%s】 半澤直樹「加倍奉還！」%s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
-			b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
-			b.Info["BoomCnt"] = b.Info["BoomCnt"].(float64) * 2
-			boomDice.Roll("1d100")
-			if 30 >= int(boomDice.Hit) {
-				b.chkChance(g)
-			}
-		}
 	case 2:
 		if len(b.Info["LastPlayerID"].(string)) > 0 {
-			texts = append(texts, fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+			strs = fmt.Sprintf("【%s】 不二周助「燕返！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
 			b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
 			boomDice.Roll("1d100")
 			if 30 >= int(boomDice.Hit) {
-				b.chkChance(g)
+				strs = fmt.Sprintf("%s\n%s", strs, b.chkChance(g))
 			}
 		}
 	default:
-		texts = append(texts, fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName))
+		strs = fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
 		b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 	}
+	return strs
 }
 
 func (b *scene4InfoType) chkFate(g *GameType) {
