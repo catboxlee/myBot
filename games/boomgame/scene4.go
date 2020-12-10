@@ -181,7 +181,7 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 func (b *scene4InfoType) chkChance(g *GameType) string {
 	boomDice := &dice.Dice
 	var strs string
-	boomDice.Roll("1d32")
+	boomDice.Roll("1d2")
 	switch int(boomDice.Hit) {
 	case 2:
 		if len(b.Info["LastPlayerID"].(string)) > 0 {
