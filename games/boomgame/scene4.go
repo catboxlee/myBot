@@ -194,7 +194,12 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 		}
 	default:
 		strs = fmt.Sprintf("【%s】 Shielder瑪修「頌為堅城的雪花之壁！」", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
-		b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
+		if b.Info["BoomCnt"] > 99 {
+			b.Info["BoomCnt"] = 99
+		} else {
+			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
+		}
+		
 	}
 	return strs
 }
