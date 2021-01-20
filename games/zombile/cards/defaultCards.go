@@ -623,15 +623,15 @@ var baseCards = []struct {
 					}
 					if thisCard.Health < thisCard.quantity {
 						switch thisCard.spend {
-						case 0:
-							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "去獵殺吸血鬼吧, 這是命令喲."))
 						case 3:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "去獵殺吸血鬼吧, 這是命令喲."))
+						case 4:
 							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "你只要服從我的命令就好了."))
 						}
 						thisCard.spend++
 					}
 					thisCard.quantity = helper.Min(thisCard.Info.Health, thisCard.quantity)
-					strs = append(strs, fmt.Sprintf("%s召喚士兵.", thisCard.GetDisplayNameWithBracket()))
+					//strs = append(strs, fmt.Sprintf("%s召喚士兵.", thisCard.GetDisplayNameWithBracket()))
 					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
