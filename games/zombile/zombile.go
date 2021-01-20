@@ -43,8 +43,8 @@ func init() {
 // Start ...
 func (g *GameType) Start() {
 	log.Println("<zombie.Start()>")
-	g.simpleList = true
 	g.reset()
+	g.simpleList = true
 }
 
 // Command ...
@@ -145,7 +145,7 @@ func (g *GameType) checkCommand(input string) {
 		case "listType":
 			g.simpleList = !g.simpleList
 		case "play":
-		case "?":
+		case "l":
 			if len(matches[2]) > 0 {
 				g.viewCardInfo(matches[2])
 			} else {
@@ -251,9 +251,9 @@ func (g *GameType) MoveCards(fromPlayer power.PlayerIF, tCard power.CardIF, toPl
 
 // PlayerJoin ...
 func (g *GameType) PlayerJoin() {
-	log.Println("zombile::PlayerJoin():", users.LineUser.UserProfile.UserID)
-	g.playersSequence = append(g.playersSequence, users.LineUser.UserProfile.UserID)
-	if r, n := g.Players.PlayerJoin(users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName); r {
+	log.Println("zombile::PlayerJoin():", users.LineUser.UserProfile.DisplayName)
+	g.playersSequence = append(g.playersSequence, users.LineUser.UserProfile.DisplayName)
+	if r, n := g.Players.PlayerJoin(users.LineUser.UserProfile.DisplayName, users.LineUser.UserProfile.DisplayName); r {
 		texts = append(texts, n+" join.")
 	}
 	/*
@@ -289,6 +289,7 @@ func CheckExistData(SourceID string) {
 	if _, exist := Zombile[SourceID]; !exist {
 		//loadData(SourceID)
 		Zombile[SourceID] = &GameType{}
+		Zombile[SourceID].Start()
 	}
 }
 
