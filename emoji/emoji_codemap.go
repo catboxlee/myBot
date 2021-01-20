@@ -335,6 +335,7 @@ var emojiCodeMap = map[string]string{
 	":boy_tone4:":                           "\U0001f466\U0001f3fe",
 	":boy_tone5:":                           "\U0001f466\U0001f3ff",
 	":brain:":                               "\U0001f9e0",
+	":anatomical_heart:":                    "\U0001fac0",
 	":brazil:":                              "\U0001f1e7\U0001f1f7",
 	":bread:":                               "\U0001f35e",
 	":breast-feeding:":                      "\U0001f931",
