@@ -35,7 +35,11 @@ func changeGame(sourceID string, s string) []string {
 		case 1:
 			world.ConfigsData[sourceID].Game = n
 			world.ConfigsData[sourceID].UpdateConfigData()
-			return []string{"切換遊戲：[1]終極密碼"}
+			return []string{"切換遊戲：[1]終極密碼 "}
+		case 2:
+			world.ConfigsData[sourceID].Game = n
+			world.ConfigsData[sourceID].UpdateConfigData()
+			return []string{"切換遊戲：[2]卡牌 "}
 		}
 	}
 	return []string{"[1]終極密碼"}
