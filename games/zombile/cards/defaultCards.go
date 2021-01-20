@@ -105,6 +105,70 @@ var baseCards = []struct {
 	{
 		DefaultCardOption{
 			cost:        3,
+			Info:        Info{Damage: 1},
+			cardName:    "Backstab",
+			displayname: "背刺",
+			cardType:    cardTypeValue.asset,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.item, CardTraitsValue.weapon, CardTraitsValue.gun},
+			desc:        "攻擊: 傷害+1",
+			equipped:    false,
+			usesOption:  usesOption{},
+			actionTimes: 1,
+			ActivateFunc: func(thisCard *CardOption) func(power.PlayerIF, power.FightIF) string {
+				return func(targetPlayer power.PlayerIF, target power.FightIF) (r string) {
+					if target == nil {
+						return "請選擇攻擊目標."
+					}
+					var strs []string
+
+					thisPlayer := thisCard.OwnPlayer
+
+					strs = append(strs, fmt.Sprintf("%s對%s使用%s.", thisPlayer.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket(), thisCard.GetDisplayNameWithBracket()))
+					strs = append(strs, thisPlayer.Attack(target, power.Damage{Atk: 2, Hor: 0}))
+
+					thisPlayer.RemoveCards(thisCard)
+
+					return strings.Join(strs, "\n")
+				}
+			},
+		},
+		2,
+	},
+	{
+		DefaultCardOption{
+			cost:        3,
+			Info:        Info{Damage: 1},
+			cardName:    "Attack",
+			displayname: "普通攻擊",
+			cardType:    cardTypeValue.asset,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.item, CardTraitsValue.weapon, CardTraitsValue.gun},
+			desc:        "攻擊: 傷害1",
+			equipped:    false,
+			usesOption:  usesOption{},
+			actionTimes: 1,
+			ActivateFunc: func(thisCard *CardOption) func(power.PlayerIF, power.FightIF) string {
+				return func(targetPlayer power.PlayerIF, target power.FightIF) (r string) {
+					if target == nil {
+						return "請選擇攻擊目標."
+					}
+					var strs []string
+
+					thisPlayer := thisCard.OwnPlayer
+
+					strs = append(strs, fmt.Sprintf("%s打了%s一拳.", thisPlayer.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
+					strs = append(strs, thisPlayer.Attack(target, power.Damage{Atk: 1, Hor: 0}))
+
+					thisPlayer.RemoveCards(thisCard)
+
+					return strings.Join(strs, "\n")
+				}
+			},
+		},
+		4,
+	},
+	{
+		DefaultCardOption{
+			cost:        3,
 			Info:        Info{2, 2, 1, 1, 0},
 			cardName:    "Guard dog",
 			displayname: "護衛犬",
@@ -193,6 +257,53 @@ var baseCards = []struct {
 					}
 					strs = append(strs, fmt.Sprintf("%s對%s使用%s.", thisPlayer.GetDisplayNameWithBracket(), targetName, thisCard.GetDisplayNameWithBracket()))
 					strs = append(strs, thisPlayer.Heal(target, power.Damage{Atk: 1, Hor: 0}))
+
+					if thisCard.getQuantity() <= 0 {
+						strs = append(strs, fmt.Sprintf("%s%s已秏盡, 移除%s.", thisPlayer.GetDisplayNameWithBracket(), thisCard.getUsesItem(), thisCard.GetDisplayNameWithBracket()))
+						thisPlayer.RemoveCards(thisCard)
+					}
+
+					return strings.Join(strs, "\n")
+				}
+			},
+		},
+		2,
+	},
+	{
+		DefaultCardOption{
+			cost:        4,
+			Info:        Info{},
+			cardName:    "Sedatives",
+			displayname: "鎮定劑",
+			cardType:    cardTypeValue.event,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.item, CardTraitsValue.skill},
+			desc:        "使用: 恐懼-1",
+			equipped:    false,
+			usesOption:  usesOption{true, "鎮定劑", 2, 1},
+			ActivateFunc: func(thisCard *CardOption) func(power.PlayerIF, power.FightIF) string {
+				return func(targetPlayer power.PlayerIF, target power.FightIF) (r string) {
+					var strs []string
+
+					thisPlayer := thisCard.OwnPlayer
+
+					if thisCard.isUses() {
+						if ok, s := thisCard.checkUses(); !ok {
+							strs = append(strs, s)
+							return strings.Join(strs, "\n")
+						} else if s := thisCard.spendUses(thisPlayer); len(s) > 0 {
+							strs = append(strs, s)
+						}
+					}
+
+					var targetName string
+					if target != nil {
+						targetName = target.GetDisplayNameWithBracket()
+					} else {
+						targetName = "自己"
+						target = thisPlayer
+					}
+					strs = append(strs, fmt.Sprintf("%s對%s使用%s.", thisPlayer.GetDisplayNameWithBracket(), targetName, thisCard.GetDisplayNameWithBracket()))
+					strs = append(strs, thisPlayer.Heal(target, power.Damage{Atk: 0, Hor: 1}))
 
 					if thisCard.getQuantity() <= 0 {
 						strs = append(strs, fmt.Sprintf("%s%s已秏盡, 移除%s.", thisPlayer.GetDisplayNameWithBracket(), thisCard.getUsesItem(), thisCard.GetDisplayNameWithBracket()))
@@ -411,7 +522,6 @@ var baseCards = []struct {
 
 					if !thisCard.getEquipped() {
 						if thisCard.makeEquipped(true) {
-							thisCard.actionTimes--
 							return fmt.Sprintf("<%s>成為你的伙伴.", thisCard.GetDisplayName())
 						}
 					}
@@ -421,6 +531,46 @@ var baseCards = []struct {
 
 					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
 					strs = append(strs, thisCard.Attack(target, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+
+					thisCard.actionTimes--
+					return strings.Join(strs, "\n")
+				}
+			},
+		},
+		1,
+	},
+	{
+		DefaultCardOption{
+			cost:        0,
+			Info:        Info{Health: 4, HealthMax: 4, Combat: 1, Damage: 1},
+			cardName:    "Nurse",
+			displayname: "小護士",
+			cardType:    cardTypeValue.asset,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.ally},
+			desc:        "",
+			equipped:    false,
+			usesOption:  usesOption{uses: false},
+			actionTimes: 1,
+			ActivateFunc: func(thisCard *CardOption) func(power.PlayerIF, power.FightIF) string {
+				return func(targetPlayer power.PlayerIF, target power.FightIF) (r string) {
+					if thisCard.actionTimes == 0 {
+						return ""
+					}
+
+					var strs []string
+					thisPlayer := thisCard.OwnPlayer
+
+					if !thisCard.getEquipped() {
+						if thisCard.makeEquipped(true) {
+							return fmt.Sprintf("<%s>成為你的伙伴.", thisCard.GetDisplayName())
+						}
+					}
+					if target == nil {
+						target = thisPlayer
+					}
+
+					strs = append(strs, fmt.Sprintf("%s治療%s.", thisCard.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
+					strs = append(strs, thisCard.Heal(target, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
 
 					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
