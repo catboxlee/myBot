@@ -149,6 +149,7 @@ var baseCards = []struct {
 							strs = append(strs, fmt.Sprintf("%s???.", thisCard.GetDisplayNameWithBracket()))
 						}
 					}
+					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
 			},
@@ -252,10 +253,11 @@ var baseCards = []struct {
 				return func(args ...interface{}) (r string) {
 					var strs []string
 					if thisCard.makeEquipped(true) {
-						strs = append(strs, fmt.Sprintf("天花板上傳來了奇怪聲響."))
+						//strs = append(strs, fmt.Sprintf("天花板上傳來了奇怪聲響."))
 					}
 					strs = append(strs, fmt.Sprintf("%s盯上了%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
 					strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: 0, Hor: 1}))
+					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
 			},
@@ -334,12 +336,60 @@ var baseCards = []struct {
 				}
 			},
 		},
+		2,
+	},
+	{
+		DefaultCardOption{
+			cost:        0,
+			Info:        Info{5, 5, 1, 2, 1},
+			cardName:    "Vampire",
+			displayname: emoji.Emoji(":ghost:") + "吸血鬼。艾德華",
+			cardType:    cardTypeValue.asset,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.Enemy},
+			desc:        "吸血: 每次攻擊回復自身生命1",
+			equipped:    false,
+			usesOption:  usesOption{uses: false},
+			actionTimes: 1,
+			OnDisplayFunc: func(thisCard *CardOption) func(args ...interface{}) string {
+				return func(args ...interface{}) (r string) {
+					var strs []string
+					if thisCard.makeEquipped(true) {
+						//strs = append(strs, fmt.Sprintf("%s自動裝備.", thisCard.GetDisplayNameWithBracket()))
+					}
+					strs = append(strs, fmt.Sprintf("%s盯上了%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
+					strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: 0, Hor: 1}))
+					thisCard.actionTimes--
+					return strings.Join(strs, "\n")
+				}
+			},
+			OnMysterFunc: func(thisCard *CardOption) func(args ...interface{}) string {
+				return func(args ...interface{}) (r string) {
+					if thisCard.actionTimes == 0 {
+						return ""
+					}
+					var strs []string
+					if !thisCard.getEquipped() {
+						return thisCard.OnDisplayFunc()
+					}
+					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
+					strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+					thisCard.actionTimes--
+					return strings.Join(strs, "\n")
+				}
+			},
+			OnHealthDamageAfterFunc: func(thisCard *CardOption) func(args ...interface{}) string {
+				return func(args ...interface{}) (r string) {
+					thisCard.MakeHealth(1)
+					return fmt.Sprintf("<%s>回復1", thisCard.GetDisplayName())
+				}
+			},
+		},
 		1,
 	},
 	{
 		DefaultCardOption{
 			cost:        0,
-			Info:        Info{Health: 4, HealthMax: 4, Combat: 1},
+			Info:        Info{Health: 4, HealthMax: 4, Combat: 1, Damage: 1},
 			cardName:    "Vampire Hunter",
 			displayname: "吸血鬼獵人",
 			cardType:    cardTypeValue.asset,
@@ -359,6 +409,7 @@ var baseCards = []struct {
 
 					if !thisCard.getEquipped() {
 						if thisCard.makeEquipped(true) {
+							thisCard.actionTimes--
 							return fmt.Sprintf("<%s>成為你的伙伴.", thisCard.GetDisplayName())
 						}
 					}
@@ -366,7 +417,7 @@ var baseCards = []struct {
 						target = thisPlayer
 					}
 
-					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisPlayer.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
+					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
 					strs = append(strs, thisCard.Attack(target, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
 
 					thisCard.actionTimes--
