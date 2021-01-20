@@ -54,31 +54,34 @@ func (p *Players) ActivateCard(currentPlayerID string, cardIndex int, command st
 	if currentCard := currentPlayer.GetCard(cardIndex); currentCard == nil {
 		return ""
 	}
-
-	cmds := strings.Split(command, " ")
 	var targetPlayer power.PlayerIF = nil
 	var target power.FightIF = nil
 
-	if len(cmds) >= 1 {
-		tmpCmd := cmds[0]
+	if len(command) > 0 {
 
-		if tc := tmpCmd[0:1]; tc == "@" {
-			cmds[0] = tmpCmd[1:]
-		}
-		if v := p.GetPlayer(cmds[0]); v != nil {
-			targetPlayer = v
-			target = v
-			if len(cmds) > 1 {
-				if x, err := strconv.Atoi(cmds[1]); err == nil {
-					if c := targetPlayer.GetCard(x); c != nil {
-						target = c
-					}
+		cmds := strings.Split(command, " ")
+
+		if len(cmds) >= 1 {
+			if len(cmds[0]) > 0 {
+				if cmds[0][0:1] == "@" {
+					cmds[0] = cmds[0][1:]
 				}
 			}
-		} else {
-			if x, err := strconv.Atoi(cmds[0]); err == nil {
-				if c := currentPlayer.GetCard(x); c != nil {
-					target = c
+			if v := p.GetPlayer(cmds[0]); v != nil {
+				targetPlayer = v
+				target = v
+				if len(cmds) > 1 {
+					if x, err := strconv.Atoi(cmds[1]); err == nil {
+						if c := targetPlayer.GetCard(x); c != nil {
+							target = c
+						}
+					}
+				}
+			} else {
+				if x, err := strconv.Atoi(cmds[0]); err == nil {
+					if c := currentPlayer.GetCard(x); c != nil {
+						target = c
+					}
 				}
 			}
 		}
