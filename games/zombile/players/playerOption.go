@@ -114,7 +114,7 @@ func (po *PlayerOption) GotHurt(from power.FightIF, dmg power.Damage) string {
 		}
 	}
 	if po.GetHealth() <= 0 {
-		strs = append(strs, fmt.Sprintf("%s is dead.", po.GetDisplayName()))
+		strs = append(strs, fmt.Sprintf("%s死亡.", po.GetDisplayName()))
 		return strings.Join(strs, "\n")
 	}
 	if po.GetHorror() >= defaultHorror {
@@ -130,10 +130,10 @@ func (po *PlayerOption) GotHeal(from power.FightIF, dmg power.Damage) string {
 		if po.MakeHealth(dmg.Atk) {
 			strs = append(strs, fmt.Sprintf("[%s]生命%+d(%d)", po.GetDisplayName(), dmg.Atk, po.GetHealth()))
 		}
-		if dmg.Hor != 0 {
-			po.MakeHorror(-dmg.Hor)
-			strs = append(strs, fmt.Sprintf("[%s]恐懼%+d(%d)", po.GetDisplayName(), -dmg.Hor, po.GetHorror()))
-		}
+	}
+	if dmg.Hor != 0 {
+		po.MakeHorror(-dmg.Hor)
+		strs = append(strs, fmt.Sprintf("[%s]恐懼%+d(%d)", po.GetDisplayName(), -dmg.Hor, po.GetHorror()))
 	}
 	return strings.Join(strs, "\n")
 }
