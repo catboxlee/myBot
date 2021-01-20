@@ -334,7 +334,7 @@ var baseCards = []struct {
 				}
 			},
 		},
-		1,
+		3,
 	},
 	{
 		DefaultCardOption{
