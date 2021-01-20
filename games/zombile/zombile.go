@@ -250,7 +250,8 @@ func (g *GameType) MoveCards(fromPlayer power.PlayerIF, tCard power.CardIF, toPl
 
 // PlayerJoin ...
 func (g *GameType) PlayerJoin() {
-	g.playersSequence = append(g.playersSequence, "users.LineUser.UserProfile.UserID")
+	log.Println("zombile::PlayerJoin():", users.LineUser.UserProfile.UserID)
+	g.playersSequence = append(g.playersSequence, users.LineUser.UserProfile.UserID)
 	if r, n := g.Players.PlayerJoin(users.LineUser.UserProfile.UserID, users.LineUser.UserProfile.DisplayName); r {
 		texts = append(texts, n+" join.")
 	}
