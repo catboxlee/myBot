@@ -401,7 +401,7 @@ var baseCards = []struct {
 				}
 			},
 		},
-		1,
+		0,
 	},
 	{
 		DefaultCardOption{
@@ -436,8 +436,19 @@ var baseCards = []struct {
 					if !thisCard.getEquipped() {
 						return thisCard.OnDisplayFunc()
 					}
-					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
-					strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+					d := dice.Dice
+					ap := power.Power.GetPlayersSequence()
+					d.Roll(fmt.Sprintf("1d%d", len(ap)))
+					if ap[d.Hit-1] == thisCard.OwnPlayer.GetUserID() {
+						strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
+						strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+					} else {
+						moveTo := power.Power.GetPlayer(ap[d.Hit-1])
+						power.Power.MoveCards(thisCard.OwnPlayer, thisCard, moveTo)
+						strs = append(strs, fmt.Sprintf("%s轉移目標..", thisCard.GetDisplayNameWithBracket()))
+						strs = append(strs, fmt.Sprintf("%s盯上了%s.", thisCard.GetDisplayNameWithBracket(), moveTo.GetDisplayNameWithBracket()))
+						strs = append(strs, thisCard.Attack(moveTo, power.Damage{Atk: 0, Hor: 1}))
+					}
 					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
@@ -449,19 +460,19 @@ var baseCards = []struct {
 				}
 			},
 		},
-		2,
+		4,
 	},
 	{
 		DefaultCardOption{
 			cost:        0,
 			Info:        Info{5, 5, 1, 2, 1},
 			cardName:    "Vampire",
-			displayname: emoji.Emoji(":ghost:") + "吸血鬼。艾德華",
+			displayname: "吸血鬼。艾德嘉",
 			cardType:    cardTypeValue.asset,
 			CardTraits:  []cardTraitsEnum{CardTraitsValue.Enemy},
 			desc:        "吸血: 每次攻擊回復自身生命1",
 			equipped:    false,
-			usesOption:  usesOption{uses: false},
+			usesOption:  usesOption{uses: false, quantity: 5},
 			actionTimes: 1,
 			OnDisplayFunc: func(thisCard *CardOption) func(args ...interface{}) string {
 				return func(args ...interface{}) (r string) {
@@ -484,8 +495,31 @@ var baseCards = []struct {
 					if !thisCard.getEquipped() {
 						return thisCard.OnDisplayFunc()
 					}
-					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
-					strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+					if thisCard.Health < thisCard.quantity {
+						switch thisCard.spend {
+						case 0:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "為什麼要如此追殺我們！？"))
+						case 1:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "我們也想活下去啊！"))
+						case 2:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "就算是吸血鬼, 也有追求幸福的權利啊!"))
+						}
+						thisCard.spend++
+					}
+					thisCard.quantity = helper.Min(thisCard.Info.Health, thisCard.quantity)
+					d := dice.Dice
+					ap := power.Power.GetPlayersSequence()
+					d.Roll(fmt.Sprintf("1d%d", len(ap)))
+					if ap[d.Hit-1] == thisCard.OwnPlayer.GetUserID() {
+						strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), thisCard.OwnPlayer.GetDisplayNameWithBracket()))
+						strs = append(strs, thisCard.Attack(thisCard.OwnPlayer, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
+					} else {
+						moveTo := power.Power.GetPlayer(ap[d.Hit-1])
+						power.Power.MoveCards(thisCard.OwnPlayer, thisCard, moveTo)
+						strs = append(strs, fmt.Sprintf("%s轉移目標..", thisCard.GetDisplayNameWithBracket()))
+						strs = append(strs, fmt.Sprintf("%s盯上了%s.", thisCard.GetDisplayNameWithBracket(), moveTo.GetDisplayNameWithBracket()))
+						strs = append(strs, thisCard.Attack(moveTo, power.Damage{Atk: 0, Hor: 1}))
+					}
 					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
@@ -504,7 +538,7 @@ var baseCards = []struct {
 			cost:        0,
 			Info:        Info{Health: 4, HealthMax: 4, Combat: 1, Damage: 1},
 			cardName:    "Vampire Hunter",
-			displayname: "吸血鬼獵人",
+			displayname: "亞歷山大",
 			cardType:    cardTypeValue.asset,
 			CardTraits:  []cardTraitsEnum{CardTraitsValue.ally},
 			desc:        "",
@@ -528,10 +562,76 @@ var baseCards = []struct {
 					if target == nil {
 						target = thisPlayer
 					}
+					switch thisCard.spend {
+					case 0:
+						strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "為了守護人類."))
+					case 1:
+						strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "無法恢復成人類的怪物, 就該被消滅."))
+					case 2:
+						strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "就算是吸血鬼, 不也曾是人類嗎."))
+					case 3:
+						strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "生命之間真的有區別嗎?"))
+					}
+					thisCard.spend++
 
 					strs = append(strs, fmt.Sprintf("%s攻擊%s.", thisCard.GetDisplayNameWithBracket(), target.GetDisplayNameWithBracket()))
 					strs = append(strs, thisCard.Attack(target, power.Damage{Atk: thisCard.Info.Damage, Hor: thisCard.Info.Horror}))
 
+					thisCard.actionTimes--
+					return strings.Join(strs, "\n")
+				}
+			},
+		},
+		1,
+	},
+	{
+		DefaultCardOption{
+			cost:        0,
+			Info:        Info{Health: 4, HealthMax: 4, Combat: 1, Damage: 1},
+			cardName:    "Eleonora",
+			displayname: "艾蓮諾拉",
+			cardType:    cardTypeValue.asset,
+			CardTraits:  []cardTraitsEnum{CardTraitsValue.ally},
+			desc:        "",
+			equipped:    false,
+			usesOption:  usesOption{uses: false},
+			actionTimes: 1,
+			ActivateFunc: func(thisCard *CardOption) func(power.PlayerIF, power.FightIF) string {
+				return func(targetPlayer power.PlayerIF, target power.FightIF) (r string) {
+					if thisCard.actionTimes == 0 {
+						return ""
+					}
+
+					var strs []string
+
+					if !thisCard.getEquipped() {
+						if thisCard.makeEquipped(true) {
+							return fmt.Sprintf("<%s>成為你的伙伴.", thisCard.GetDisplayName())
+						}
+					}
+					return strings.Join(strs, "\n")
+				}
+			},
+			OnMysterFunc: func(thisCard *CardOption) func(args ...interface{}) string {
+				return func(args ...interface{}) (r string) {
+					if thisCard.actionTimes == 0 {
+						return ""
+					}
+					var strs []string
+					if !thisCard.getEquipped() {
+						return thisCard.OnDisplayFunc()
+					}
+					if thisCard.Health < thisCard.quantity {
+						switch thisCard.spend {
+						case 0:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "去獵殺吸血鬼吧, 這是命令喲."))
+						case 3:
+							strs = append(strs, fmt.Sprintf("%s「%s」", thisCard.GetDisplayNameWithBracket(), "你只要服從我的命令就好了."))
+						}
+						thisCard.spend++
+					}
+					thisCard.quantity = helper.Min(thisCard.Info.Health, thisCard.quantity)
+					strs = append(strs, fmt.Sprintf("%s召喚士兵.", thisCard.GetDisplayNameWithBracket()))
 					thisCard.actionTimes--
 					return strings.Join(strs, "\n")
 				}
