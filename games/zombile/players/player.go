@@ -61,7 +61,8 @@ func (p *Players) ActivateCard(currentPlayerID string, cardIndex int, command st
 
 	if len(cmds) >= 1 {
 		tmpCmd := cmds[0]
-		if tmpCmd[0:1] == "@" {
+
+		if tc := tmpCmd[0:1]; tc == "@" {
 			cmds[0] = tmpCmd[1:]
 		}
 		if v := p.GetPlayer(cmds[0]); v != nil {
