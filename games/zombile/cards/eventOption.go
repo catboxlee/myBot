@@ -1,6 +1,6 @@
 package cards
 
-import "my/games/zombile/power"
+import "myBot/games/zombile/power"
 
 type eventOption struct {
 	//attribute []struct{}

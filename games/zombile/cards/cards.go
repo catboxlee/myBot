@@ -2,7 +2,7 @@ package cards
 
 import (
 	"fmt"
-	"my/games/zombile/power"
+	"myBot/games/zombile/power"
 	"strings"
 )
 

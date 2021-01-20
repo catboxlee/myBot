@@ -2,10 +2,10 @@ package players
 
 import (
 	"fmt"
-	"my/games/zombile/cards"
-	"my/games/zombile/lang"
-	"my/games/zombile/power"
-	"my/helper"
+	"myBot/games/zombile/cards"
+	"myBot/games/zombile/lang"
+	"myBot/games/zombile/power"
+	"myBot/helper"
 	"strings"
 )
 

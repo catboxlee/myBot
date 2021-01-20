@@ -2,9 +2,9 @@ package cards
 
 import (
 	"fmt"
-	"my/games/zombile/lang"
-	"my/games/zombile/power"
-	"my/helper"
+	"myBot/games/zombile/lang"
+	"myBot/games/zombile/power"
+	"myBot/helper"
 	"strings"
 )
 

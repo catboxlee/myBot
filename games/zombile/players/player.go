@@ -2,8 +2,8 @@ package players
 
 import (
 	"log"
-	"my/games/zombile/cards"
-	"my/games/zombile/power"
+	"myBot/games/zombile/cards"
+	"myBot/games/zombile/power"
 	"strconv"
 	"strings"
 )

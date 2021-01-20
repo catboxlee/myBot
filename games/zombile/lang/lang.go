@@ -1,6 +1,6 @@
 package lang
 
-import "my/emoji"
+import "myBot/emoji"
 
 var langCodeMap = map[string]string{
 	"boom":       "Boom",
