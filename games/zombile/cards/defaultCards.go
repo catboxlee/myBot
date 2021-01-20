@@ -66,6 +66,7 @@ var baseCards = []struct {
 								power.Power.MoveCards(thisPlayer, thisCard, targetPlayer)
 								strs = append(strs, fmt.Sprintf("%s獲得%s.", targetPlayer.GetDisplayNameWithBracket(), thisCard.GetDisplayNameWithBracket()))
 							}
+							thisCard.actionTimes--
 							return strings.Join(strs, "\n")
 						}
 
@@ -127,6 +128,7 @@ var baseCards = []struct {
 								power.Power.MoveCards(thisPlayer, thisCard, targetPlayer)
 								strs = append(strs, fmt.Sprintf("%s獲得%s.", targetPlayer.GetDisplayNameWithBracket(), thisCard.GetDisplayNameWithBracket()))
 							}
+							thisCard.actionTimes--
 							return strings.Join(strs, "\n")
 						}
 
