@@ -60,8 +60,8 @@ func (p *Players) ActivateCard(currentPlayerID string, cardIndex int, command st
 	var target power.FightIF = nil
 
 	if len(cmds) >= 1 {
-		if cmds[0][0:1] == "@" {
-			cmds[0] = cmds[0][1:]
+		if (cmds[0])[0:1] == "@" {
+			cmds[0] = (cmds[0])[1:]
 		}
 		if v := p.GetPlayer(cmds[0]); v != nil {
 			targetPlayer = v
