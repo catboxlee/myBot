@@ -241,7 +241,7 @@ var baseCards = []struct {
 			cost:        0,
 			Info:        Info{4, 4, 3, 1, 1},
 			cardName:    "Joker",
-			displayname: emoji.Emoji(":ghost:") + "天花板上的小丑" + emoji.Emoji(":clown_face:"),
+			displayname: emoji.Emoji(":ghost:") + "天花板上的小丑",
 			cardType:    cardTypeValue.asset,
 			CardTraits:  []cardTraitsEnum{CardTraitsValue.Enemy},
 			desc:        "隱蔽: 小丑在非戰鬥回合無法被攻擊.",
