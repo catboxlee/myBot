@@ -161,7 +161,8 @@ func (g *GameType) reset() {
 	// 初始化
 	g.deck.ClearCards()        // 清空牌堆
 	g.discardPile.ClearCards() // 清空棄牌堆
-	g.ClearPlayers()           // 清空players
+	g.playersSequence = nil
+	g.ClearPlayers() // 清空players
 	g.turn = -1
 	g.currentPlayerID = ""
 	power.Power.GameIF = power.NewPower(g)
