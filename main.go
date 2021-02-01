@@ -68,9 +68,10 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 
 func doLinebotEvents(events []*linebot.Event) {
 
-	rand.Seed(time.Now().UnixNano())
+	testI := 1
 
 	for _, event := range events {
+	rand.Seed(time.Now().UnixNano())
 		if event.Type == linebot.EventTypeMessage {
 			//displayName := GetSenderInfo(event)
 			switch message := event.Message.(type) {
@@ -80,6 +81,14 @@ func doLinebotEvents(events []*linebot.Event) {
 				world.LoadConfigData(sourceID)
 				input := strings.TrimSpace(string(message.Text))
 				var texts []string
+				if len(input) > 0 {
+					if input == "/say" {
+						testI++
+						texts = append(texts, fmt.Sprint("/say", testI))
+						replyMsg(event, texts)
+						continue
+					}
+				}
 				texts = common.Cmd(sourceID, input)
 				if len(texts) == 0 {
 					switch world.ConfigsData[sourceID].Game {
