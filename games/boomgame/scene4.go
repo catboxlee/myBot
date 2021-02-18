@@ -121,18 +121,18 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 		if len(b.Info["LastPlayerID"].(string)) > 0 {
 			boomDice.Roll("1d100")
 			if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= int(boomDice.Hit) {
-				strs = fmt.Sprintf("【%s】「燕返%d%%！」發動!\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+				strs += fmt.Sprintf("【%s】「燕返%d%%！」發動!\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
 				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 30 {
 					users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn += 2
-					strs = fmt.Sprintf("【%s】獲得 常註燕返%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+					strs += fmt.Sprintf("【%s】獲得 常註燕返%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				}
 				tmp.SwallowReturn = users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
-				strs = fmt.Sprintf("%s%s", strs, b.chkChance(g))
+				strs += fmt.Sprintf("%s%s", strs, b.chkChance(g))
 			} else {
-				strs = fmt.Sprintf("【%s】「燕返%d%%！」失敗.\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+				strs += fmt.Sprintf("【%s】「燕返%d%%！」失敗.\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
 				tmp.SwallowReturn = users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
@@ -145,7 +145,7 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 		boomDice.Roll("1d1")
 		switch int(boomDice.Hit) {
 		case 1:
-			strs = fmt.Sprintf("【%s】 瑪修「頌為堅城的雪花之壁！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+			strs += fmt.Sprintf("【%s】 瑪修「頌為堅城的雪花之壁！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
 			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 		}
 	}
