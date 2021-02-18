@@ -120,7 +120,7 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 	if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn > 0 {
 		if len(b.Info["LastPlayerID"].(string)) > 0 {
 			boomDice.Roll("1d100")
-			if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= int(boomDice.Hit) {
+			if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn >= int(boomDice.Hit) {
 				strs += fmt.Sprintf("【%s】「燕返%d%%！」發動!\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
 				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 30 {
