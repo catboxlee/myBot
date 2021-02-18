@@ -36,6 +36,8 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 				switch {
 				case b.Info["Current"] == b.Info["Hit"]:
 					b.gameOver(g)
+					// 結算
+					users.LineUser.SaveUserData()
 					g.showRank()
 					g.checkRank()
 					g.reset()
@@ -115,17 +117,34 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 func (b *scene4InfoType) chkChance(g *GameType) string {
 	boomDice := &dice.Dice
 	var strs string
-	boomDice.Roll("1d100")
-	if 30 >= int(boomDice.Hit) {
-		boomDice.Roll("1d2")
-		switch int(boomDice.Hit) {
-		case 2:
-			if len(b.Info["LastPlayerID"].(string)) > 0 {
-				strs = fmt.Sprintf("【%s】 不二周助「燕返！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+	if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn > 0 {
+		if len(b.Info["LastPlayerID"].(string)) > 0 {
+			boomDice.Roll("1d100")
+			if g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= int(boomDice.Hit) {
+				strs = fmt.Sprintf("【%s】「燕返%d%%！」發動!\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
+				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 30 {
+					users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn += 2
+					strs = fmt.Sprintf("【%s】獲得 常註燕返%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+				}
+				tmp.SwallowReturn = users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn
+				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
 				strs = fmt.Sprintf("%s%s", strs, b.chkChance(g))
+			} else {
+				strs = fmt.Sprintf("【%s】「燕返%d%%！」失敗.\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
+				tmp.SwallowReturn = users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn
+				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
 			}
-		default:
+		}
+	}
+
+	boomDice.Roll("1d100")
+	if 30 >= int(boomDice.Hit) {
+		boomDice.Roll("1d1")
+		switch int(boomDice.Hit) {
+		case 1:
 			strs = fmt.Sprintf("【%s】 瑪修「頌為堅城的雪花之壁！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
 			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 		}
@@ -135,6 +154,15 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 
 func (b *scene4InfoType) chkFate(g *GameType) {
 	boomDice := &dice.Dice
+	boomDice.Roll("1d3")
+	switch int(boomDice.Hit) {
+	case 3:
+		tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
+		tmp.SwallowReturn += 10
+		g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
+		texts = append(texts, fmt.Sprintf("【%s】獲得 燕返%d%%(+10%%)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn))
+	}
+
 	if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
 		texts = append(texts, fmt.Sprintf("「信仰之躍！！！」"))
 		b.Info["BoomCnt"] = (b.Info["BoomCnt"].(float64)) + 10
