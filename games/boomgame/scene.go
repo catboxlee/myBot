@@ -20,7 +20,10 @@ func (g *GameType) setSceneInfo() {
 	case 2:
 		g.scene = 2
 		g.data.sceneInfo = &scene4InfoType{}
-		g.data.players.List = make(map[string]playerType)
+		if len(g.data.players.List)==0{
+			g.data.players.List = make(map[string]playerType)
+		}
+		
 		g.data.players.Queue = nil
 	default:
 		g.scene = 1

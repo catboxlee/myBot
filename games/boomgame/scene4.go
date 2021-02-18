@@ -158,9 +158,10 @@ func (b *scene4InfoType) chkFate(g *GameType) {
 	switch int(boomDice.Hit) {
 	case 3:
 		tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
-		tmp.SwallowReturn += 10
+		boomDice.Roll("1d10")
+		tmp.SwallowReturn += boomDice.Hit
 		g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
-		texts = append(texts, fmt.Sprintf("【%s】獲得 燕返%d%%(+10%%)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn))
+		texts = append(texts, fmt.Sprintf("【%s】獲得 燕返%d%%(+%d%%)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn, boomDice.Hit))
 	}
 
 	if 3 == int(b.Info["Max"].(float64)-b.Info["Min"].(float64)) {
