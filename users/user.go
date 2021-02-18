@@ -10,9 +10,10 @@ import (
 
 // UserDataType ...
 type UserDataType struct {
-	UserID      string
-	DisplayName string
-	Money       int
+	UserID        string
+	DisplayName   string
+	Money         int
+	SwallowReturn int
 }
 
 // UsersType ...
@@ -61,13 +62,13 @@ func (u *UsersType) loadUsersData() {
 // SaveUserData ...
 func (u *CurrentUserProfile) SaveUserData() {
 
-	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money) values($1, $2, $3)
+	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn) values($1, $2, $3, $4)
 	on conflict(userid)
-	do update set displayname = $2, money = $3`)
+	do update set displayname = $2, money = $3, swallowreturn = $4`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money)
+	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,6 +81,7 @@ func (u *CurrentUserProfile) checkUserExist() {
 		UsersList.Data[u.UserProfile.UserID].UserID = u.UserProfile.UserID
 		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
 		UsersList.Data[u.UserProfile.UserID].Money = 10
+		UsersList.Data[u.UserProfile.UserID].SwallowReturn = 0
 		u.SaveUserData()
 	}
 }
