@@ -206,7 +206,7 @@ func (b *GameType) doGaCha(n int) string {
 		cnt   int
 	}{
 		{level: "ssr", cnt: 3},
-		{level: "ssr", cnt: 12},
+		{level: "sr", cnt: 12},
 		{level: "r", cnt: 85},
 	}
 	var gaShaPons []string
