@@ -23,7 +23,6 @@ import (
 	"myBot/world"
 
 	"myBot/games/boomgame"
-	"myBot/games/zombile"
 	"net/http"
 	"os"
 	"strings"
@@ -95,9 +94,6 @@ func doLinebotEvents(events []*linebot.Event) {
 					case 1:
 						boomgame.CheckExistData(sourceID)
 						texts = boomgame.Boom[sourceID].Command(input)
-					case 2:
-						zombile.CheckExistData(sourceID)
-						texts = zombile.Zombile[sourceID].Command(input)
 					default:
 					}
 				}
