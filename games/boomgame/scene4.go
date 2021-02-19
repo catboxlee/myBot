@@ -35,6 +35,7 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 				g.recordPlayers()
 				switch {
 				case b.Info["Current"] == b.Info["Hit"]:
+					log.Println("Hit")
 					b.gameOver(g)
 					// 結算
 					users.LineUser.SaveUserData()
@@ -43,14 +44,17 @@ func (b *scene4InfoType) runPhase(input string, g *GameType) {
 					g.reset()
 					g.startPhase()
 				case b.Info["Current"].(float64) < b.Info["Hit"].(float64):
+					log.Println("Min")
 					b.Info["Min"] = b.Info["Current"].(float64)
 					b.chkFate(g)
 					g.show()
 				case b.Info["Current"].(float64) > b.Info["Hit"].(float64):
+					log.Println("Max")
 					b.Info["Max"] = b.Info["Current"].(float64)
 					b.chkFate(g)
 					g.show()
 				}
+				log.Println("call updateData()")
 				g.updateData()
 			}
 		}
@@ -96,6 +100,7 @@ func (b *scene4InfoType) reset() {
 }
 
 func (b *scene4InfoType) gameOver(g *GameType) {
+	log.Println("gameOver()")
 	str := b.chkChance(g)
 	if len(str) > 0 {
 		texts = append(texts, str)
@@ -115,6 +120,20 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 }
 
 func (b *scene4InfoType) chkChance(g *GameType) string {
+	log.Println("chkChance()")
+	var strs []string
+	if s := b.chanceSwallowReturn(g); len(s) > 0 {
+		strs = append(strs, s)
+	}
+
+	if s := b.chanceMashKyrielight(g); len(s) > 0 {
+		strs = append(strs, s)
+	}
+	return strings.Join(strs, "\n")
+}
+
+func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
+	log.Println("chanceSwallowReturn()")
 	boomDice := &dice.Dice
 	var strs string
 	var swallowReturn = users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn + g.data.players.List[b.Info["CurrentPlayerID"].(string)].SwallowReturn
@@ -131,7 +150,7 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 				tmp.SwallowReturn = 0
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
-				strs += fmt.Sprintf("%s%s", strs, b.chkChance(g))
+				strs += fmt.Sprintf("%s", b.chanceSwallowReturn(g))
 			} else {
 				strs += fmt.Sprintf("【%s】「燕返%d%%！」失敗.\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, swallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
@@ -140,15 +159,17 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 			}
 		}
 	}
+	return strs
+}
 
+func (b *scene4InfoType) chanceMashKyrielight(g *GameType) string {
+	log.Println("chanceMashKyrielight()")
+	var strs string
+	boomDice := &dice.Dice
 	boomDice.Roll("1d100")
 	if 30 >= int(boomDice.Hit) {
-		boomDice.Roll("1d1")
-		switch int(boomDice.Hit) {
-		case 1:
-			strs += fmt.Sprintf("【%s】 瑪修「頌為堅城的雪花之壁！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
-			b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
-		}
+		strs += fmt.Sprintf("【%s】 瑪修「頌為堅城的雪花之壁！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+		b.Info["BoomCnt"] = math.Ceil(b.Info["BoomCnt"].(float64) / 3)
 	}
 	return strs
 }
