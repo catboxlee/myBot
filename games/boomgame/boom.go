@@ -96,6 +96,9 @@ func (b *GameType) recordPlayers() {
 func (b *GameType) showStatus() {
 	var str []string
 	str = append(str, fmt.Sprintf("*%s*", users.LineUser.UserProfile.DisplayName))
+	str = append(str, fmt.Sprintf("【資產】"))
+	str = append(str, fmt.Sprintf("%s %d", emoji.Emoji(":money_bag:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].Money))
+	str = append(str, fmt.Sprintf("%s %d", emoji.Emoji(":gem_stone:"), 9999))
 	str = append(str, fmt.Sprintf("【擁有技能】"))
 	if users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn > 0 {
 		str = append(str, fmt.Sprintf("燕返: %d%%", users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn))
