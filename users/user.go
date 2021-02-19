@@ -14,6 +14,7 @@ type UserDataType struct {
 	DisplayName   string
 	Money         int
 	SwallowReturn int
+	GemStone      int
 }
 
 // UsersType ...
@@ -40,13 +41,13 @@ func init() {
 func (u *UsersType) loadUsersData() {
 
 	u.Data = make(map[string]*UserDataType)
-	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn FROM users")
+	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn, gemstone FROM users")
 	checkError(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var data UserDataType
-		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn); err {
+		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn, &data.GemStone); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
 		case nil:
@@ -62,13 +63,13 @@ func (u *UsersType) loadUsersData() {
 // SaveUserData ...
 func (u *CurrentUserProfile) SaveUserData() {
 
-	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn) values($1, $2, $3, $4)
+	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn) values($1, $2, $3, $4, $5)
 	on conflict(userid)
-	do update set displayname = $2, money = $3, swallowreturn = $4`)
+	do update set displayname = $2, money = $3, swallowreturn = $4, gemstone = $5`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn)
+	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn, UsersList.Data[u.UserProfile.UserID].GemStone)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,6 +83,7 @@ func (u *CurrentUserProfile) checkUserExist() {
 		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
 		UsersList.Data[u.UserProfile.UserID].Money = 10
 		UsersList.Data[u.UserProfile.UserID].SwallowReturn = 0
+		UsersList.Data[u.UserProfile.UserID].GemStone = 0
 		u.SaveUserData()
 	}
 }
