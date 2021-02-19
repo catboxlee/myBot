@@ -181,10 +181,14 @@ func (b *GameType) resetRank() {
 
 func (b *GameType) gaCha() {
 	var strs []string
-	users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= 250
-	strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, 250))
-	strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
-	strs = append(strs, b.doGaCha())
+	if users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone-250 >= 0 {
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= 250
+		strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, 250))
+		strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
+		strs = append(strs, b.doGaCha())
+	} else {
+		strs = append(strs, fmt.Sprintf("【%s】%s不足", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:")))
+	}
 	texts = append(texts, strings.Join(strs, "\n"))
 }
 
