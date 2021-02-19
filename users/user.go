@@ -40,13 +40,13 @@ func init() {
 func (u *UsersType) loadUsersData() {
 
 	u.Data = make(map[string]*UserDataType)
-	rows, err := mydb.Db.Query("SELECT userid, displayname, money FROM users")
+	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn FROM users")
 	checkError(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var data UserDataType
-		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money); err {
+		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
 		case nil:
