@@ -63,7 +63,7 @@ func (u *UsersType) loadUsersData() {
 // SaveUserData ...
 func (u *CurrentUserProfile) SaveUserData() {
 
-	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn) values($1, $2, $3, $4, $5)
+	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn, gemstone) values($1, $2, $3, $4, $5)
 	on conflict(userid)
 	do update set displayname = $2, money = $3, swallowreturn = $4, gemstone = $5`)
 	if err != nil {
