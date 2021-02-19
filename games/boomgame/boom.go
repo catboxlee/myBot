@@ -83,7 +83,9 @@ func (b *GameType) checkCommand(input string) {
 		log.Println("call showStatus()")
 		b.showStatus()
 	case "gacha":
-		b.gaCha()
+		b.gaCha(1)
+	case "gacha10":
+		b.gaCha(10)
 	}
 }
 
@@ -179,20 +181,26 @@ func (b *GameType) resetRank() {
 	b.rank = make(map[string]*rankType)
 }
 
-func (b *GameType) gaCha() {
+func (b *GameType) gaCha(n int) {
 	var strs []string
-	if users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone-250 >= 0 {
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= 250
+	money := n * 250
+	if users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone-money >= 0 {
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= money
 		strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, 250))
-		strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
-		strs = append(strs, b.doGaCha())
+		if n == 10 {
+			strs = append(strs, fmt.Sprintf("【%s】轉蛋10連抽", users.LineUser.UserProfile.DisplayName))
+			strs = append(strs, b.doGaCha(n))
+		} else {
+			strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
+			strs = append(strs, b.doGaCha(n))
+		}
 	} else {
 		strs = append(strs, fmt.Sprintf("【%s】%s不足", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:")))
 	}
 	texts = append(texts, strings.Join(strs, "\n"))
 }
 
-func (b *GameType) doGaCha() string {
+func (b *GameType) doGaCha(n int) string {
 	var gaShaPon = []struct {
 		level string
 		cnt   int
@@ -209,18 +217,20 @@ func (b *GameType) doGaCha() string {
 			gaShaPons = append(gaShaPons, d.level)
 		}
 	}
-	r := rand.Perm(len(gaShaPons))[0]
-	switch gaShaPons[r] {
-	case "ssr":
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
-		strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+1%"))
-	case "sr":
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
-		strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
-	case "r":
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
-		strs = append(strs, fmt.Sprint("SR - 燕返+1%"))
-	default:
+	for i := 0; i < n; i++ {
+		r := rand.Perm(len(gaShaPons))[0]
+		switch gaShaPons[r] {
+		case "ssr":
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
+			strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+1%"))
+		case "sr":
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+			strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
+		case "r":
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
+			strs = append(strs, fmt.Sprint("SR - 燕返+1%"))
+		default:
+		}
 	}
 	return strings.Join(strs, "\n")
 }
