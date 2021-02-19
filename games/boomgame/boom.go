@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"myBot/emoji"
 	"myBot/helper"
 	"myBot/mydb"
@@ -81,6 +82,8 @@ func (b *GameType) checkCommand(input string) {
 	case "v":
 		log.Println("call showStatus()")
 		b.showStatus()
+	case "gacha":
+		b.gaCha()
 	}
 }
 
@@ -93,6 +96,7 @@ func (b *GameType) recordPlayers() {
 		b.data.players.List[users.LineUser.UserProfile.UserID] = playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, SwallowReturn: 0}
 	}
 }
+
 func (b *GameType) showStatus() {
 	var str []string
 	str = append(str, fmt.Sprintf("*%s*", users.LineUser.UserProfile.DisplayName))
@@ -173,6 +177,48 @@ func (b *GameType) checkRank() {
 
 func (b *GameType) resetRank() {
 	b.rank = make(map[string]*rankType)
+}
+
+func (b *GameType) gaCha() {
+	var strs []string
+	users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= 250
+	strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, 250))
+	strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
+	strs = append(strs, b.doGaCha())
+	texts = append(texts, strings.Join(strs, "\n"))
+}
+
+func (b *GameType) doGaCha() string {
+	var gaShaPon = []struct {
+		level string
+		cnt   int
+	}{
+		{level: "ssr", cnt: 3},
+		{level: "ssr", cnt: 12},
+		{level: "r", cnt: 85},
+	}
+	var gaShaPons []string
+	var strs []string
+
+	for _, d := range gaShaPon {
+		for i := 0; i < d.cnt; i++ {
+			gaShaPons = append(gaShaPons, d.level)
+		}
+	}
+	r := rand.Perm(len(gaShaPons))[0]
+	switch gaShaPons[r] {
+	case "ssr":
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
+		strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+1%"))
+	case "sr":
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+		strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
+	case "r":
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
+		strs = append(strs, fmt.Sprint("SR - 燕返+1%"))
+	default:
+	}
+	return strings.Join(strs, "\n")
 }
 
 // CheckExistData ...
