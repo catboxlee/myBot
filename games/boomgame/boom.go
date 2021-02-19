@@ -224,10 +224,10 @@ func (b *GameType) doGaCha(n int) string {
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
 			strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+1%"))
 		case "sr":
-			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+			b.data.players.List[users.LineUser.UserProfile.UserID].SwallowReturn += 3
 			strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
 		case "r":
-			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
+			b.data.players.List[users.LineUser.UserProfile.UserID].SwallowReturn++
 			strs = append(strs, fmt.Sprint("R - 燕返+1%"))
 		default:
 		}
