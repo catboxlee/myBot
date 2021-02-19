@@ -228,7 +228,7 @@ func (b *GameType) doGaCha(n int) string {
 			strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
 		case "r":
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
-			strs = append(strs, fmt.Sprint("SR - 燕返+1%"))
+			strs = append(strs, fmt.Sprint("R - 燕返+1%"))
 		default:
 		}
 	}
