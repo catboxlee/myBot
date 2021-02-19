@@ -101,7 +101,7 @@ func (b *GameType) showStatus() {
 	str = append(str, fmt.Sprintf("%s %d", emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone))
 	str = append(str, fmt.Sprintf("【擁有技能】"))
 	if users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn > 0 {
-		str = append(str, fmt.Sprintf("燕返: %d%%", users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn))
+		str = append(str, fmt.Sprintf("燕返: %d%%(%d%%+%d%%)", users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn+b.data.players.List[users.LineUser.UserProfile.UserID].SwallowReturn, users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn, b.data.players.List[users.LineUser.UserProfile.UserID].SwallowReturn))
 	} else {
 		str = append(str, fmt.Sprintf("無"))
 	}
