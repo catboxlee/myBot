@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
-	"time"
 )
 
 // DiceType type
