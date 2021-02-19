@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"myBot/emoji"
+	"myBot/helper"
 	"myBot/mydb"
 	"myBot/users"
 	"sort"
@@ -77,14 +78,35 @@ func (b *GameType) checkCommand(input string) {
 		b.updateData()
 	case "rank":
 		b.showRank()
+	case "v":
+		log.Println("call showStatus()")
+		b.showStatus()
 	}
 }
 
 func (b *GameType) recordPlayers() {
-	if _, exist := b.data.players.List[users.LineUser.UserProfile.UserID]; !exist {
+	if exist, _ := helper.InArray(playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName}, b.data.players.Queue); !exist {
 		b.data.players.Queue = append(b.data.players.Queue, playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName})
-		b.data.players.List[users.LineUser.UserProfile.UserID] = playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, SwallowReturn: users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn}
 	}
+
+	if _, exist := b.data.players.List[users.LineUser.UserProfile.UserID]; !exist {
+		b.data.players.List[users.LineUser.UserProfile.UserID] = playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, SwallowReturn: 0}
+	}
+}
+func (b *GameType) showStatus() {
+	var str []string
+	str = append(str, fmt.Sprintf("【%s】", users.LineUser.UserProfile.DisplayName))
+	str = append(str, fmt.Sprintf("【擁有技能】"))
+	if users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn > 0 {
+		str = append(str, fmt.Sprintf("燕返: %d%%", users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn))
+	} else {
+		str = append(str, fmt.Sprintf("無"))
+	}
+	str = append(str, fmt.Sprintf("【擁有稱號】"))
+	str = append(str, fmt.Sprintf("無"))
+	str = append(str, fmt.Sprintf("【擁有道具】"))
+	str = append(str, fmt.Sprintf("無"))
+	texts = append(texts, strings.Join(str, "\n"))
 }
 
 func (b *GameType) show() {
