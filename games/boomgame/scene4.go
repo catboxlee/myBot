@@ -126,7 +126,7 @@ func (b *scene4InfoType) chkChance(g *GameType) string {
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
 				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 30 {
 					users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn += 2
-					strs += fmt.Sprintf("【%s】獲得 常註燕返%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
+					strs += fmt.Sprintf("【%s】獲得 燕返(常駐)%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				}
 				tmp.SwallowReturn = 0
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
