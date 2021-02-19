@@ -3,7 +3,7 @@ package cards
 import (
 	"fmt"
 	"myBot/emoji"
-	"myBot/games/zombile/cards/dice"
+	"myBot/dice"
 	"myBot/games/zombile/power"
 	"myBot/helper"
 	"strings"
