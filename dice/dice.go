@@ -18,7 +18,7 @@ var Dice diceType
 
 // Roll dice
 func (d *diceType) Roll(s string) {
-	rand.Seed(time.Now().UnixNano())
+	//rand.Seed(time.Now().UnixNano())
 	d.Hit = 0
 	d.Rolls = nil
 
