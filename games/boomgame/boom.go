@@ -83,7 +83,7 @@ func (b *GameType) checkCommand(input string) {
 func (b *GameType) recordPlayers() {
 	if _, exist := b.data.players.List[users.LineUser.UserProfile.UserID]; !exist {
 		b.data.players.Queue = append(b.data.players.Queue, playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName})
-		b.data.players.List[users.LineUser.UserProfile.UserID] = playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, SwallowReturn: users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn}
+		b.data.players.List[users.LineUser.UserProfile.UserID] = playerType{UserID: users.LineUser.UserProfile.UserID, DisplayName: users.LineUser.UserProfile.DisplayName, SwallowReturn: 0}
 	}
 }
 
