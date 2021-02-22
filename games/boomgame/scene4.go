@@ -110,40 +110,33 @@ func (b *scene4InfoType) gameOver(g *GameType) {
 
 	if b.Info["BoomCnt"].(float64) > float64(99) {
 		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
-		for _, u := range g.data.players.List {
-			if u.UserID == b.Info["CurrentPlayerID"] {
-				//str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), int(b.Info["Hit"].(float64))))
-			} else {
-				strs = append(strs, fmt.Sprintf("【%s】%s%d(+%d)", u.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[u.UserID].GemStone, 25))
-				if _, exist := g.rank[u.UserID]; exist {
-					users.UsersList.Data[u.UserID].GemStone += 250
-					//users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += 100
-				}
-			}
-		}
-		texts = append(texts, strings.Join(strs, "\n"))
+		
 	} else {
 		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
-		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
-		for _, u := range g.data.players.List {
-			if u.UserID == b.Info["CurrentPlayerID"] {
-				//str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), int(b.Info["Hit"].(float64))))
-			} else {
-				strs = append(strs, fmt.Sprintf("【%s】%s%d(+%d)", u.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[u.UserID].GemStone, 25))
-				if _, exist := g.rank[u.UserID]; exist {
-					users.UsersList.Data[u.UserID].GemStone += 25
-					//users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += 100
-				}
-			}
-		}
-		texts = append(texts, strings.Join(strs, "\n"))
+		//strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
 	}
 	if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 		g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
 	} else {
 		g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID] = &rankType{UserID: g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID, DisplayName: g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, Boom: int(b.Info["BoomCnt"].(float64))}
 	}
-
+	bonusGem := 25
+	if g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom >= 100 {
+		bonusGem = 250
+	}
+		for _, u := range g.data.players.List {
+			if u.UserID == b.Info["CurrentPlayerID"] {
+				//str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), int(b.Info["Hit"].(float64))))
+			} else {
+				if _, exist := g.rank[u.UserID]; exist {
+					users.UsersList.Data[u.UserID].GemStone += bonusGem
+					//users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += 100
+				}
+				strs = append(strs, fmt.Sprintf("【%s】%s%d(+%d)", u.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[u.UserID].GemStone, bonusGem))
+				
+			}
+		}
+		texts = append(texts, strings.Join(strs, "\n"))
 }
 
 func (b *scene4InfoType) chkChance(g *GameType) string {
