@@ -83,6 +83,8 @@ func (b *GameType) checkCommand(input string) {
 		log.Println("call showStatus()")
 		b.showStatus()
 	case "gacha":
+		b.gaCha(0)
+	case "gacha1":
 		b.gaCha(1)
 	case "gacha10":
 		b.gaCha(10)
@@ -206,6 +208,8 @@ func (b *GameType) gaCha(n int) {
 		strs = append(strs, fmt.Sprintf("「不二周助 轉蛋」"))
 		strs = append(strs, fmt.Sprintf("期間限定卡片:"))
 		strs = append(strs, fmt.Sprintf("SSR「燕返!不二周助」"))
+		strs = append(strs, fmt.Sprintf("單抽:/gacha1"))
+		strs = append(strs, fmt.Sprintf("10連抽:/gacha10"))
 	}
 	texts = append(texts, strings.Join(strs, "\n"))
 }
