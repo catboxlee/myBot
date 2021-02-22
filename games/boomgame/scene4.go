@@ -179,6 +179,7 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
 				b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
 				strs += fmt.Sprintf("%s", b.chanceSwallowReturn(g))
+				return strs
 			} else {
 				strs += fmt.Sprintf("【%s】「燕返%d%%！」失敗.\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, swallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
@@ -193,7 +194,7 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 			var fujiSyusukeSwallowReturn = 0
 			switch users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn {
 			case 1:
-				fujiSyusukeSwallowReturn = 3
+				fujiSyusukeSwallowReturn = 6
 			case 2:
 				fujiSyusukeSwallowReturn = 9
 			case 3:
