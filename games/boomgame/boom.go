@@ -217,12 +217,14 @@ func (b *GameType) doGaCha(n int) string {
 			gaShaPons = append(gaShaPons, d.level)
 		}
 	}
+
 	for i := 0; i < n; i++ {
+		helper.Shuffle(gaShaPons)
 		r := rand.Perm(len(gaShaPons))[0]
 		switch gaShaPons[r] {
 		case "ssr":
-			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn++
-			strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+1%"))
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+			strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+3%"))
 		case "sr":
 			tmp := b.data.players.List[users.LineUser.UserProfile.UserID]
 			tmp.SwallowReturn += 3
@@ -236,6 +238,7 @@ func (b *GameType) doGaCha(n int) string {
 		default:
 		}
 	}
+	users.LineUser.SaveUserData()
 	return strings.Join(strs, "\n")
 }
 
