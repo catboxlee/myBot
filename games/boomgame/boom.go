@@ -187,19 +187,25 @@ func (b *GameType) resetRank() {
 
 func (b *GameType) gaCha(n int) {
 	var strs []string
-	money := n * 250
-	if users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone-money >= 0 {
-		users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= money
-		strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, money))
-		if n == 10 {
-			strs = append(strs, fmt.Sprintf("【%s】轉蛋10連抽", users.LineUser.UserProfile.DisplayName))
-			strs = append(strs, b.doGaCha(n))
+	if n > 0 {
+		money := n * 250
+		if users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone-money >= 0 {
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone -= money
+			strs = append(strs, fmt.Sprintf("【%s】%s%d(-%d)", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[users.LineUser.UserProfile.UserID].GemStone, money))
+			if n == 10 {
+				strs = append(strs, fmt.Sprintf("【%s】轉蛋10連抽", users.LineUser.UserProfile.DisplayName))
+				strs = append(strs, b.doGaCha(n))
+			} else {
+				strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
+				strs = append(strs, b.doGaCha(n))
+			}
 		} else {
-			strs = append(strs, fmt.Sprintf("【%s】轉蛋單抽", users.LineUser.UserProfile.DisplayName))
-			strs = append(strs, b.doGaCha(n))
+			strs = append(strs, fmt.Sprintf("【%s】%s不足", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:")))
 		}
 	} else {
-		strs = append(strs, fmt.Sprintf("【%s】%s不足", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:")))
+		strs = append(strs, fmt.Sprintf("「不二周助 轉蛋」"))
+		strs = append(strs, fmt.Sprintf("期間限定卡片:"))
+		strs = append(strs, fmt.Sprintf("SSR「燕返!不二周助」"))
 	}
 	texts = append(texts, strings.Join(strs, "\n"))
 }
