@@ -281,7 +281,7 @@ func getSSRCard() []string {
 		}
 	}
 	r := rand.Perm(len(balls))[0]
-	switch ssrPons[r].id {
+	switch balls[r] {
 	case 0:
 		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
 		strs = append(strs, fmt.Sprintf("%s", ssrPons[0].name))
