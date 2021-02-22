@@ -205,9 +205,15 @@ func (b *GameType) gaCha(n int) {
 			strs = append(strs, fmt.Sprintf("【%s】%s不足", users.LineUser.UserProfile.DisplayName, emoji.Emoji(":gem_stone:")))
 		}
 	} else {
-		strs = append(strs, fmt.Sprintf("「不二周助 轉蛋」"))
-		strs = append(strs, fmt.Sprintf("期間限定卡片:"))
+		strs = append(strs, fmt.Sprintf("「起風了... 不二周助 轉蛋」舉辦中"))
+		strs = append(strs, fmt.Sprintf("[期間限定卡片]"))
 		strs = append(strs, fmt.Sprintf("SSR「燕返!不二周助」"))
+		strs = append(strs, fmt.Sprintf("\n"))
+		strs = append(strs, fmt.Sprintf("[技能]"))
+		strs = append(strs, fmt.Sprintf("SSR「常駐技能:燕返+3%%」"))
+		strs = append(strs, fmt.Sprintf("SR「燕返(殘)+3%%」"))
+		strs = append(strs, fmt.Sprintf("R「燕返(殘)+1%%」"))
+		strs = append(strs, fmt.Sprintf("\n"))
 		strs = append(strs, fmt.Sprintf("單抽 </gacha 1>"))
 		strs = append(strs, fmt.Sprintf("10連抽 </gacha 10>"))
 	}
