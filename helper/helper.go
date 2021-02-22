@@ -1,8 +1,14 @@
 package helper
 
 import (
+	"math/rand"
 	"reflect"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // Min ...
 func Min(n int, m int) int {
@@ -26,7 +32,7 @@ func Abs(n int) int {
 	return (n ^ x) - x
 }
 
-// InArray ...
+// InArray (Value, Slice)
 func InArray(needle interface{}, haystack interface{}) (exists bool, index int) {
 	exists = false
 	index = -1
@@ -44,4 +50,15 @@ func InArray(needle interface{}, haystack interface{}) (exists bool, index int) 
 		}
 	}
 	return
+}
+
+// Shuffle ...
+func Shuffle(slice interface{}) {
+	rv := reflect.ValueOf(slice)
+	swap := reflect.Swapper(slice)
+	length := rv.Len()
+	for i := length - 1; i > 0; i-- {
+		j := rand.Intn(i + 1)
+		swap(i, j)
+	}
 }
