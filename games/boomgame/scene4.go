@@ -185,35 +185,34 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
 				tmp.SwallowReturn = 0
 				g.data.players.List[b.Info["CurrentPlayerID"].(string)] = tmp
-			}
-		}
-	}
-
-	if oplayer == b.Info["CurrentPlayerID"].(string) {
-		if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn > 0 {
-			var fujiSyusukeSwallowReturn = 0
-			switch users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn {
-			case 1:
-				fujiSyusukeSwallowReturn = 6
-			case 2:
-				fujiSyusukeSwallowReturn = 9
-			case 3:
-				fujiSyusukeSwallowReturn = 12
-			case 4:
-				fujiSyusukeSwallowReturn = 15
-			case 5:
-				fujiSyusukeSwallowReturn = 20
-			}
-			if fujiSyusukeSwallowReturn > rand.Perm(100)[0] {
-				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn == 5 && 10 >= rand.Perm(100)[0] {
-					strs += fmt.Sprint("不二周助「起風了」\n")
-					strs += fmt.Sprintf("【%s】不二周助「白鯨！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
-					b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
-				} else {
-					strs += fmt.Sprint("不二周助「好像很有趣的樣子」\n")
-					strs += fmt.Sprintf("【%s】不二周助「燕返！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
-					b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
-					strs += fmt.Sprintf("%s", b.chanceSwallowReturn(g))
+				if oplayer == b.Info["CurrentPlayerID"].(string) {
+					if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn > 0 {
+						var fujiSyusukeSwallowReturn = 0
+						switch users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn {
+						case 1:
+							fujiSyusukeSwallowReturn = 6
+						case 2:
+							fujiSyusukeSwallowReturn = 9
+						case 3:
+							fujiSyusukeSwallowReturn = 12
+						case 4:
+							fujiSyusukeSwallowReturn = 15
+						case 5:
+							fujiSyusukeSwallowReturn = 20
+						}
+						if fujiSyusukeSwallowReturn > rand.Perm(100)[0] {
+							if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn == 5 && 10 >= rand.Perm(100)[0] {
+								strs += fmt.Sprint("不二周助「起風了」\n")
+								strs += fmt.Sprintf("【%s】不二周助「白鯨！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+								b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
+							} else {
+								strs += fmt.Sprint("不二周助「好像很有趣的樣子」\n")
+								strs += fmt.Sprintf("【%s】不二周助「燕返！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+								b.Info["LastPlayerID"], b.Info["CurrentPlayerID"] = b.Info["CurrentPlayerID"], b.Info["LastPlayerID"]
+								strs += fmt.Sprintf("%s", b.chanceSwallowReturn(g))
+							}
+						}
+					}
 				}
 			}
 		}
