@@ -113,8 +113,12 @@ func (b *GameType) showStatus() {
 	}
 	str = append(str, fmt.Sprintf("【擁有稱號】"))
 	str = append(str, fmt.Sprintf("無"))
-	str = append(str, fmt.Sprintf("【擁有道具】"))
-	str = append(str, fmt.Sprintf("無"))
+	str = append(str, fmt.Sprintf("【擁有卡片】"))
+	if users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn > 0 {
+		str = append(str, fmt.Sprintf("SSR「燕返!不二周助」LV.%d", users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn-1))
+	} else {
+		str = append(str, fmt.Sprintf("無"))
+	}
 	texts = append(texts, strings.Join(str, "\n"))
 }
 
@@ -266,7 +270,7 @@ func getSSRCard() []string {
 	case 1:
 		if users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn <= 5 {
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn++
-			strs = append(strs, fmt.Sprintf("%sLv.%d", ssrPons[1].name, users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn-1))
+			strs = append(strs, fmt.Sprintf("%s", ssrPons[1].name))
 		} else {
 			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
 			strs = append(strs, fmt.Sprintf("%s", ssrPons[0].name))
