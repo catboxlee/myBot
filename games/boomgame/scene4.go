@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/rand"
 	"myBot/dice"
 	"myBot/emoji"
 	"myBot/helper"
@@ -101,15 +102,41 @@ func (b *scene4InfoType) reset() {
 
 func (b *scene4InfoType) gameOver(g *GameType) {
 	log.Println("gameOver()")
+	var strs []string
 	str := b.chkChance(g)
 	if len(str) > 0 {
 		texts = append(texts, str)
 	}
 
 	if b.Info["BoomCnt"].(float64) > float64(99) {
-		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+		for _, u := range g.data.players.List {
+			if u.UserID == b.Info["CurrentPlayerID"] {
+				//str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), int(b.Info["Hit"].(float64))))
+			} else {
+				strs = append(strs, fmt.Sprintf("【%s】%s%d(+%d)", u.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[u.UserID].GemStone, 25))
+				if _, exist := g.rank[u.UserID]; exist {
+					users.UsersList.Data[u.UserID].GemStone += 250
+					//users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += 100
+				}
+			}
+		}
+		texts = append(texts, strings.Join(strs, "\n"))
 	} else {
-		texts = append(texts, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, strings.Repeat(emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))), int(b.Info["BoomCnt"].(float64))))
+		strs = append(strs, fmt.Sprintf("%s %s(%d)", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, emoji.Emoji(":collision:"), int(b.Info["BoomCnt"].(float64))))
+		for _, u := range g.data.players.List {
+			if u.UserID == b.Info["CurrentPlayerID"] {
+				//str = append(str, fmt.Sprintf("%s %s %d", u.DisplayName, emoji.Emoji(":umbrella:"), int(b.Info["Hit"].(float64))))
+			} else {
+				strs = append(strs, fmt.Sprintf("【%s】%s%d(+%d)", u.DisplayName, emoji.Emoji(":gem_stone:"), users.UsersList.Data[u.UserID].GemStone, 25))
+				if _, exist := g.rank[u.UserID]; exist {
+					users.UsersList.Data[u.UserID].GemStone += 25
+					//users.UsersList.Data[users.LineUser.UserProfile.UserID].Money += 100
+				}
+			}
+		}
+		texts = append(texts, strings.Join(strs, "\n"))
 	}
 	if _, exist := g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID]; exist {
 		g.rank[g.data.players.List[b.Info["CurrentPlayerID"].(string)].UserID].Boom += int(b.Info["BoomCnt"].(float64))
@@ -143,7 +170,7 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 			if swallowReturn >= int(boomDice.Hit) {
 				strs += fmt.Sprintf("【%s】「燕返%d%%！」發動!\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, swallowReturn)
 				tmp := g.data.players.List[b.Info["CurrentPlayerID"].(string)]
-				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 30 {
+				if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn <= 100 {
 					users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn += 2
 					strs += fmt.Sprintf("【%s】獲得 燕返(常駐)%d%%(+2%%)！\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName, users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].SwallowReturn)
 				}
@@ -159,6 +186,33 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 			}
 		}
 	}
+
+	if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn > 0 {
+		var fujiSyusukeSwallowReturn = 0
+		switch users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn {
+		case 1:
+			fujiSyusukeSwallowReturn = 3
+		case 2:
+			fujiSyusukeSwallowReturn = 9
+		case 3:
+			fujiSyusukeSwallowReturn = 12
+		case 4:
+			fujiSyusukeSwallowReturn = 15
+		case 5:
+			fujiSyusukeSwallowReturn = 20
+		}
+		if fujiSyusukeSwallowReturn > rand.Perm(100)[0] {
+			if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn == 5 && 10 >= rand.Perm(100)[0] {
+				strs += fmt.Sprint("不二周助「起風了」\n")
+				strs += fmt.Sprintf("【%s】不二周助「白鯨！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+			} else {
+				strs += fmt.Sprint("不二周助「好像很有趣的樣子」\n")
+				strs += fmt.Sprintf("【%s】不二周助「燕返！」\n", g.data.players.List[b.Info["CurrentPlayerID"].(string)].DisplayName)
+				strs += fmt.Sprintf("%s", b.chanceSwallowReturn(g))
+			}
+		}
+	}
+
 	return strs
 }
 

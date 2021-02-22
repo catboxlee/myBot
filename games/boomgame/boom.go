@@ -223,23 +223,56 @@ func (b *GameType) doGaCha(n int) string {
 		r := rand.Perm(len(gaShaPons))[0]
 		switch gaShaPons[r] {
 		case "ssr":
-			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
-			strs = append(strs, fmt.Sprint("SSR - 燕返(常駐)+3%"))
+			strs = append(strs, getSSRCard()...)
 		case "sr":
 			tmp := b.data.players.List[users.LineUser.UserProfile.UserID]
 			tmp.SwallowReturn += 3
 			b.data.players.List[users.LineUser.UserProfile.UserID] = tmp
-			strs = append(strs, fmt.Sprint("SR - 燕返+3%"))
+			strs = append(strs, fmt.Sprint("SR「燕返(殘)+3%」"))
 		case "r":
 			tmp := b.data.players.List[users.LineUser.UserProfile.UserID]
 			tmp.SwallowReturn++
 			b.data.players.List[users.LineUser.UserProfile.UserID] = tmp
-			strs = append(strs, fmt.Sprint("R - 燕返+1%"))
+			strs = append(strs, fmt.Sprint("R「燕返(殘)+1%」"))
 		default:
 		}
 	}
 	users.LineUser.SaveUserData()
 	return strings.Join(strs, "\n")
+}
+
+func getSSRCard() []string {
+	var strs []string
+	var balls []int
+	var ssrPons = map[int]struct {
+		id   int
+		name string
+		cnt  int
+	}{
+		0: {id: 0, name: "SSR「技能:燕返+3%」", cnt: 50},
+		1: {id: 1, name: "SSR「燕返!不二周助」", cnt: 50},
+	}
+	for _, d := range ssrPons {
+		for i := 0; i < d.cnt; i++ {
+			balls = append(balls, d.id)
+		}
+	}
+	helper.Shuffle(balls)
+	r := rand.Perm(len(balls))[0]
+	switch r {
+	case 0:
+		users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+		strs = append(strs, fmt.Sprintf("%s", ssrPons[0].name))
+	case 1:
+		if users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn <= 5 {
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn++
+			strs = append(strs, fmt.Sprintf("%sLv.%d", ssrPons[1].name, users.UsersList.Data[users.LineUser.UserProfile.UserID].FujiSyusukeSwallowReturn-1))
+		} else {
+			users.UsersList.Data[users.LineUser.UserProfile.UserID].SwallowReturn += 3
+			strs = append(strs, fmt.Sprintf("%s", ssrPons[0].name))
+		}
+	}
+	return strs
 }
 
 // CheckExistData ...
