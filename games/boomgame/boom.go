@@ -209,7 +209,7 @@ func (b *GameType) gaCha(n int) {
 		strs = append(strs, fmt.Sprintf("[期間限定卡片]"))
 		strs = append(strs, fmt.Sprintf("SSR「燕返!不二周助」"))
 		strs = append(strs, fmt.Sprintf("-玩家技能燕返失敗時,有(6,9,12,15,20)%%機率召喚不二周助"))
-		strs = append(strs, fmt.Sprintf("-Lv4發動燕返時有10%%機率改為發動白鯨,不會觸發對手燕返"))
+		strs = append(strs, fmt.Sprintf("-Lv4不二周助燕返時有10%%機率改為發動白鯨"))
 		strs = append(strs, fmt.Sprintf("-----------"))
 		strs = append(strs, fmt.Sprintf("[技能]"))
 		strs = append(strs, fmt.Sprintf("SSR「常駐技能:燕返+3%%」"))
