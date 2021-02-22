@@ -245,6 +245,7 @@ func (b *GameType) doGaCha(n int) string {
 		r := rand.Perm(len(gaShaPons))[0]
 		switch gaShaPons[r] {
 		case "ssr":
+			log.Println("SSR GaCha!")
 			strs = append(strs, getSSRCard()...)
 		case "sr":
 			tmp := b.data.players.List[users.LineUser.UserProfile.UserID]
@@ -279,7 +280,6 @@ func getSSRCard() []string {
 			balls = append(balls, d.id)
 		}
 	}
-	helper.Shuffle(balls)
 	r := rand.Perm(len(balls))[0]
 	switch r {
 	case 0:
