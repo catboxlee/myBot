@@ -10,11 +10,12 @@ import (
 
 // UserDataType ...
 type UserDataType struct {
-	UserID        string
-	DisplayName   string
-	Money         int
-	SwallowReturn int
-	GemStone      int
+	UserID                   string
+	DisplayName              string
+	Money                    int
+	SwallowReturn            int
+	FujiSyusukeSwallowReturn int
+	GemStone                 int
 }
 
 // UsersType ...
@@ -41,13 +42,13 @@ func init() {
 func (u *UsersType) loadUsersData() {
 
 	u.Data = make(map[string]*UserDataType)
-	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn, gemstone FROM users")
+	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn, fujisyusukeswallowreturn, gemstone FROM users")
 	checkError(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var data UserDataType
-		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn, &data.GemStone); err {
+		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn, &data.FujiSyusukeSwallowReturn, &data.GemStone); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
 		case nil:
@@ -63,13 +64,13 @@ func (u *UsersType) loadUsersData() {
 // SaveUserData ...
 func (u *CurrentUserProfile) SaveUserData() {
 
-	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn, gemstone) values($1, $2, $3, $4, $5)
+	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn, fujisyusukeswallowreturn,gemstone) values($1, $2, $3, $4, $5, $6)
 	on conflict(userid)
-	do update set displayname = $2, money = $3, swallowreturn = $4, gemstone = $5`)
+	do update set displayname = $2, money = $3, swallowreturn = $4, fujisyusukeswallowreturn = $5, gemstone = $6`)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn, UsersList.Data[u.UserProfile.UserID].GemStone)
+	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn, UsersList.Data[u.UserProfile.UserID].FujiSyusukeSwallowReturn, UsersList.Data[u.UserProfile.UserID].GemStone)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,6 +84,7 @@ func (u *CurrentUserProfile) checkUserExist() {
 		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
 		UsersList.Data[u.UserProfile.UserID].Money = 10
 		UsersList.Data[u.UserProfile.UserID].SwallowReturn = 0
+		UsersList.Data[u.UserProfile.UserID].FujiSyusukeSwallowReturn = 0
 		UsersList.Data[u.UserProfile.UserID].GemStone = 0
 		u.SaveUserData()
 	}
