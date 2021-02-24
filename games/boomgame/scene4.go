@@ -183,15 +183,15 @@ func (b *scene4InfoType) chanceSwallowReturn(g *GameType) string {
 						var fujiSyusukeSwallowReturn = 0
 						switch users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn {
 						case 1:
-							fujiSyusukeSwallowReturn = 6
+							fujiSyusukeSwallowReturn = 10
 						case 2:
-							fujiSyusukeSwallowReturn = 9
+							fujiSyusukeSwallowReturn = 13
 						case 3:
-							fujiSyusukeSwallowReturn = 12
+							fujiSyusukeSwallowReturn = 16
 						case 4:
-							fujiSyusukeSwallowReturn = 15
+							fujiSyusukeSwallowReturn = 19
 						case 5:
-							fujiSyusukeSwallowReturn = 20
+							fujiSyusukeSwallowReturn = 25
 						}
 						if fujiSyusukeSwallowReturn > rand.Perm(100)[0] {
 							if users.UsersList.Data[b.Info["CurrentPlayerID"].(string)].FujiSyusukeSwallowReturn == 5 && 10 >= rand.Perm(100)[0] {
