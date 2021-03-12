@@ -102,6 +102,7 @@ func (po *PlayerOption) ViewInfo() string {
 	strs = append(strs, po.CardPile.ViewCardsInfo(false))
 	strs = append(strs, "[[指令]]")
 	strs = append(strs, "使用卡牌: /u <卡片編號>")
+	strs = append(strs, "卡牌說明: /u c")
 	strs = append(strs, "轉蛋: /gacha")
 	return strings.Join(strs, "\n")
 }
