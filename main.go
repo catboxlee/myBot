@@ -86,6 +86,7 @@ func doLinebotEvents(events []*linebot.Event) {
 						texts = boomgame.Boom[sourceID].Command(input, users.LineUser.UserProfile.UserID)
 					}
 				}
+				log.Println("texts2", texts)
 				replyMsg(event, texts)
 			}
 		}
@@ -103,6 +104,7 @@ func pushMsg(event *linebot.Event, texts []string) {
 		}
 	}
 }
+
 func replyMsg(event *linebot.Event, texts []string) {
 	var contents []linebot.SendingMessage
 	if len(texts) > 0 {
