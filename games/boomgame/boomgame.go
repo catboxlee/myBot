@@ -88,7 +88,6 @@ func (g *GameType) Command(input string, currentID string) []string {
 			g.GamePhase(input)
 		}
 	}
-	log.Println("texts", texts)
 	return texts
 }
 

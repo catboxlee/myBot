@@ -3,6 +3,7 @@ package boomgame
 import (
 	"fmt"
 	"math/rand"
+	"myBot/emoji"
 	"myBot/games/boomgame/data"
 	"myBot/users"
 	"strconv"
@@ -12,6 +13,8 @@ import (
 // GaCha ...
 func (g *GameType) GaCha(input string, currentID string) string {
 	var strs []string
+	gem1 := 250
+	gem10 := 2500
 	n := 0
 	s := strings.Fields(input)
 	thisPlayer := g.Player(currentID)
@@ -23,10 +26,12 @@ func (g *GameType) GaCha(input string, currentID string) string {
 	}
 	switch n {
 	case 1:
-		strs = append(strs, fmt.Sprintf("<<%s 單抽>>", thisPlayer.GetDisplayName()))
+		thisPlayer.MakeGemStone(-gem1)
+		strs = append(strs, fmt.Sprintf("<<%s 單抽>>%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), thisPlayer.GetGemStone(), -gem1))
 		strs = append(strs, g.doGaCha(1, currentID))
 	case 10:
-		strs = append(strs, fmt.Sprintf("<<%s 10抽>>", thisPlayer.GetDisplayName()))
+		thisPlayer.MakeGemStone(-gem10)
+		strs = append(strs, fmt.Sprintf("<<%s 10抽>>%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), thisPlayer.GetGemStone(), -gem1))
 		strs = append(strs, g.doGaCha(10, currentID))
 	default:
 		strs = append(strs, g.viewGaChaInfo())
