@@ -70,7 +70,9 @@ func (g *GameType) runPhase(input string) {
 					if s := g.onHit(); len(s) > 0 {
 						strs = append(strs, s)
 					}
-					texts = append(texts, strings.Join(strs, "\n"))
+					if len(strs) > 0 {
+						texts = append(texts, strings.Join(strs, "\n"))
+					}
 					g.showRank()
 					// 結算
 					g.checkRank()
@@ -93,7 +95,9 @@ func (g *GameType) runPhase(input string) {
 						strs = append(strs, s)
 					}
 				}
-				texts = append(texts, strings.Join(strs, "\n"))
+				if len(strs) > 0 {
+					texts = append(texts, strings.Join(strs, "\n"))
+				}
 				g.Show()
 				g.updateData()
 			}
