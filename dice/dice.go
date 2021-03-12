@@ -15,9 +15,12 @@ type diceType struct {
 // Dice ...
 var Dice diceType
 
+func init() {
+	//rand.Seed(time.Now().UnixNano())
+}
+
 // Roll dice
 func (d *diceType) Roll(s string) {
-	//rand.Seed(time.Now().UnixNano())
 	d.Hit = 0
 	d.Rolls = nil
 

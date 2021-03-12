@@ -8,19 +8,9 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
-// UserDataType ...
-type UserDataType struct {
-	UserID                   string
-	DisplayName              string
-	Money                    int
-	SwallowReturn            int
-	FujiSyusukeSwallowReturn int
-	GemStone                 int
-}
-
-// UsersType ...
-type UsersType struct {
-	Data map[string]*UserDataType
+// TypeUsers ...
+type TypeUsers struct {
+	Data map[string]*UserOption
 }
 
 // CurrentUserProfile ...
@@ -30,25 +20,33 @@ type CurrentUserProfile struct {
 }
 
 // UsersList ...
-var UsersList UsersType
+var UsersList TypeUsers
 
 // LineUser ...
 var LineUser CurrentUserProfile
 
 func init() {
+	LineUser.UserProfile = &linebot.UserProfileResponse{}
 	UsersList.loadUsersData()
 }
 
-func (u *UsersType) loadUsersData() {
+// User ...
+func (u *TypeUsers) User(thisUserID string) *UserOption {
+	if _, exist := u.Data[thisUserID]; exist {
+		return u.Data[thisUserID]
+	}
+	return nil
+}
 
-	u.Data = make(map[string]*UserDataType)
-	rows, err := mydb.Db.Query("SELECT userid, displayname, money, swallowreturn, fujisyusukeswallowreturn, gemstone FROM users")
+func (u *TypeUsers) loadUsersData() {
+	u.Data = make(map[string]*UserOption)
+	rows, err := mydb.Db.Query("SELECT userid, displayname, money, gemstone FROM users")
 	checkError(err)
 	defer rows.Close()
 
 	for rows.Next() {
-		var data UserDataType
-		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.SwallowReturn, &data.FujiSyusukeSwallowReturn, &data.GemStone); err {
+		var data UserOption
+		switch err := rows.Scan(&data.UserID, &data.DisplayName, &data.Money, &data.GemStone); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
 		case nil:
@@ -57,37 +55,43 @@ func (u *UsersType) loadUsersData() {
 			checkError(err)
 		}
 	}
+
 	log.Println("Users data load.")
 	//log.Println(u.Data)
 }
 
-// SaveUserData ...
-func (u *CurrentUserProfile) SaveUserData() {
-
-	stmt, err := mydb.Db.Prepare(`insert into users(userid, displayname, money, swallowreturn, fujisyusukeswallowreturn,gemstone) values($1, $2, $3, $4, $5, $6)
-	on conflict(userid)
-	do update set displayname = $2, money = $3, swallowreturn = $4, fujisyusukeswallowreturn = $5, gemstone = $6`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = stmt.Exec(u.UserProfile.UserID, u.UserProfile.DisplayName, UsersList.Data[u.UserProfile.UserID].Money, UsersList.Data[u.UserProfile.UserID].SwallowReturn, UsersList.Data[u.UserProfile.UserID].FujiSyusukeSwallowReturn, UsersList.Data[u.UserProfile.UserID].GemStone)
-	if err != nil {
-		log.Fatal(err)
-	}
-	stmt.Close()
+// CheckUserExist ...
+func (u *TypeUsers) CheckUserExist(userProfile *linebot.UserProfileResponse) {
+	u.checkUserExist(userProfile)
 }
 
-func (u *CurrentUserProfile) checkUserExist() {
-	if _, exist := UsersList.Data[u.UserProfile.UserID]; !exist {
-		UsersList.Data[u.UserProfile.UserID] = &UserDataType{}
-		UsersList.Data[u.UserProfile.UserID].UserID = u.UserProfile.UserID
-		UsersList.Data[u.UserProfile.UserID].DisplayName = u.UserProfile.DisplayName
-		UsersList.Data[u.UserProfile.UserID].Money = 10
-		UsersList.Data[u.UserProfile.UserID].SwallowReturn = 0
-		UsersList.Data[u.UserProfile.UserID].FujiSyusukeSwallowReturn = 0
-		UsersList.Data[u.UserProfile.UserID].GemStone = 0
-		u.SaveUserData()
+func (u *TypeUsers) checkUserExist(userProfile *linebot.UserProfileResponse) {
+	if _, exist := u.Data[userProfile.UserID]; !exist {
+		log.Println("New User:", userProfile.UserID)
+		u.Data[LineUser.UserProfile.UserID] = u.newUser(userProfile)
+		u.Data[LineUser.UserProfile.UserID].addData()
+	} else if u.Data[LineUser.UserProfile.UserID].GetDisplayName() != LineUser.UserProfile.DisplayName {
+		u.Data[LineUser.UserProfile.UserID].setDisplayName(LineUser.UserProfile.DisplayName)
 	}
+}
+
+func (u *TypeUsers) newUser(userProfile *linebot.UserProfileResponse) *UserOption {
+	nu := new(UserOption)
+	nu.UserID = userProfile.UserID
+	nu.DisplayName = userProfile.DisplayName
+	nu.Money = 100
+	nu.GemStone = 39000
+	return nu
+}
+
+// SaveData ...
+func (u *TypeUsers) SaveData(userid string) {
+	u.Data[userid].saveData()
+}
+
+// DeleteUserData ...
+func (u *TypeUsers) DeleteUserData() {
+
 }
 
 // GetSenderInfo ...
@@ -97,17 +101,17 @@ func (u *CurrentUserProfile) GetSenderInfo(event *linebot.Event, bot *linebot.Cl
 	case linebot.EventSourceTypeGroup:
 		if senderProfile, err := bot.GetGroupMemberProfile(u.Event.Source.GroupID, u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
-			u.checkUserExist()
+			UsersList.checkUserExist(u.UserProfile)
 		}
 	case linebot.EventSourceTypeRoom:
 		if senderProfile, err := bot.GetRoomMemberProfile(u.Event.Source.RoomID, u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
-			u.checkUserExist()
+			UsersList.checkUserExist(u.UserProfile)
 		}
 	case linebot.EventSourceTypeUser:
 		if senderProfile, err := bot.GetProfile(u.Event.Source.UserID).Do(); err == nil {
 			u.UserProfile = senderProfile
-			u.checkUserExist()
+			UsersList.checkUserExist(u.UserProfile)
 		}
 		//return event.Source.UserID
 	}

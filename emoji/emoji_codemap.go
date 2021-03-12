@@ -3937,4 +3937,5 @@ var emojiCodeMap = map[string]string{
 	":zipper_mouth_face:":                     "\U0001f910",
 	":zombie:":                                "\U0001f9df",
 	":zzz:":                                   "\U0001f4a4",
+	":headstone:":                             "\U0001faa6",
 }
