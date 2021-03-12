@@ -47,6 +47,7 @@ type Cards interface {
 	GetTopParent() Game
 	GetParent() Player
 	GetCards() map[string]Card
+	TakeCard(string) string
 	UsedCard(string)
 }
 
