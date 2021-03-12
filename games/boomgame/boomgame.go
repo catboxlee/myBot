@@ -100,6 +100,7 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 			log.Println(fmt.Sprintf("Command<reset>: %s, %s", s[0], input))
 			g.reset()
 			g.startPhase()
+			g.updateData()
 		case "rank":
 			log.Println(fmt.Sprintf("Command<reset>: %s, %s", s[0], input))
 			g.showRank()
@@ -107,6 +108,7 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 		case "resetrank":
 			log.Println(fmt.Sprintf("Command<resetRank>: %s, %s", s[0], input))
 			g.resetRank()
+			g.updateData()
 		case "v":
 			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
 			texts = append(texts, g.Players.Player(currentID).ViewInfo())
