@@ -111,10 +111,29 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 			g.updateData()
 		case "v":
 			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
+			if len(s) > 1 {
+				if s[1] == "c" {
+					var strs []string
+					strs = append(strs, fmt.Sprintf("%s", g.Players.Player(currentID).GetDisplayName()))
+					strs = append(strs, fmt.Sprintf("【擁有卡片】"))
+					strs = append(strs, g.Players.Player(currentID).CardPile.ViewCardsInfo(true))
+					strs = append(strs, "[[指令]]")
+					strs = append(strs, "使用卡牌: /u <卡片編號>")
+					return
+				}
+			}
 			texts = append(texts, g.Players.Player(currentID).ViewInfo())
+			return
 		case "u":
 			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
 			g.PlayerCard(input, currentID)
+		case "c":
+			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
+			var send []string
+			for k, v := range data.CardData {
+				send = append(send, fmt.Sprintf("%s,%s,%s", k, v.CoreSet, v.CardName))
+			}
+			texts = append(texts, strings.Join(send, "\n"))
 		case "gacha":
 			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
 			texts = append(texts, g.GaCha(input, currentID))
@@ -161,7 +180,7 @@ func (g *GameType) PlayerCard(input string, currentID string) {
 		strs = append(strs, "【使用卡牌】")
 		for k, co := range g.Players.Player(currentID).CardPile.Cards {
 			if co.OnPlayFunc != nil {
-				strs = append(strs, fmt.Sprintf("<%s>%s", k, co.ViewCardInfo()))
+				strs = append(strs, fmt.Sprintf("<%s>%s", k, co.ViewCardInfoWithDesc()))
 			}
 		}
 		strs = append(strs, "[[指令]]\n/u <卡片編號>")
