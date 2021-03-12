@@ -13,46 +13,6 @@ import (
 
 // SRCard ...
 var SRCard = map[string]CardOption{
-	"5": CardOption{
-		CardName:    "SR「燃燒吧 小宇宙 星矢」",
-		DisplayName: "燃燒吧 小宇宙 星矢",
-		Class:       "SR",
-		CoreSet:     "5",
-		CoolDown:    9,
-		ReCoolDown:  9,
-		Unique:      true,
-		DescFunc: func(thisCard scheduler.Card) func() string {
-			return func() string {
-				sp := 30
-				str := fmt.Sprintf("引爆(防禦):%d%%機率鎖血(99),CD%d", sp, thisCard.GetReCoolDown())
-				thisCard.SetDesc(str)
-				return str
-			}
-		},
-		OnShieldFunc: func(thisCard scheduler.Card) func() (bool, string) {
-			return func() (r bool, s string) {
-				var strs []string
-				if thisCard.GetCoolDown() > 0 {
-					return false, ""
-				}
-				sp := 30
-				g := thisCard.GetTopParent()
-				thisPlayer := thisCard.GetParent().GetParent()
-				diceRoll := rand.Intn(100)
-				if diceRoll < sp+thisCard.GetLevel()*2 {
-					boomCnt := g.GetInfoBoomCnt()
-					rankBoomCnt := g.GetRankBoomCnt(thisPlayer.GetUserID())
-					if rankBoomCnt+boomCnt > 100 {
-						shiled := rankBoomCnt + boomCnt - 100
-						g.MakeInfoBoomCnt(-shiled)
-						strs = append(strs, fmt.Sprintf("【%s】星矢「燃燒吧 小宇宙」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetInfoBoomCnt(), -shiled))
-					}
-				}
-				thisCard.ResetCoolDown()
-				return true, strings.Join(strs, "\n")
-			}
-		},
-	},
 	"6": CardOption{
 		CardName:    "SR「無駄無駄 世界」",
 		DisplayName: "無駄無駄 世界",
