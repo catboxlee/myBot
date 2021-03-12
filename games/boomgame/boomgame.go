@@ -309,11 +309,10 @@ func loadData(SourceID string) {
 	row := mydb.Db.QueryRow("SELECT sourceid, season, scene_info, players, rank FROM boom_game where sourceid = $1 limit 1", SourceID)
 	var sourceid string
 	var season int
-	var scene int
 	var sceneInfo json.RawMessage
 	var rank json.RawMessage
 	var players json.RawMessage
-	switch err := row.Scan(&sourceid, &season, &scene, &sceneInfo, &players, &rank); err {
+	switch err := row.Scan(&sourceid, &season, &sceneInfo, &players, &rank); err {
 	case sql.ErrNoRows:
 		log.Println("No rows were returned")
 		Boom[SourceID] = &GameType{}
