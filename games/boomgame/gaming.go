@@ -21,7 +21,6 @@ func (g *GameType) resetInfo() {
 		inning = g.Info.Inning
 	}
 	boomHit := rand.Intn(100) + 1
-	boomHit = 50
 	g.Info = &InfoType{
 		Hit:       boomHit,
 		Min:       0,
