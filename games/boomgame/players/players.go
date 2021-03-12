@@ -95,7 +95,7 @@ func (p *Players) buildPlayer(spo *PlayerOption) *PlayerOption {
 func (p *Players) CheckPlayerExist(userid string) {
 	if _, exist := p.Data[userid]; !exist {
 		p.Data[userid] = p.newPlayer(userid)
-		p.Data[userid].SaveData()
+		p.Data[userid].addData()
 	}
 }
 

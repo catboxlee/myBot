@@ -116,7 +116,7 @@ func (po *PlayerOption) addData() {
 	checkError(err)
 
 	log.Println("PlayerOption data insert:", po.UserID, po.SourceID, string(titles), string(cardpile), string(property))
-	stmt, err := mydb.Db.Prepare("insert into boomplayer(userid, sourceid, titles, cardpile, itempile, property) values($1, $2, $3, $4, $5)")
+	stmt, err := mydb.Db.Prepare("insert into boomplayer(userid, sourceid, titles, cardpile, property) values($1, $2, $3, $4, $5)")
 	checkError(err)
 
 	_, err = stmt.Exec(po.UserID, po.SourceID, titles, cardpile, property)
