@@ -112,12 +112,11 @@ var MythosCard = map[string]CardOption{
 			return func(g scheduler.Game) (r bool, s string) {
 				var strs []string
 				sp := 20
-				queue := g.GetPlayQueue()
 				if thisCard.GetCoolDown() > 0 {
 					if thisCard.GetReCoolDown()-thisCard.GetCoolDown() < 2 {
 						diceRoll := rand.Intn(100)
 						if diceRoll < sp+thisCard.GetLevel()*2 {
-							strs = append(strs, fmt.Sprintf("%s甘道夫「You shall not PASS!!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(queue[len(queue)-1]).GetDisplayName()))
+							strs = append(strs, fmt.Sprintf("%s甘道夫「You shall not PASS!!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(g.GetPlayQueueLast()).GetDisplayName()))
 							strs = append(strs, fmt.Sprintf("%d", thisCard.GetCoolDown()))
 							r = true
 							s = strings.Join(strs, "\n")
@@ -129,7 +128,7 @@ var MythosCard = map[string]CardOption{
 
 				diceRoll := rand.Intn(100)
 				if diceRoll < sp+thisCard.GetLevel()*2 {
-					strs = append(strs, fmt.Sprintf("%s甘道夫「You can not PASS!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(queue[len(queue)-1]).GetDisplayName()))
+					strs = append(strs, fmt.Sprintf("%s甘道夫「You can not PASS!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(g.GetPlayQueueLast()).GetDisplayName()))
 					r = true
 					thisCard.ResetCoolDown()
 				}
@@ -249,7 +248,7 @@ var MythosCard = map[string]CardOption{
 	},
 	"altria": CardOption{
 		CardName:    fmt.Sprintf("%s「召喚 Saber 阿爾托莉雅」", emoji.Emoji(":ghost:")),
-		DisplayName: "召喚 saber 阿爾托莉雅",
+		DisplayName: "召喚 Saber 阿爾托莉雅",
 		Class:       "R",
 		CoreSet:     "altria",
 		CoolDown:    13,
@@ -271,12 +270,11 @@ var MythosCard = map[string]CardOption{
 				}
 				sp := 20
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
-					queue := g.GetPlayQueue()
-					toPlayer := queue[len(queue)-1]
-					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayer).GetDisplayName()))
-					strs = append(strs, g.GetPlayer(toPlayer).GetCardPile().TakeCard("saber"))
+					toPlayerID := g.GetPlayQueueLast()
+					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayerID).GetDisplayName()))
+					strs = append(strs, g.GetPlayer(toPlayerID).GetCardPile().TakeCard("saber"))
+					thisCard.ResetCoolDown()
 				}
-				thisCard.ResetCoolDown()
 				s = strings.Join(strs, "\n")
 				return r, s
 			}

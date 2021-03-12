@@ -235,9 +235,23 @@ func (g *GameType) GetQueue() []string {
 	return g.Info.Queue
 }
 
+// GetQueue ...
+func (g *GameType) GetQueueNext() string {
+	if exist, i := helper.InArray(g.GetPlayQueueLast(), g.Info.Queue); exist {
+		index := (i + 1) % len(g.Info.Queue)
+		return g.Info.Queue[index]
+	}
+	return g.Info.Queue[0]
+}
+
 // GetPlayQueue ...
 func (g *GameType) GetPlayQueue() []string {
 	return g.Info.PlayQueue
+}
+
+// GetPlayQueueLast
+func (g *GameType) GetPlayQueueLast() string {
+	return g.Info.PlayQueue[len(g.Info.PlayQueue)-1]
 }
 
 // AddPlayQueue ...
@@ -301,7 +315,9 @@ func (g *GameType) MakeRankBoomCnt(id string, n int) {
 
 func (g *GameType) doCoolDown(id string) {
 	for _, co := range g.Player(id).Cards {
-		co.DoCoolDown()
+		if co.GetFreeze() <= 0 {
+			co.DoCoolDown()
+		}
 		co.DoFreeze()
 	}
 	for _, co := range g.mythosCards {

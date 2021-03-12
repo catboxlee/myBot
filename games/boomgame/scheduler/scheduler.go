@@ -3,8 +3,10 @@ package scheduler
 // Game ...
 type Game interface {
 	GetQueue() []string
+	GetQueueNext() string
 	GetPlayQueue() []string
 	AddPlayQueue(string)
+	GetPlayQueueLast() string
 	OnPlay()
 	GetHit() (int, int, int)
 	SetHit(int, int, int)
