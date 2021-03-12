@@ -40,13 +40,13 @@ func (p *Players) LoadPlayersData(g scheduler.Game, sourceid string) {
 	p.SourceID = sourceid
 	p.Data = make(map[string]*PlayerOption)
 
-	rows, err := mydb.Db.Query("SELECT userid, sourceid, titles, cardpile, property FROM boomplayer")
+	rows, err := mydb.Db.Query("SELECT userid, sourceid,cardpile, property FROM boomplayer")
 	checkError(err)
 	defer rows.Close()
 
 	for rows.Next() {
 		var data PlayerOption
-		switch err := rows.Scan(&data.UserID, &data.SourceID, &data.Titles, &data.CardPile, &data.Property); err {
+		switch err := rows.Scan(&data.UserID, &data.SourceID, &data.CardPile, &data.Property); err {
 		case sql.ErrNoRows:
 			log.Println("No rows were returned")
 		case nil:

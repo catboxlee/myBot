@@ -17,9 +17,8 @@ import (
 // PlayerOption ...
 type PlayerOption struct {
 	Parent         scheduler.Players
-	UserID         string   `db:"userid"`
-	SourceID       string   `db:"sourceid"`
-	Titles         []string `db:"titles"`
+	UserID         string `db:"userid"`
+	SourceID       string `db:"sourceid"`
 	cards.CardPile `json:"cardpile"`
 	CoolDownData   map[string]int `json:"cooldowndata"`
 	AchievementType
@@ -28,9 +27,10 @@ type PlayerOption struct {
 
 // Property ...
 type Property struct {
-	OneShot       int `json:"oneshot"`
-	WinningStreak int `json:"winningstreak"`
-	LosingStreak  int `json:"losingstreak"`
+	Titles        []string `json:"titles"`
+	OneShot       int      `json:"oneshot"`
+	WinningStreak int      `json:"winningstreak"`
+	LosingStreak  int      `json:"losingstreak"`
 }
 
 // AchievementType 成就
