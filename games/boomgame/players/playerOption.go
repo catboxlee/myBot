@@ -19,7 +19,7 @@ type PlayerOption struct {
 	Parent         scheduler.Players
 	UserID         string   `db:"userid"`
 	SourceID       string   `db:"sourceid"`
-	Titles         []string `json:"titles"`
+	Titles         []string `db:"titles"`
 	cards.CardPile `json:"cardpile"`
 	CoolDownData   map[string]int `json:"cooldowndata"`
 	AchievementType
