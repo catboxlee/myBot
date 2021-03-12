@@ -145,15 +145,25 @@ func (c *CardPile) UsedCard(cardID string) {
 }
 
 // ViewCardsInfo ...
-func (c *CardPile) ViewCardsInfo() string {
+func (c *CardPile) ViewCardsInfo(desc bool) string {
 	var strs []string
 	var strs1 []string
 	var strs2 []string
 	for coid, co := range c.Cards {
 		if co.OnPlayFunc != nil {
-			strs2 = append(strs2, fmt.Sprintf("[%s]%s", coid, co.ViewCardInfo()))
+			strs2 = append(strs2, fmt.Sprintf("[%s]%s", coid, func() string {
+				if desc {
+					return co.ViewCardInfoWithDesc()
+				}
+				return co.ViewCardInfo()
+			}()))
 		} else {
-			strs1 = append(strs1, fmt.Sprintf("[%s]%s", coid, co.ViewCardInfo()))
+			strs1 = append(strs1, fmt.Sprintf("[%s]%s", coid, func() string {
+				if desc {
+					return co.ViewCardInfoWithDesc()
+				}
+				return co.ViewCardInfo()
+			}()))
 		}
 	}
 	if len(strs1) > 0 {

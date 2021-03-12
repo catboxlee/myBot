@@ -196,10 +196,10 @@ func (co *CardOption) GetLuckyBuffDuration() int {
 	return co.Property.LuckyBuffDuration
 }
 
-// ViewCardInfo ...
-func (co *CardOption) ViewCardInfo() string {
+// viewCardInfo ...
+func (co *CardOption) viewInfo(desc bool) string {
 	var strs []string
-	strs = append(strs, fmt.Sprintf("%s%s%s\n-%s", func() string {
+	strs = append(strs, fmt.Sprintf("%s%s%s%s", func() string {
 		if co.GetCoolDown() > 0 {
 			return fmt.Sprintf("(%s%d)", emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown())
 		}
@@ -210,10 +210,22 @@ func (co *CardOption) ViewCardInfo() string {
 		}
 		return fmt.Sprintf("(%d)", co.Quantity)
 	}(), func() string {
-		if co.DescFunc != nil {
-			return co.DescFunc()
+		if desc {
+			if co.DescFunc != nil {
+				return "\n-" + co.DescFunc()
+			}
 		}
 		return ""
 	}()))
 	return strings.Join(strs, "\n")
+}
+
+// ViewCardInfo ...
+func (co *CardOption) ViewCardInfo() string {
+	return co.viewInfo(false)
+}
+
+// ViewCardInfoWithDesc ...
+func (co *CardOption) ViewCardInfoWithDesc() string {
+	return co.viewInfo(true)
 }
