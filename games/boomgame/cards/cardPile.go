@@ -23,7 +23,7 @@ func (c *CardPile) BuildCard(bc data.CardOption) *CardOption {
 	nc.DisplayName = bc.DisplayName
 	nc.Class = bc.Class
 	nc.Desc = bc.Desc
-	nc.CoolDown = bc.ReCoolDown
+	nc.CoolDown = 0
 	nc.ReCoolDown = bc.ReCoolDown
 	nc.CoreSet = bc.CoreSet
 	nc.Quantity = 1
