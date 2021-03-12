@@ -131,8 +131,8 @@ var MythosCard = map[string]CardOption{
 				if diceRoll < sp+thisCard.GetLevel()*2 {
 					strs = append(strs, fmt.Sprintf("%s甘道夫「You can not PASS!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(queue[len(queue)-1]).GetDisplayName()))
 					r = true
+					thisCard.ResetCoolDown()
 				}
-				thisCard.ResetCoolDown()
 				s = strings.Join(strs, "\n")
 				return r, s
 			}
@@ -169,11 +169,116 @@ var MythosCard = map[string]CardOption{
 					boomCnt += toCnt
 					strs = append(strs, fmt.Sprintf("%s虎杖悠仁「黑閃!」%s%d(%+d)", emoji.Emoji(":ghost:"), emoji.Emoji(":bomb:"), boomCnt, toCnt))
 					i++
+					thisCard.ResetCoolDown()
 				} else {
 					i = 0
-					thisCard.ResetCoolDown()
 				}
 				return true, strings.Join(strs, "\n")
+			}
+		},
+	},
+	"sakuragi": CardOption{
+		CardName:    fmt.Sprintf("%s「你還差得遠呢 越前龍馬」", emoji.Emoji(":ghost:")),
+		DisplayName: "你還差得遠呢 越前龍馬",
+		Class:       "R",
+		CoreSet:     "sakuragi",
+		CoolDown:    11,
+		ReCoolDown:  11,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				sp := 20
+				str := fmt.Sprintf("後手:%d%%機率炸彈隨機轉移玩家,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnMythosPassFunc: func(thisCard scheduler.Card) func(scheduler.Game) (r bool, s string) {
+			return func(g scheduler.Game) (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 || len(g.GetPlayQueue()) <= len(g.GetQueue()) {
+					return
+				}
+				sp := 20
+				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
+					queue := g.GetQueue()
+					roll := rand.Perm(len(queue))[0]
+					toPlayer := queue[roll]
+					strs = append(strs, fmt.Sprintf("%s越前龍馬「腳邊截擊!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(toPlayer).GetDisplayName()))
+					thisCard.ResetCoolDown()
+				}
+				s = strings.Join(strs, "\n")
+				return r, s
+			}
+		},
+	},
+	"evan": CardOption{
+		CardName:    fmt.Sprintf("%s「後仰屁股著地式傳球 Evan」", emoji.Emoji(":ghost:")),
+		DisplayName: "後仰屁股著地式傳球 Evan",
+		Class:       "R",
+		CoreSet:     "evan",
+		CoolDown:    13,
+		ReCoolDown:  13,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				sp := 15
+				str := fmt.Sprintf("後手:%d%%機率炸彈隨機轉移玩家,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnMythosPassFunc: func(thisCard scheduler.Card) func(scheduler.Game) (r bool, s string) {
+			return func(g scheduler.Game) (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 || len(g.GetPlayQueue()) <= len(g.GetQueue()) {
+					return
+				}
+				sp := 15
+				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
+					queue := g.GetQueue()
+					roll := rand.Perm(len(queue))[0]
+					toPlayer := queue[roll]
+					strs = append(strs, fmt.Sprintf("%sEvan「假動作後仰跳投屁股著地式傳球!」%s%s", emoji.Emoji(":ghost:"), emoji.Emoji(":right_arrow:"), g.GetPlayer(toPlayer).GetDisplayName()))
+				}
+				thisCard.ResetCoolDown()
+				s = strings.Join(strs, "\n")
+				return r, s
+			}
+		},
+	},
+	"altria": CardOption{
+		CardName:    fmt.Sprintf("%s「召喚 Saber 阿爾托莉雅」", emoji.Emoji(":ghost:")),
+		DisplayName: "召喚 saber 阿爾托莉雅",
+		Class:       "R",
+		CoreSet:     "altria",
+		CoolDown:    13,
+		ReCoolDown:  13,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				sp := 20
+				str := fmt.Sprintf("後手:%d%%機率,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnMythosPassFunc: func(thisCard scheduler.Card) func(scheduler.Game) (r bool, s string) {
+			return func(g scheduler.Game) (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 {
+					return
+				}
+				sp := 20
+				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
+					queue := g.GetPlayQueue()
+					toPlayer := queue[len(queue)-1]
+					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayer).GetDisplayName()))
+					strs = append(strs, g.GetPlayer(toPlayer).GetCardPile().TakeCard("saber"))
+				}
+				thisCard.ResetCoolDown()
+				s = strings.Join(strs, "\n")
+				return r, s
 			}
 		},
 	},

@@ -236,4 +236,41 @@ var LimitedCard = map[string]CardOption{
 			}
 		},
 	},
+	"saber": CardOption{
+		CardName:    "SSR「召喚 誓約勝利之劍 阿爾托莉雅」",
+		DisplayName: "召喚 誓約勝利之劍 阿爾托莉雅",
+		Class:       "SSR",
+		CoreSet:     "saber",
+		CoolDown:    0,
+		ReCoolDown:  0,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				sp := 100
+				str := fmt.Sprintf("引爆(攻擊):%d%%機率使炸彈*%d,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown(), (thisCard.GetLevel() + 2))
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnAttackFunc: func(thisCard scheduler.Card) func() (bool, string) {
+			return func() (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 {
+					return false, ""
+				}
+				g := thisCard.GetTopParent()
+				thisPlayer := thisCard.GetParent().GetParent()
+				sp := 100
+				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
+					toCnt := g.GetInfoBoomCnt() * (thisCard.GetLevel() + 2)
+					g.MakeInfoBoomCnt(toCnt)
+					boomCnt := g.GetInfoBoomCnt()
+					strs = append(strs, fmt.Sprintf("【%s】 阿爾托莉雅「誓約勝利之劍!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, toCnt))
+				}
+				thisCard.ResetCoolDown()
+				thisPlayer.GetCardPile().UsedCard("saber")
+				return true, strings.Join(strs, "\n")
+			}
+		},
+	},
 }
