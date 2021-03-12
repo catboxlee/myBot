@@ -10,6 +10,7 @@ var titleCodeMap = map[string]string{
 	"one punch":         "一拳",
 	"sec kill":          "秒殺",
 	"shunsatsu":         "瞬殺",
+	"lock blood":        "不死小強",
 }
 
 // Title ...
