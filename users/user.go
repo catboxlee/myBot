@@ -80,7 +80,7 @@ func (u *TypeUsers) newUser(userProfile *linebot.UserProfileResponse) *UserOptio
 	nu.UserID = userProfile.UserID
 	nu.DisplayName = userProfile.DisplayName
 	nu.Money = 100
-	nu.GemStone = 39000
+	nu.GemStone = 13900
 	return nu
 }
 
