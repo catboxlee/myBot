@@ -64,7 +64,7 @@ func (g *GameType) Start() {
 
 func (g *GameType) startPhase() {
 	var strs []string
-	strs = append(strs, fmt.Sprintf("[%s終極密碼2.0]", emoji.Emoji(":bomb:")))
+	strs = append(strs, fmt.Sprintf("[%s終極密碼3.0]", emoji.Emoji(":bomb:")))
 	strs = append(strs, g.showGameInfo())
 	texts = append(texts, strings.Join(strs, "\n"))
 }
