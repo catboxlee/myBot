@@ -219,6 +219,15 @@ func (g *GameType) checkSeasonAchieve(boomerID string) string {
 			strs = append(strs, fmt.Sprintf("%s 獲得卡片<%s>", thisPlayer.GetDisplayName(), thisPlayer.CardPile.Cards["12"].GetDisplayName()))
 		}
 	}
+	// 鎖血99
+	if g.GetRankBoomCnt(thisPlayer.GetUserID()) == 99 {
+		if exist, _ := helper.InArray("lock blood", thisPlayer.Titles); !exist {
+			thisPlayer.Titles = append(thisPlayer.Titles, "lock blood")
+			strs = append(strs, fmt.Sprintf("%s 獲得稱號<%s>", thisPlayer.GetDisplayName(), title.Title("lock blood")))
+		}
+		thisPlayer.TakeCard("5")
+		strs = append(strs, fmt.Sprintf("%s 獲得卡片<%s>", thisPlayer.GetDisplayName(), thisPlayer.CardPile.Cards["5"].GetDisplayName()))
+	}
 	return strings.Join(strs, "\n")
 }
 
