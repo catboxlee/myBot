@@ -119,6 +119,7 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 					strs = append(strs, g.Players.Player(currentID).CardPile.ViewCardsInfo(true))
 					strs = append(strs, "[[指令]]")
 					strs = append(strs, "使用卡牌: /u <卡片編號>")
+					texts = append(texts, strings.Join(strs, "\n"))
 					return
 				}
 			}
