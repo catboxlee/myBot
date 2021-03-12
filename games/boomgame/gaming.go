@@ -149,7 +149,6 @@ func (g *GameType) onHit() string {
 		users.UsersList.SaveData(val)
 		g.Players.Data[val].SaveData()
 	}
-	g.Info.Inning++
 	return strings.Join(strs, "\n")
 
 }
