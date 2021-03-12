@@ -40,7 +40,7 @@ func (p *Players) LoadPlayersData(g scheduler.Game, sourceid string) {
 	p.SourceID = sourceid
 	p.Data = make(map[string]*PlayerOption)
 
-	rows, err := mydb.Db.Query("SELECT userid, sourceid, titles, cardpile, property FROM boomplayer")
+	rows, err := mydb.Db.Query("SELECT userid, sourceid, titles, cardpile, property FROM boomplayer Where sourceid = $1", sourceid)
 	checkError(err)
 	defer rows.Close()
 

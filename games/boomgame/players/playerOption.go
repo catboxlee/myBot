@@ -99,7 +99,7 @@ func (po *PlayerOption) ViewInfo() string {
 	strs = append(strs, fmt.Sprintf("%s", po.GetDisplayName()))
 	strs = append(strs, fmt.Sprintf("【資產】\n%s%d\n%s%d", emoji.Emoji(":money_bag:"), po.GetMoney(), emoji.Emoji(":gem_stone:"), po.GetGemStone()))
 	strs = append(strs, fmt.Sprintf("【擁有卡片】"))
-	strs = append(strs, po.CardPile.ViewCardsInfo())
+	strs = append(strs, po.CardPile.ViewCardsInfo(false))
 	strs = append(strs, "[[指令]]")
 	strs = append(strs, "使用卡牌: /u <卡片編號>")
 	strs = append(strs, "轉蛋: /gacha")
