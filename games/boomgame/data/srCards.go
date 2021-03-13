@@ -59,7 +59,7 @@ var SRCard = map[string]CardOption{
 							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
 								for _, co := range cos {
 									co.MakeFreeze(n)
-									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
+									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
 								}
 								g.GetPlayer(uid).SaveData()
 							}
@@ -193,7 +193,7 @@ var SRCard = map[string]CardOption{
 					}
 					thisPlayer.MakeGemStone(toCnt)
 					gem := thisPlayer.GetGemStone()
-					strs = append(strs, fmt.Sprintf("【%s】娜美「我喜歡錢和橘子」%s%d(%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
+					strs = append(strs, fmt.Sprintf("【%s】娜美「我喜歡錢和橘子」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
 				}
 				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")

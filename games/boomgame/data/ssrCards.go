@@ -97,7 +97,7 @@ var SSRCard = map[string]CardOption{
 						strs = append(strs, fmt.Sprintf("【%s】空条承太郎「你失敗的原因只有一個,%s,就是你惹火了我!」", thisPlayer.GetDisplayName(), users.UsersList.Data[toUserID].GetDisplayName()))
 					}
 					strs = append(strs, fmt.Sprintf("【%s】白金之星「歐拉歐拉歐拉歐拉」%s%s", thisPlayer.GetDisplayName(), emoji.Emoji(":right_arrow:"), users.UsersList.Data[toUserID].GetDisplayName()))
-					g.OnPlay()
+					//g.OnPlay()
 					g.AddPlayQueue(toUserID)
 					r = true
 					buff = 0
@@ -177,7 +177,7 @@ var SSRCard = map[string]CardOption{
 					strs = append(strs, fmt.Sprintf("【%s】瑪修「前輩最差勁了！」", thisPlayer.GetDisplayName()))
 					n := 20
 					thisCard.MakeFreeze(n)
-					strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), thisPlayer.GetDisplayName(), thisCard.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), thisCard.GetFreeze(), n))
+					strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":Japanese_prohibited_button:"), thisPlayer.GetDisplayName(), thisCard.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), thisCard.GetFreeze(), n))
 				} else if diceRoll < sp+thisCard.GetLevel()*2 {
 					n := 10
 					sayIndex := rand.Intn(thisCard.GetLevel())

@@ -184,7 +184,7 @@ var RCard = map[string]CardOption{
 					strs = append(strs, fmt.Sprintf("【%s】愛德華「鍊成!」%s%d(%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, -toCnt))
 					thisPlayer.MakeGemStone(toCnt)
 					gem := thisPlayer.GetGemStone()
-					strs = append(strs, fmt.Sprintf("【%s】%s%d(%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
+					strs = append(strs, fmt.Sprintf("【%s】%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
 				}
 				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
