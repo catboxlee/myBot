@@ -70,20 +70,20 @@ var RCard = map[string]CardOption{
 				}
 				thisPlayer := thisCard.GetParent().GetParent()
 				sp := 20
-				n := 1
+				n := rand.Intn(2) + 1
 				if thisCard.GetLevel() >= 4 {
-					n = 2
+					n++
 				}
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
-					strs = append(strs, fmt.Sprintf("【%s】克里姆王「時間刪除」", thisPlayer.GetDisplayName()))
+					strs = append(strs, fmt.Sprintf("【%s】克里姆王「時間刪除」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), -n))
 					for _, co := range thisPlayer.GetCardPile().GetCards() {
 						if co.GetCoolDown() > 0 {
 							co.MakeCoolDown(-n)
-							strs = append(strs, fmt.Sprintf("【%s】%s%s%d(%+d)", thisPlayer.GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), -n))
+							//strs = append(strs, fmt.Sprintf("【%s】%s%s%d(%+d)", thisPlayer.GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), -n))
 						}
 						if co.GetFreeze() > 0 {
 							co.MakeFreeze(-n)
-							strs = append(strs, fmt.Sprintf("【%s】%s%s%d(%+d)", thisPlayer.GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), -n))
+							//strs = append(strs, fmt.Sprintf("【%s】%s%s%d(%+d)", thisPlayer.GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), -n))
 						}
 					}
 				}
