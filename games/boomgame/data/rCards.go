@@ -215,7 +215,7 @@ var RCard = map[string]CardOption{
 				}
 				g := thisCard.GetTopParent()
 				thisPlayer := thisCard.GetParent().GetParent()
-				sp := 20
+				sp := 30
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					boomCnt := g.GetInfoBoomCnt()
 					toCnt := rand.Intn(2) + 3
@@ -244,7 +244,7 @@ var RCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnAttackFunc: func(thisCard scheduler.Card) func() (bool, string) {
+		OnPassFunc: func(thisCard scheduler.Card) func() (bool, string) {
 			return func() (r bool, s string) {
 				var strs []string
 				if thisCard.GetCoolDown() > 0 {
@@ -280,7 +280,7 @@ var RCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnAttackFunc: func(thisCard scheduler.Card) func() (bool, string) {
+		OnPassFunc: func(thisCard scheduler.Card) func() (bool, string) {
 			return func() (r bool, s string) {
 				var strs []string
 				if thisCard.GetCoolDown() > 0 {

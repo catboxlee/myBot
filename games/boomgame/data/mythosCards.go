@@ -133,14 +133,14 @@ var MythosCard = map[string]CardOption{
 	"blackflash": CardOption{
 		CardName:    fmt.Sprintf("%s「黑閃 虎杖悠仁」", emoji.Emoji(":ghost:")),
 		DisplayName: "黑閃 虎杖悠仁",
-		Class:       "R",
+		Class:       "SR",
 		CoreSet:     "blackflash",
 		CoolDown:    5,
 		ReCoolDown:  5,
 		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
-				sp := 20
+				sp := 30
 				str := fmt.Sprintf("後手:%d%%機率使炸彈增加,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
 				thisCard.SetDesc(str)
 				return str
@@ -159,7 +159,7 @@ var MythosCard = map[string]CardOption{
 					toCnt := 5 + i*2
 					g.MakeInfoBoomCnt(toCnt)
 					boomCnt += toCnt
-					strs = append(strs, fmt.Sprintf("%s虎杖悠仁「黑閃!」%s%d(%+d)", emoji.Emoji(":ghost:"), emoji.Emoji(":bomb:"), boomCnt, toCnt))
+					strs = append(strs, fmt.Sprintf("%s%s%d(%+d)", emoji.Emoji(":ghost:"), emoji.Emoji(":bomb:"), boomCnt, toCnt))
 					i++
 					thisCard.ResetCoolDown()
 				} else {
