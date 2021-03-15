@@ -59,7 +59,7 @@ var SRCard = map[string]CardOption{
 							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
 								for _, co := range cos {
 									co.MakeFreeze(n)
-									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
+									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
 								}
 								g.GetPlayer(uid).SaveData()
 							}
@@ -237,7 +237,7 @@ var SRCard = map[string]CardOption{
 					g.MakeInfoBoomCnt(-toCnt)
 					g.MakeRankBoomCnt(thisPlayer.GetUserID(), -toCnt)
 					strs = append(strs, fmt.Sprintf("【%s】瘋狂鑽石「嘟啦啦啦啦啦啦啦」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), g.GetInfoBoomCnt(), -toCnt))
-					strs = append(strs, fmt.Sprintf("【%s】%s%d(%s%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetRankBoomCnt(thisPlayer.GetUserID()), emoji.Emoji(":sparkling_heart:"), toCnt))
+					strs = append(strs, fmt.Sprintf("【%s】%s%d(%s%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetRankBoomCnt(thisPlayer.GetUserID()), emoji.Emoji(":sparkling_heart:"), toCnt))
 				}
 				//thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
