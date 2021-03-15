@@ -197,6 +197,7 @@ var MythosCard = map[string]CardOption{
 					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayerID).GetDisplayName()))
 					strs = append(strs, g.GetPlayer(toPlayerID).GetCardPile().TakeCard("saber"))
 					thisCard.ResetCoolDown()
+					r = true
 				}
 				s = strings.Join(strs, "\n")
 				return r, s
