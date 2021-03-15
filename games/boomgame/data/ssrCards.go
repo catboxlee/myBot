@@ -46,7 +46,7 @@ var SSRCard = map[string]CardOption{
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2+buff {
 					toUserID := playQueue[helper.Max(0, len(playQueue)-2)]
 					if buff > 0 {
-						strs = append(strs, fmt.Sprintf("【%s】不二周助「看起來很有趣的樣子」", thisPlayer.GetDisplayName()))
+						//strs = append(strs, fmt.Sprintf("【%s】不二周助「看起來很有趣的樣子」", thisPlayer.GetDisplayName()))
 					}
 					strs = append(strs, fmt.Sprintf("【%s】不二周助「燕返!」%s%s", thisPlayer.GetDisplayName(), emoji.Emoji(":right_arrow:"), users.UsersList.Data[toUserID].GetDisplayName()))
 					g.AddPlayQueue(toUserID)
@@ -94,7 +94,7 @@ var SSRCard = map[string]CardOption{
 				}
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2+buff {
 					if buff > 0 {
-						strs = append(strs, fmt.Sprintf("【%s】空条承太郎「你失敗的原因只有一個,%s,就是你惹火了我!」", thisPlayer.GetDisplayName(), users.UsersList.Data[toUserID].GetDisplayName()))
+						//strs = append(strs, fmt.Sprintf("【%s】空条承太郎「你失敗的原因只有一個,%s,就是你惹火了我!」", thisPlayer.GetDisplayName(), users.UsersList.Data[toUserID].GetDisplayName()))
 					}
 					strs = append(strs, fmt.Sprintf("【%s】白金之星「歐拉歐拉歐拉歐拉」%s%s", thisPlayer.GetDisplayName(), emoji.Emoji(":right_arrow:"), users.UsersList.Data[toUserID].GetDisplayName()))
 					g.AddPlayQueue(toUserID)
