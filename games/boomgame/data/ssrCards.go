@@ -25,7 +25,7 @@ var SSRCard = map[string]CardOption{
 				sp := 35
 				str := fmt.Sprintf("引爆(躲避):%d%%機率炸彈返回上一位玩家,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
 				if thisCard.GetLevel() >= 4 {
-					str += fmt.Sprintf("\nLv4:發動失敗時,下次觸發率+5%%")
+					str += fmt.Sprintf("\n發動失敗時,下次觸發率+2%%")
 				}
 				thisCard.SetDesc(str)
 				return str
@@ -52,10 +52,10 @@ var SSRCard = map[string]CardOption{
 					g.AddPlayQueue(toUserID)
 					r = true
 					buff = 0
-				} else if thisCard.GetLevel() >= 4 {
-					buff += 5
+					thisCard.ResetCoolDown()
+				} else {
+					buff += 2
 				}
-				thisCard.ResetCoolDown()
 				s = strings.Join(strs, "\n")
 				return r, s
 			}
@@ -74,7 +74,7 @@ var SSRCard = map[string]CardOption{
 				sp := 35
 				str := fmt.Sprintf("引爆(躲避):%d%%機率炸彈移至下一位玩家,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
 				if thisCard.GetLevel() >= 4 {
-					str += fmt.Sprintf("\nLv4:發動失敗時,下次觸發率+5%%")
+					str += fmt.Sprintf("\nLv4:發動失敗時,下次觸發率+2%%")
 				}
 				thisCard.SetDesc(str)
 				return str
@@ -100,10 +100,10 @@ var SSRCard = map[string]CardOption{
 					g.AddPlayQueue(toUserID)
 					r = true
 					buff = 0
-				} else if thisCard.GetLevel() >= 4 {
-					buff += 5
+					thisCard.ResetCoolDown()
+				} else {
+					buff += 2
 				}
-				thisCard.ResetCoolDown()
 				s = strings.Join(strs, "\n")
 				return r, s
 			}
