@@ -142,7 +142,7 @@ var SSRCard = map[string]CardOption{
 				diceRoll := rand.Intn(100)
 				if diceRoll >= 99 {
 					strs = append(strs, fmt.Sprintf("【%s】瑪修「前輩最差勁了！」", thisPlayer.GetDisplayName()))
-					n := 20
+					n := 10
 					thisCard.MakeFreeze(n)
 					strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), thisPlayer.GetDisplayName(), thisCard.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), thisCard.GetFreeze(), n))
 				} else if diceRoll < sp+thisCard.GetLevel()*2 {
@@ -160,8 +160,8 @@ var SSRCard = map[string]CardOption{
 						strs = append(strs, fmt.Sprintf("【%s】瑪修「%s」%s%d(%+d)", thisPlayer.GetDisplayName(), say[sayIndex], emoji.Emoji(":collision:"), g.GetInfoBoomCnt(), -shiled))
 					}
 
+					thisCard.ResetCoolDown()
 				}
-				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
 			}
 		},

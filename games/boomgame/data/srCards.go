@@ -28,7 +28,7 @@ var SRCard = map[string]CardOption{
 				if thisCard.GetLevel() >= 4 {
 					n = 2
 				}
-				str := fmt.Sprintf("先手:%d%%機率凍結1位玩家%d張卡片(%d回合),CD%d", sp+thisCard.GetLevel()*2, n, n, thisCard.GetReCoolDown())
+				str := fmt.Sprintf("先手:%d%%機率凍結1位玩家卡片(%d回合),CD%d", sp+thisCard.GetLevel()*2, n, thisCard.GetReCoolDown())
 				thisCard.SetDesc(str)
 				return str
 			}
@@ -48,18 +48,19 @@ var SRCard = map[string]CardOption{
 				}
 				tmp := rand.Perm(len(queue))
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
-					n := 1
+					n := 3
 					if thisCard.GetLevel() >= 4 {
-						n = 2
+						n = 4
 					}
 					strs = append(strs, fmt.Sprintf("【%s】世界「無駄無駄無駄無駄」", thisPlayer.GetDisplayName()))
 					for i := 0; i < len(tmp); i++ {
 						uid := queue[tmp[i]]
 						if uid != thisPlayer.GetUserID() {
+							strs = append(strs, fmt.Sprintf("%s%s(%+d)", users.UsersList.Data[uid].GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), n))
 							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
 								for _, co := range cos {
-									co.MakeFreeze(n)
-									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
+									co.MakeCoolDown(n)
+									//strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))
 								}
 								g.GetPlayer(uid).SaveData()
 							}
@@ -130,7 +131,7 @@ var SRCard = map[string]CardOption{
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				sp := 30
-				str := fmt.Sprintf("先手:%d%%機率消除炸彈,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
+				str := fmt.Sprintf("防禦:%d%%機率消除炸彈,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
 				thisCard.SetDesc(str)
 				return str
 			}
@@ -146,12 +147,11 @@ var SRCard = map[string]CardOption{
 				thisPlayer := thisCard.GetParent().GetParent()
 				diceRoll := rand.Intn(100)
 				if diceRoll < sp+thisCard.GetLevel()*2 {
-					boomCnt := g.GetInfoBoomCnt()
-					shiled := rand.Intn(boomCnt)
+					shiled := rand.Intn(g.GetInfoBoomCnt())
 					g.MakeInfoBoomCnt(-shiled)
 					strs = append(strs, fmt.Sprintf("【%s】埼玉「我是不會輸的，地球，由我來守護」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetInfoBoomCnt(), -shiled))
 					if diceRoll <= thisCard.GetLevel() {
-						shiled = boomCnt
+						shiled = g.GetInfoBoomCnt()
 						g.MakeInfoBoomCnt(-shiled)
 						strs = append(strs, fmt.Sprintf("【%s】埼玉「沒有一拳解決不了的事，如果有，就兩拳」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetInfoBoomCnt(), -shiled))
 					}
@@ -239,7 +239,7 @@ var SRCard = map[string]CardOption{
 					strs = append(strs, fmt.Sprintf("【%s】瘋狂鑽石「嘟啦啦啦啦啦啦啦」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), g.GetInfoBoomCnt(), -toCnt))
 					strs = append(strs, fmt.Sprintf("【%s】%s%d(%s%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetRankBoomCnt(thisPlayer.GetUserID()), emoji.Emoji(":sparkling_heart:"), toCnt))
 				}
-				//thisCard.ResetCoolDown()
+				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
 			}
 		},

@@ -89,7 +89,7 @@ var LimitedCard = map[string]CardOption{
 					boomCnt := g.GetInfoBoomCnt()
 					rankBoomCnt := g.GetRankBoomCnt(thisPlayer.GetUserID())
 					if rankBoomCnt+boomCnt > 100 {
-						shiled := rankBoomCnt + boomCnt - 100
+						shiled := rankBoomCnt + boomCnt - 99
 						g.MakeInfoBoomCnt(-shiled)
 						strs = append(strs, fmt.Sprintf("【%s】星矢「燃燒吧 小宇宙」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":collision:"), g.GetInfoBoomCnt(), -shiled))
 					}
@@ -108,7 +108,7 @@ var LimitedCard = map[string]CardOption{
 		ReCoolDown:  13,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
-				sp := 20
+				sp := 30
 				str := fmt.Sprintf("引爆(先手):%d%%機率更改炸彈數字,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
 				thisCard.SetDesc(str)
 				return str
@@ -123,7 +123,7 @@ var LimitedCard = map[string]CardOption{
 				g := thisCard.GetTopParent()
 				thisPlayer := thisCard.GetParent().GetParent()
 				hit, min, max := g.GetHit()
-				sp := 20
+				sp := 30
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					if hit == g.GetInfoCurrent() {
 						tmp := rand.Perm(max - min - 1)
@@ -238,8 +238,8 @@ var LimitedCard = map[string]CardOption{
 		},
 	},
 	"saber": CardOption{
-		CardName:    "SSR「召喚 誓約勝利之劍 阿爾托莉雅」",
-		DisplayName: "召喚 誓約勝利之劍 阿爾托莉雅",
+		CardName:    "SSR「誓約勝利之劍 阿爾托莉雅」",
+		DisplayName: "誓約勝利之劍 阿爾托莉雅",
 		Class:       "SSR",
 		CoreSet:     "saber",
 		CoolDown:    0,

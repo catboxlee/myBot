@@ -127,22 +127,24 @@ var RCard = map[string]CardOption{
 					return false, ""
 				}
 				sp := 20
-				n := 1
+				n := 5
 				if thisCard.GetLevel() >= 4 {
-					n = 2
+					n = 6
 				}
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					strs = append(strs, fmt.Sprintf("【%s】銀狐福克西「遲鈍光線」", thisPlayer.GetDisplayName()))
 					for i := 0; i < len(tmp); i++ {
 						uid := queue[tmp[i]]
 						if uid != thisPlayer.GetUserID() {
+							strs = append(strs, fmt.Sprintf("%s%s(%+d)", users.UsersList.Data[uid].GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), n))
 							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
 								for _, co := range cos {
 									co.MakeCoolDown(5)
-									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":hourglass_not_done:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), 5))
+									//strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":hourglass_not_done:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), 5))
 								}
 								g.GetPlayer(uid).SaveData()
 							}
+							break
 						}
 					}
 				}
@@ -181,10 +183,10 @@ var RCard = map[string]CardOption{
 					toCnt := rand.Intn(boomCnt)
 					g.MakeInfoBoomCnt(-toCnt)
 					boomCnt -= toCnt
-					strs = append(strs, fmt.Sprintf("【%s】愛德華「鍊成!」%s%d(%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, -toCnt))
+					strs = append(strs, fmt.Sprintf("【%s】愛德華「鍊成!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, -toCnt))
 					thisPlayer.MakeGemStone(toCnt)
 					gem := thisPlayer.GetGemStone()
-					strs = append(strs, fmt.Sprintf("【%s】%s%d(%d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
+					strs = append(strs, fmt.Sprintf("【%s】%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), gem, toCnt))
 				}
 				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
@@ -207,7 +209,7 @@ var RCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnAttackFunc: func(thisCard scheduler.Card) func() (bool, string) {
+		OnPassFunc: func(thisCard scheduler.Card) func() (bool, string) {
 			return func() (r bool, s string) {
 				var strs []string
 				if thisCard.GetCoolDown() > 0 {
@@ -222,8 +224,8 @@ var RCard = map[string]CardOption{
 					g.MakeInfoBoomCnt(toCnt)
 					boomCnt += toCnt
 					strs = append(strs, fmt.Sprintf("【%s】惠惠「Explosion!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, toCnt))
+					thisCard.ResetCoolDown()
 				}
-				thisCard.ResetCoolDown()
 				return true, strings.Join(strs, "\n")
 			}
 		},
