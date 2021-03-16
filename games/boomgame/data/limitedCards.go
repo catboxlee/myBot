@@ -20,6 +20,7 @@ var LimitedCard = map[string]CardOption{
 		CoreSet:     "1",
 		CoolDown:    50,
 		ReCoolDown:  50,
+		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				str := fmt.Sprintf("主動:99%%機率消除一個非炸彈數字,失敗引爆,CD%d", thisCard.GetReCoolDown())
@@ -106,6 +107,7 @@ var LimitedCard = map[string]CardOption{
 		CoreSet:     "12",
 		CoolDown:    13,
 		ReCoolDown:  13,
+		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				sp := 30
@@ -144,12 +146,13 @@ var LimitedCard = map[string]CardOption{
 		},
 	},
 	"13": CardOption{
-		CardName:    "SSR「SSR突破卡」",
+		CardName:    "道具「SSR突破卡」",
 		DisplayName: "SSR突破卡",
 		Class:       "SSR",
 		CoreSet:     "13",
 		CoolDown:    0,
 		ReCoolDown:  0,
+		Unique:      false,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				str := fmt.Sprintf("")
@@ -159,12 +162,13 @@ var LimitedCard = map[string]CardOption{
 		},
 	},
 	"14": CardOption{
-		CardName:    "SR「SR突破卡」",
+		CardName:    "道具「SR突破卡」",
 		DisplayName: "SR突破卡",
 		Class:       "SR",
 		CoreSet:     "14",
 		CoolDown:    0,
 		ReCoolDown:  0,
+		Unique:      false,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				str := fmt.Sprintf("")
@@ -174,11 +178,12 @@ var LimitedCard = map[string]CardOption{
 		},
 	},
 	"15": CardOption{
-		CardName:    "R「R突破卡」",
+		CardName:    "道具「R突破卡」",
 		DisplayName: "R突破卡",
 		CoreSet:     "15",
 		CoolDown:    0,
 		ReCoolDown:  0,
+		Unique:      false,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				str := fmt.Sprintf("")
@@ -194,6 +199,7 @@ var LimitedCard = map[string]CardOption{
 		CoreSet:     "19",
 		CoolDown:    55,
 		ReCoolDown:  55,
+		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				str := fmt.Sprintf("主動:99%%機率消除大量數字,失敗引爆,CD%d", thisCard.GetReCoolDown())
@@ -237,18 +243,17 @@ var LimitedCard = map[string]CardOption{
 			}
 		},
 	},
-	"saber": CardOption{
-		CardName:    "SSR「誓約勝利之劍 阿爾托莉雅」",
+	"8": CardOption{
+		CardName:    "道具「誓約勝利之劍 阿爾托莉雅」",
 		DisplayName: "誓約勝利之劍 阿爾托莉雅",
 		Class:       "SSR",
-		CoreSet:     "saber",
+		CoreSet:     "8",
 		CoolDown:    0,
 		ReCoolDown:  0,
-		Unique:      true,
+		Unique:      false,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
-				sp := 100
-				str := fmt.Sprintf("引爆(攻擊):%d%%機率使炸彈*%d,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown(), (thisCard.GetLevel() + 2))
+				str := fmt.Sprintf("引爆(攻擊):炸彈數量*2")
 				thisCard.SetDesc(str)
 				return str
 			}
@@ -256,35 +261,27 @@ var LimitedCard = map[string]CardOption{
 		OnAttackFunc: func(thisCard scheduler.Card) func() (bool, string) {
 			return func() (r bool, s string) {
 				var strs []string
-				if thisCard.GetCoolDown() > 0 {
-					return false, ""
-				}
 				g := thisCard.GetTopParent()
 				thisPlayer := thisCard.GetParent().GetParent()
-				sp := 100
-				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
-					toCnt := g.GetInfoBoomCnt() * (thisCard.GetLevel() + 2)
-					g.MakeInfoBoomCnt(toCnt)
-					boomCnt := g.GetInfoBoomCnt()
-					strs = append(strs, fmt.Sprintf("【%s】 阿爾托莉雅「誓約勝利之劍!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), boomCnt, toCnt))
-				}
-				thisCard.ResetCoolDown()
-				thisPlayer.GetCardPile().UsedCard("saber")
+				toCnt := g.GetInfoBoomCnt() * 2
+				g.MakeInfoBoomCnt(toCnt)
+				strs = append(strs, fmt.Sprintf("【%s】 阿爾托莉雅「誓約勝利之劍!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), g.GetInfoBoomCnt(), toCnt))
+				thisPlayer.GetCardPile().UsedCard("8")
 				return true, strings.Join(strs, "\n")
 			}
 		},
 	},
 	"4": CardOption{
-		CardName:    "SSR「白金之星 The World! 空条承太郎」",
-		DisplayName: "白金之星 The World! 空条承太郎",
+		CardName:    "道具「白金之星 The World!」",
+		DisplayName: "白金之星 The World!",
 		Class:       "SSR",
 		CoreSet:     "4",
 		CoolDown:    0,
 		ReCoolDown:  0,
-		Unique:      true,
+		Unique:      false,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
-				str := fmt.Sprintf("主動:炸彈移至下一位玩家,CD%d", thisCard.GetReCoolDown())
+				str := fmt.Sprintf("主動:炸彈移至下一位玩家")
 				thisCard.SetDesc(str)
 				return str
 			}
@@ -292,17 +289,13 @@ var LimitedCard = map[string]CardOption{
 		OnPlayFunc: func(thisCard scheduler.Card) func() (bool, string) {
 			return func() (r bool, s string) {
 				var strs []string
-				if thisCard.GetCoolDown() > 0 {
-					return false, "技能CD中..."
-				}
 				g := thisCard.GetTopParent()
 				thisPlayer := thisCard.GetParent().GetParent()
 				g.OnPlay()
 				toUserID := g.GetQueueNext()
 				strs = append(strs, fmt.Sprintf("【%s】白金之星「札．瓦魯斗！」%s%s", thisPlayer.GetDisplayName(), emoji.Emoji(":right_arrow:"), users.UsersList.Data[toUserID].GetDisplayName()))
-				thisCard.ResetCoolDown()
-				g.Show()
 				thisPlayer.GetCardPile().UsedCard("4")
+				g.Show()
 				return true, strings.Join(strs, "\n")
 			}
 		},

@@ -195,7 +195,7 @@ var MythosCard = map[string]CardOption{
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					toPlayerID := g.GetPlayQueueLast()
 					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayerID).GetDisplayName()))
-					strs = append(strs, fmt.Sprintf("【%s】獲得%s", g.GetPlayer(toPlayerID).GetDisplayName(), g.GetPlayer(toPlayerID).GetCardPile().TakeCard("saber")))
+					strs = append(strs, fmt.Sprintf("【%s】獲得%s", g.GetPlayer(toPlayerID).GetDisplayName(), g.GetPlayer(toPlayerID).GetCardPile().TakeCard("8")))
 					thisCard.ResetCoolDown()
 					r = true
 				}
@@ -229,7 +229,7 @@ var MythosCard = map[string]CardOption{
 				sp := 20
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					toPlayerID := g.GetPlayQueueLast()
-					strs = append(strs, fmt.Sprintf("%s「這是替身攻擊!!」", emoji.Emoji(":ghost:")))
+					strs = append(strs, fmt.Sprintf("%s空条承太郎「這是替身攻擊!!」", emoji.Emoji(":ghost:")))
 					strs = append(strs, fmt.Sprintf("【%s】獲得%s", g.GetPlayer(toPlayerID).GetDisplayName(), g.GetPlayer(toPlayerID).GetCardPile().TakeCard("4")))
 					thisCard.ResetCoolDown()
 					r = true

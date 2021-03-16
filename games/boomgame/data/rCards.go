@@ -11,37 +11,6 @@ import (
 
 // RCard ...
 var RCard = map[string]CardOption{
-	/*
-		"8": CardOption{
-			CardName:    fmt.Sprintf("R「%s」", emoji.Emoji(":gem_stone:")),
-			DisplayName: fmt.Sprintf("%s", emoji.Emoji(":gem_stone:")),
-			Class:       "R",
-			CoreSet:     "8",
-			CoolDown:    0,
-			ReCoolDown:  0,
-			Unique:      false,
-			DescFunc: func(thisCard scheduler.Card) func() string {
-				return func() string {
-					str := fmt.Sprintf("使用:獲得鑽石%s(0~20)", emoji.Emoji(":gem_stone:"))
-					thisCard.SetDesc(str)
-					return str
-				}
-			},
-			OnPlayFunc: func(thisCard scheduler.Card) func() (bool, string) {
-				return func() (r bool, s string) {
-					var strs []string
-					thisPlayer := thisCard.GetParent().GetParent()
-					n := rand.Intn(20)
-					thisPlayer.MakeGemStone(n)
-					strs = append(strs, fmt.Sprintf("【%s】獲得%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), thisPlayer.GetGemStone(), n))
-					thisPlayer.GetCardPile().UsedCard("8")
-					users.UsersList.SaveData(thisPlayer.GetUserID())
-					thisPlayer.SaveData()
-					return true, strings.Join(strs, "\n")
-				}
-			},
-		},
-	*/
 	"9": CardOption{
 		CardName:    "R「時間刪除 克里姆王」",
 		DisplayName: "時間刪除 克里姆王",
