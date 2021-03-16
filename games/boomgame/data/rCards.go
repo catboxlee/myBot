@@ -70,7 +70,7 @@ var RCard = map[string]CardOption{
 				}
 				thisPlayer := thisCard.GetParent().GetParent()
 				sp := 20
-				n := rand.Intn(2) + 1
+				n := rand.Intn(3) + 1
 				if thisCard.GetLevel() >= 4 {
 					n++
 				}
@@ -138,8 +138,8 @@ var RCard = map[string]CardOption{
 						if uid != thisPlayer.GetUserID() {
 							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
 								for _, co := range cos {
-									co.MakeCoolDown(30)
-									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":hourglass_not_done:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), 30))
+									co.MakeCoolDown(5)
+									strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":hourglass_not_done:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), 5))
 								}
 								g.GetPlayer(uid).SaveData()
 							}
