@@ -195,7 +195,42 @@ var MythosCard = map[string]CardOption{
 				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
 					toPlayerID := g.GetPlayQueueLast()
 					strs = append(strs, fmt.Sprintf("%s阿爾托莉雅「%s, 你就是我的Master嗎」", emoji.Emoji(":ghost:"), g.GetPlayer(toPlayerID).GetDisplayName()))
-					strs = append(strs, g.GetPlayer(toPlayerID).GetCardPile().TakeCard("saber"))
+					strs = append(strs, fmt.Sprintf("【%s】獲得%s", g.GetPlayer(toPlayerID).GetDisplayName(), g.GetPlayer(toPlayerID).GetCardPile().TakeCard("saber")))
+					thisCard.ResetCoolDown()
+					r = true
+				}
+				s = strings.Join(strs, "\n")
+				return r, s
+			}
+		},
+	},
+	"starplatinum": CardOption{
+		CardName:    fmt.Sprintf("%s「召喚 白金之星」", emoji.Emoji(":ghost:")),
+		DisplayName: "召喚 白金之星",
+		Class:       "SSR",
+		CoreSet:     "starplatinum",
+		CoolDown:    13,
+		ReCoolDown:  13,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				sp := 20
+				str := fmt.Sprintf("後手:%d%%機率,CD%d", sp+thisCard.GetLevel()*2, thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnMythosPassFunc: func(thisCard scheduler.Card) func(scheduler.Game) (r bool, s string) {
+			return func(g scheduler.Game) (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 {
+					return
+				}
+				sp := 20
+				if rand.Intn(100) < sp+thisCard.GetLevel()*2 {
+					toPlayerID := g.GetPlayQueueLast()
+					strs = append(strs, fmt.Sprintf("%s「這是替身攻擊!!」", emoji.Emoji(":ghost:")))
+					strs = append(strs, fmt.Sprintf("【%s】獲得%s", g.GetPlayer(toPlayerID).GetDisplayName(), g.GetPlayer(toPlayerID).GetCardPile().TakeCard("4")))
 					thisCard.ResetCoolDown()
 					r = true
 				}

@@ -6,6 +6,7 @@ import (
 	"myBot/emoji"
 	"myBot/games/boomgame/scheduler"
 	"myBot/helper"
+	"myBot/users"
 	"strconv"
 	"strings"
 )
@@ -269,6 +270,39 @@ var LimitedCard = map[string]CardOption{
 				}
 				thisCard.ResetCoolDown()
 				thisPlayer.GetCardPile().UsedCard("saber")
+				return true, strings.Join(strs, "\n")
+			}
+		},
+	},
+	"4": CardOption{
+		CardName:    "SSR「白金之星 The World! 空条承太郎」",
+		DisplayName: "白金之星 The World! 空条承太郎",
+		Class:       "SSR",
+		CoreSet:     "4",
+		CoolDown:    0,
+		ReCoolDown:  0,
+		Unique:      true,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				str := fmt.Sprintf("主動:炸彈移至下一位玩家,CD%d", thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnPlayFunc: func(thisCard scheduler.Card) func() (bool, string) {
+			return func() (r bool, s string) {
+				var strs []string
+				if thisCard.GetCoolDown() > 0 {
+					return false, "技能CD中..."
+				}
+				g := thisCard.GetTopParent()
+				thisPlayer := thisCard.GetParent().GetParent()
+				g.OnPlay()
+				toUserID := g.GetQueueNext()
+				strs = append(strs, fmt.Sprintf("【%s】白金之星「札．瓦魯斗！」%s%s", thisPlayer.GetDisplayName(), emoji.Emoji(":right_arrow:"), users.UsersList.Data[toUserID].GetDisplayName()))
+				thisCard.ResetCoolDown()
+				g.Show()
+				thisPlayer.GetCardPile().UsedCard("4")
 				return true, strings.Join(strs, "\n")
 			}
 		},
