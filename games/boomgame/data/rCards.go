@@ -73,11 +73,11 @@ var RCard = map[string]CardOption{
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
 				sp := 20
-				n := 1
+				n := 5
 				if thisCard.GetLevel() >= 4 {
-					n = 2
+					n = 6
 				}
-				str := fmt.Sprintf("先手:%d%%機率使1位玩家%d張卡片CD增加%d,CD%d", sp+thisCard.GetLevel()*2, n, 30, thisCard.GetReCoolDown())
+				str := fmt.Sprintf("先手:%d%%機率使1位玩家CD增加%d,CD%d", sp+thisCard.GetLevel()*2, n, thisCard.GetReCoolDown())
 				thisCard.SetDesc(str)
 				return str
 			}
@@ -106,9 +106,9 @@ var RCard = map[string]CardOption{
 						uid := queue[tmp[i]]
 						if uid != thisPlayer.GetUserID() {
 							strs = append(strs, fmt.Sprintf("%s%s(%+d)", users.UsersList.Data[uid].GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), n))
-							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
+							if cos := g.GetPlayer(uid).GetCardPile().GetCards(); len(cos) > 0 {
 								for _, co := range cos {
-									co.MakeCoolDown(5)
+									co.MakeCoolDown(n)
 									//strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%+d)", emoji.Emoji(":hourglass_not_done:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), co.GetCoolDown(), 5))
 								}
 								g.GetPlayer(uid).SaveData()

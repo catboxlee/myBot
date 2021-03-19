@@ -31,7 +31,7 @@ func (g *GameType) GaCha(input string, currentID string) string {
 		strs = append(strs, g.doGaCha(1, currentID))
 	case 10:
 		thisPlayer.MakeGemStone(-gem10)
-		strs = append(strs, fmt.Sprintf("<<%s 10抽>>%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), thisPlayer.GetGemStone(), -gem1))
+		strs = append(strs, fmt.Sprintf("<<%s 10抽>>%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":gem_stone:"), thisPlayer.GetGemStone(), -gem10))
 		strs = append(strs, g.doGaCha(10, currentID))
 	default:
 		strs = append(strs, g.viewGaChaInfo())

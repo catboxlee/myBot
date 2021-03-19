@@ -155,6 +155,7 @@ func (g *GameType) onHit() string {
 func (g *GameType) checkAchieve(boomerID *string) string {
 	var strs []string
 	thisPlayer := g.Player(*boomerID)
+
 	// 一拳
 	if len(g.Info.PlayQueue) > 1 && g.Info.Turn <= len(g.Info.Queue) && g.Info.Queue[g.Info.Turn-1] != g.Info.PlayQueue[len(g.Info.PlayQueue)-1] {
 		if exist, _ := helper.InArray("one shot", thisPlayer.Titles); !exist {
@@ -165,6 +166,7 @@ func (g *GameType) checkAchieve(boomerID *string) string {
 		thisPlayer.TakeCard("19")
 		strs = append(strs, fmt.Sprintf("%s 獲得卡片<%s>", thisPlayer.GetDisplayName(), thisPlayer.CardPile.Cards["19"].GetDisplayName()))
 	}
+
 	// 狙擊王
 	if len(g.Info.Queue) == 1 && g.Info.Turn == 1 {
 		if exist, _ := helper.InArray("sogeking", thisPlayer.Titles); !exist {

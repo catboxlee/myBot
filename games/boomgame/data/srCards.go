@@ -57,7 +57,7 @@ var SRCard = map[string]CardOption{
 						uid := queue[tmp[i]]
 						if uid != thisPlayer.GetUserID() {
 							strs = append(strs, fmt.Sprintf("%s%s(%+d)", users.UsersList.Data[uid].GetDisplayName(), emoji.Emoji(":hourglass_not_done:"), n))
-							if cos := g.GetPlayer(uid).GetRandCards(n); len(cos) > 0 {
+							if cos := g.GetPlayer(uid).GetCardPile().GetCards(); len(cos) > 0 {
 								for _, co := range cos {
 									co.MakeCoolDown(n)
 									//strs = append(strs, fmt.Sprintf("%s%s - %s%s%d(%d)", emoji.Emoji(":Japanese_prohibited_button:"), users.UsersList.Data[uid].GetDisplayName(), co.GetDisplayName(), emoji.Emoji(":Japanese_prohibited_button:"), co.GetFreeze(), n))

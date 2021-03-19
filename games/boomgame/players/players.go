@@ -77,7 +77,11 @@ func (p *Players) buildPlayer(spo *sqlPlayerOption) *PlayerOption {
 	np.CardPile.Cards = make(map[string]*cards.CardOption)
 	json.Unmarshal(spo.CardPile, &np.CardPile)
 	for k, v := range np.CardPile.Cards {
-		v.GenerateCard(&np.CardPile, np, data.CardData[k])
+		if _, exist := data.CardData[k]; exist {
+			v.GenerateCard(&np.CardPile, np, data.CardData[k])
+		} else {
+			delete(np.CardPile.Cards, k)
+		}
 	}
 	json.Unmarshal(spo.Property, &np.Property)
 	return np

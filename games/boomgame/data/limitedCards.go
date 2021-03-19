@@ -18,8 +18,8 @@ var LimitedCard = map[string]CardOption{
 		DisplayName: "狙擊之王 騙人布",
 		Class:       "SSR",
 		CoreSet:     "1",
-		CoolDown:    50,
-		ReCoolDown:  50,
+		CoolDown:    30,
+		ReCoolDown:  30,
 		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
@@ -197,8 +197,8 @@ var LimitedCard = map[string]CardOption{
 		DisplayName: "一拳超人  埼玉",
 		Class:       "SSR",
 		CoreSet:     "19",
-		CoolDown:    55,
-		ReCoolDown:  55,
+		CoolDown:    25,
+		ReCoolDown:  25,
 		Unique:      true,
 		DescFunc: func(thisCard scheduler.Card) func() string {
 			return func() string {
@@ -226,7 +226,7 @@ var LimitedCard = map[string]CardOption{
 						strs = append(strs, fmt.Sprintf("【%s】埼玉「認真的一拳!」%s%d(%+d)", thisPlayer.GetDisplayName(), emoji.Emoji(":bomb:"), g.GetInfoBoomCnt(), (max-min)-(newMax-newMin)))
 						g.Show()
 					} else {
-						newMin := hit - rand.Intn(hit-min) + 1
+						newMin := hit - rand.Intn(hit-min) - 1
 						newMax := hit + rand.Intn(max-hit) + 1
 						g.SetInfoRange(newMin, newMax)
 						g.MakeInfoBoomCnt((max - min) - (newMax - newMin))
