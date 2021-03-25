@@ -78,3 +78,7 @@ func (pr *Property) ClearDeBuff() {
 func (pr *Property) AddBuff(s string) {
 	pr.Buff = append(pr.Buff, s)
 }
+
+func (pr *Property) ClearBuff() {
+	pr.Buff = nil
+}

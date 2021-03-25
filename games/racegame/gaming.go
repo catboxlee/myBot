@@ -36,7 +36,12 @@ func (g *GameType) showGameInfo() string {
 		}
 		horses := g.Info.Queue
 		for _, userID := range horses {
-			strs = append(strs, fmt.Sprintf("%s 等待中...", g.Player(userID).GetDisplayName()))
+			strs = append(strs, fmt.Sprintf("%s%s 等待中...", g.Player(userID).GetDisplayName(), func() string {
+				if len(g.Player(userID).Buff) > 0 {
+					return fmt.Sprintf("(%s)", g.mythosCards.Cards[g.Player(userID).Buff[0]].GetDisplayName())
+				}
+				return ""
+			}()))
 		}
 		strs = append(strs, fmt.Sprintf("\n[+] 進入賽場"))
 		if len(g.Info.Queue) > 0 {

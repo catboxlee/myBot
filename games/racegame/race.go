@@ -154,6 +154,9 @@ func (g *GameType) playerJoin(currentID string, input string) string {
 	if _, exist := g.Players.Data[currentID]; exist {
 		if len(input) > 0 {
 			if _, exist := g.mythosCards.Cards[input]; exist {
+				if len(g.Players.Data[currentID].Property.Buff) != 0 {
+					g.Players.Data[currentID].Property.ClearBuff()
+				}
 				g.Players.Data[currentID].Property.AddBuff(input)
 			}
 		}
