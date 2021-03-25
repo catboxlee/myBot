@@ -1,6 +1,8 @@
 package common
 
 import (
+	"fmt"
+	"myBot/emoji"
 	"myBot/world"
 	"regexp"
 	"strconv"
@@ -32,11 +34,15 @@ func Cmd(sourceID string, input string) []string {
 func changeGame(sourceID string, s string) []string {
 	if n, err := strconv.Atoi(s); err == nil {
 		switch n {
+		case 2:
+			world.ConfigsData[sourceID].Game = n
+			world.ConfigsData[sourceID].UpdateConfigData()
+			return []string{fmt.Sprintf("切換遊戲：[2]%s賽羚娘", emoji.Emoji(":game_die:"))}
 		default:
 			world.ConfigsData[sourceID].Game = n
 			world.ConfigsData[sourceID].UpdateConfigData()
 			return []string{"切換遊戲：[1]終極密碼3.0"}
 		}
 	}
-	return []string{"[1]終極密碼3.0"}
+	return []string{fmt.Sprintf("[1]終極密碼3.0\n[2]%s賽羚娘", emoji.Emoji(":game_die:"))}
 }
