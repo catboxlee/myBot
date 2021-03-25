@@ -73,9 +73,6 @@ func (g *GameType) Command(input string, currentID string) []string {
 				g.Info.currentUserID = currentID
 				if s := g.playerJoin(currentID, strings.TrimLeft(input, "+")); len(s) > 0 {
 					texts = append(texts, s)
-					if len(g.Info.Queue) == 3 {
-						g.Info.Phase = true
-					}
 					g.Show()
 				}
 			}
