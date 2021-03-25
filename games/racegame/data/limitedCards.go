@@ -101,7 +101,7 @@ var LimitedCard = map[string]CardOption{
 				var strs []string
 				g := thisPlayer.GetTopParent()
 				property := thisPlayer.GetProperty()
-				if property.TotalMove >= (g.GetMeter() - g.GetMeter()/3) {
+				if property.TotalMove >= (g.GetMeter() - g.GetMeter()/2) {
 					property.MakeDice(0, 1, 2)
 					strs = append(strs, fmt.Sprintf("%s「刺客」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 2))
 				}
