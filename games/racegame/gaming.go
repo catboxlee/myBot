@@ -101,7 +101,9 @@ func (g *GameType) showGameInfo() string {
 	if len(tmp) > 0 {
 		strs = append(strs, strings.Join(tmp, ""))
 	}
-	strs = append(strs, fmt.Sprintf("%s", nextPlayer.ViewCardsInfo()))
+	if nextPlayer.GetTurn() > 1 {
+		strs = append(strs, fmt.Sprintf("%s", nextPlayer.ViewCardsInfo()))
+	}
 	a, b, c := nextPlayer.GetDice()
 	strs = append(strs, fmt.Sprintf("0.前進(%s%d~%d%+d)", emoji.Emoji(":game_die:"), 1+a, 6+b, c))
 	nextPlayer.ResetDice()

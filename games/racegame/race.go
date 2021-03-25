@@ -79,7 +79,7 @@ func (g *GameType) Command(input string, currentID string) []string {
 			}
 		case "-": // Gamming Start
 			g.Info.Phase = true
-			//helper.Shuffle(g.Info.Queue)
+			helper.Shuffle(g.Info.Queue)
 			g.Show()
 		default: // Player Phase
 			g.Info.currentUserID = currentID
