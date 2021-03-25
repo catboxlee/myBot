@@ -604,12 +604,11 @@ var ResidentCard = map[string]CardOption{
 				var strs []string
 				var targetPlayer scheduler.Player
 				g := thisPlayer.GetTopParent()
-				arr := g.GetRankingArray()
 				if args != nil {
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					targetPlayer = thisPlayer
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("downhill1")
@@ -679,7 +678,7 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
+		OnSpeedLimitFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player) (r bool, s string) {
 				var strs []string
 				if thisPlayer.GetProperty().DiceHit > 4 {
