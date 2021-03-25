@@ -69,21 +69,27 @@ func (g *GameType) Command(input string, currentID string) []string {
 		case "/": // Game Command
 			g.checkCommand(strings.TrimLeft(input, "/"), currentID)
 		case "+": // Player Join
-			g.Info.currentUserID = currentID
-			if s := g.playerJoin(currentID, strings.TrimLeft(input, "+")); len(s) > 0 {
-				texts = append(texts, s)
-				if len(g.Info.Queue) == 3 {
-					g.Info.Phase = true
+			if g.Info.Phase == false {
+				g.Info.currentUserID = currentID
+				if s := g.playerJoin(currentID, strings.TrimLeft(input, "+")); len(s) > 0 {
+					texts = append(texts, s)
+					if len(g.Info.Queue) == 3 {
+						g.Info.Phase = true
+					}
+					g.Show()
 				}
-				g.Show()
 			}
 		case "-": // Gamming Start
-			g.Info.Phase = true
-			helper.Shuffle(g.Info.Queue)
-			g.Show()
+			if g.Info.Phase == false {
+				g.Info.Phase = true
+				helper.Shuffle(g.Info.Queue)
+				g.Show()
+			}
 		default: // Player Phase
-			g.Info.currentUserID = currentID
-			g.GamePhase(input)
+			if g.Info.Phase == true {
+				g.Info.currentUserID = currentID
+				g.GamePhase(input)
+			}
 		}
 	}
 	return texts
