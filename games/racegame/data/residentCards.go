@@ -603,7 +603,6 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				var targetPlayer scheduler.Player
-				g := thisPlayer.GetTopParent()
 				if args != nil {
 					targetPlayer = args
 				}
