@@ -145,7 +145,7 @@ func (g *GameType) playerJoin(currentID string, input string) string {
 	input = strings.Trim(input, " ")
 	if exists, _ := helper.InArray(currentID, g.Info.Queue); !exists {
 		g.Info.Queue = append(g.Info.Queue, currentID)
-		strs = append(strs, fmt.Sprintf("%s join.", currentID))
+		strs = append(strs, fmt.Sprintf("%s join.", g.Players.Data[currentID].GetDisplayName()))
 	}
 
 	if _, exist := g.Players.Data[currentID]; exist {
