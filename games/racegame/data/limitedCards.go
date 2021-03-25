@@ -55,7 +55,7 @@ var LimitedCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
-				property.MakeDice(0, 1, 1)
+				property.MakeDice(0, 0, 1)
 				return true, strings.Join(strs, "\n")
 			}
 		},
