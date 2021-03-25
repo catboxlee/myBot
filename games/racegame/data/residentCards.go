@@ -633,7 +633,7 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
+		OnSpeedLimitFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player) (r bool, s string) {
 				var strs []string
 				if thisPlayer.GetProperty().DiceHit < 3 {
