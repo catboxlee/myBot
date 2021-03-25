@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 // DiceType type
@@ -24,6 +25,7 @@ func (d *diceType) Roll(s string) {
 	d.Hit = 0
 	d.Rolls = nil
 
+	s = strings.ToLower(s)
 	re := regexp.MustCompile(`(\d*)d(\d*)\+?(\d*)`)
 	matches := re.FindStringSubmatch(s)
 
