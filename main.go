@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"my5/games/racegame"
 
 	"myBot/common"
 	"myBot/mydb"
@@ -80,6 +81,10 @@ func doLinebotEvents(events []*linebot.Event) {
 				texts = common.Cmd(sourceID, input)
 				if len(texts) == 0 {
 					switch world.ConfigsData[sourceID].Game {
+					case 2:
+						racegame.CheckExistData(sourceID)
+						users.UsersList.CheckUserExist(users.LineUser.UserProfile) // test
+						texts = racegame.Race[sourceID].Command(input, users.LineUser.UserProfile.UserID)
 					default:
 						boomgame.CheckExistData(sourceID)
 						users.UsersList.CheckUserExist(users.LineUser.UserProfile) // test
