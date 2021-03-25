@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"my5/games/racegame"
+	"myBot/games/racegame"
 
 	"myBot/common"
 	"myBot/mydb"
