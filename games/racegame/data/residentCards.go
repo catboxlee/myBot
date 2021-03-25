@@ -165,7 +165,7 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				strs = append(strs, fmt.Sprintf("%s使用%s", thisPlayer.GetDisplayName(), "水溝蓋跑法"))
-				if _, str := thisPlayer.RemoveCardPile("speed_limit4", "speed_limit2"); len(str) > 0 {
+				if _, str := thisPlayer.RemoveDeBuff("speed_limit4", "speed_limit2"); len(str) > 0 {
 					strs = append(strs, str)
 				}
 				return true, strings.Join(strs, "\n")
@@ -336,7 +336,7 @@ var ResidentCard = map[string]CardOption{
 				var strs []string
 				move := 1
 				property := thisPlayer.GetProperty()
-				property.ClearDeBuff()
+				thisPlayer.RemoveAllDeBuff()
 				property.MakeDice(0, 0, move)
 				strs = append(strs, fmt.Sprintf("%s使用「無敵星星」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), move))
 				return true, strings.Join(strs, "\n")
@@ -361,7 +361,7 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				strs = append(strs, fmt.Sprintf("%s使用%s", thisPlayer.GetDisplayName(), "保護殼"))
-				if _, str := thisPlayer.RemoveCardPile("green_shell", "red_shell", "banana"); len(str) > 0 {
+				if _, str := thisPlayer.RemoveDeBuff("green_shell", "red_shell", "banana"); len(str) > 0 {
 					strs = append(strs, str)
 				}
 				return true, strings.Join(strs, "\n")
@@ -386,7 +386,7 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				strs = append(strs, fmt.Sprintf("%s使用%s", thisPlayer.GetDisplayName(), "OK繃"))
-				if _, str := thisPlayer.RemoveCardPile("broken"); len(str) > 0 {
+				if _, str := thisPlayer.RemoveDeBuff("broken"); len(str) > 0 {
 					strs = append(strs, str)
 				}
 				return true, strings.Join(strs, "\n")
@@ -411,7 +411,7 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				strs = append(strs, fmt.Sprintf("%s使用體力充沛", thisPlayer.GetDisplayName()))
-				if _, str := thisPlayer.RemoveCardPile("drowsy"); len(str) > 0 {
+				if _, str := thisPlayer.RemoveDeBuff("drowsy"); len(str) > 0 {
 					strs = append(strs, str)
 				}
 				return true, strings.Join(strs, "\n")
@@ -436,7 +436,7 @@ var ResidentCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
 				strs = append(strs, fmt.Sprintf("%s使用興奮劑%s+1", thisPlayer.GetDisplayName(), emoji.Emoji(":pill:")))
-				if _, str := thisPlayer.RemoveCardPile("broken", "drowsy"); len(str) > 0 {
+				if _, str := thisPlayer.RemoveDeBuff("broken", "drowsy"); len(str) > 0 {
 					strs = append(strs, str)
 				}
 				thisPlayer.GetProperty().MakeDice(0, 0, 1)

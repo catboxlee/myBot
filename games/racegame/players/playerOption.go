@@ -68,7 +68,18 @@ func (po *PlayerOption) GetCardPile() []string {
 }
 
 // RemoveCardPile ...
-func (po *PlayerOption) RemoveCardPile(ids ...string) (isRemoe bool, str string) {
+func (po *PlayerOption) RemoveAllDeBuff() (isRemoe bool, str string) {
+	var strs []string
+	for _, val := range po.DeBuff {
+		strs = append(strs, fmt.Sprintf("移除%s", data.CardData[val].CardName))
+	}
+	po.DeBuff = nil
+	str = strings.Join(strs, "\n")
+	return
+}
+
+// RemoveCardPile ...
+func (po *PlayerOption) RemoveDeBuff(ids ...string) (isRemoe bool, str string) {
 	var tmp []string
 	var strs []string
 	for _, val := range po.DeBuff {

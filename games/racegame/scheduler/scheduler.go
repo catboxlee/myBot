@@ -37,7 +37,8 @@ type Player interface {
 	MakeGemStone(int)
 	GetProperty() *typeset.Property
 	TakeCard(id string)
-	RemoveCardPile(...string) (bool, string)
+	RemoveDeBuff(...string) (bool, string)
+	RemoveAllDeBuff() (bool, string)
 	SaveData()
 }
 
