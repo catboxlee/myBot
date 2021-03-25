@@ -91,7 +91,6 @@ func (g *GameType) showGameInfo() string {
 		}
 	}
 	if len(nextPlayer.DeBuff) > 0 {
-		var tmp []string
 		for _, cid := range nextPlayer.DeBuff {
 			if _, exist := g.mythosCards.Cards[cid]; exist {
 				tmp = append(tmp, g.mythosCards.Cards[cid].GetDisplayName())
