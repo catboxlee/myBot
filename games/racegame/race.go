@@ -73,15 +73,15 @@ func (g *GameType) Command(input string, currentID string) []string {
 				g.Info.currentUserID = currentID
 				if s := g.playerJoin(currentID, strings.TrimLeft(input, "+")); len(s) > 0 {
 					texts = append(texts, s)
-					g.Show()
 				}
+				g.Show()
 			}
 		case "-": // Gamming Start
 			if g.Info.Phase == false {
 				g.Info.Phase = true
 				helper.Shuffle(g.Info.Queue)
-				g.Show()
 			}
+			g.Show()
 		default: // Player Phase
 			if g.Info.Phase == true {
 				g.Info.currentUserID = currentID
