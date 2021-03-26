@@ -404,7 +404,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"full_power": CardOption{
-		CardName:    fmt.Sprintf("「%s體力充沛(移除:體力不支)」", emoji.Emoji(":pill:")),
+		CardName:    "「體力充沛(移除:體力不支)」",
 		DisplayName: "體力充沛",
 		CoreSet:     "full_power",
 		CoolDown:    0,
@@ -445,7 +445,7 @@ var ResidentCard = map[string]CardOption{
 		OnPlayFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, args scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
-				strs = append(strs, fmt.Sprintf("%s使用興奮劑%s+1", thisPlayer.GetDisplayName(), emoji.Emoji(":pill:")))
+				strs = append(strs, fmt.Sprintf("%s使用興奮劑%s+1", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:")))
 				if _, str := thisPlayer.RemoveDeBuff("broken", "drowsy"); len(str) > 0 {
 					strs = append(strs, str)
 				}
@@ -487,7 +487,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("broken")
@@ -531,7 +535,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("drowsy")
@@ -575,7 +583,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("muddy1")
@@ -663,7 +675,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("speed_need4")
@@ -712,7 +728,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("speed_limit4")
@@ -762,7 +782,11 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = args
 				}
 				if targetPlayer == nil {
-					targetPlayer = g.GetPlayer(arr[0])
+					for _, userID := range arr {
+						if userID != thisPlayer.GetUserID() && g.GetPlayer(userID).GetProperty().TotalMove < g.GetMeter() {
+							targetPlayer = g.GetPlayer(userID)
+						}
+					}
 				}
 				property := targetPlayer.GetProperty()
 				property.AddDeBuff("speed_limit2")
