@@ -683,6 +683,9 @@ var ResidentCard = map[string]CardOption{
 				if thisPlayer.GetProperty().DiceHit > 4 {
 					thisPlayer.GetProperty().SetStop(true)
 					strs = append(strs, fmt.Sprintf("%s「彎道4」過彎失敗,此回合暫停", thisPlayer.GetDisplayName()))
+				} else if thisPlayer.GetProperty().DiceHit == 4 {
+					thisPlayer.GetProperty().Move += 1
+					strs = append(strs, fmt.Sprintf("%s「彎道4」甩尾過彎%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
 				} else {
 					strs = append(strs, fmt.Sprintf("%s「彎道4」過彎成功", thisPlayer.GetDisplayName()))
 				}

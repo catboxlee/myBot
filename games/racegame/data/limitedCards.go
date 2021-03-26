@@ -29,7 +29,7 @@ var LimitedCard = map[string]CardOption{
 				property := thisPlayer.GetProperty()
 				property.MakeDice(0, 1, 0)
 				if property.GetTurn() == 1 {
-					property.MakeDice(0, 0, 3)
+					property.MakeDice(0, 1, 3)
 					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 3))
 				} else if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) == 0 {
 				}
@@ -103,6 +103,9 @@ var LimitedCard = map[string]CardOption{
 				property := thisPlayer.GetProperty()
 				if property.TotalMove >= (g.GetMeter() - g.GetMeter()/2) {
 					property.MakeDice(0, 2, 2)
+					if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) != 0 && property.TotalMove >= (g.GetMeter()-g.GetMeter()/3) {
+						property.MakeDice(0, 1, 1)
+					}
 					strs = append(strs, fmt.Sprintf("%s「刺客」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 2))
 				}
 				return true, strings.Join(strs, "\n")
