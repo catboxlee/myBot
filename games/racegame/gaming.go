@@ -276,7 +276,6 @@ func (g *GameType) running() (r bool, s string) {
 								if g.GetPlayer(userID).GetProperty().TotalMove <= thisPlayer.Property.TotalMove+3 && g.GetPlayer(userID).GetProperty().TotalMove >= thisPlayer.Property.TotalMove {
 									thisPlayer.Property.MakeDice(0, 0, 1)
 									strs = append(strs, fmt.Sprintf("%s「毒牙」", thisPlayer.GetDisplayName()))
-									thisPlayer.AddDeBuff("speed_up1")
 									g.GetPlayer(userID).AddDeBuff("speed_down1")
 									strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
 								}
