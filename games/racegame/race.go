@@ -276,7 +276,7 @@ func CheckExistData(SourceID string) {
 		Race[SourceID] = &GameType{}
 		//Boom[SourceID].Start()
 		Race[SourceID].sourceid = SourceID
-		Race[SourceID].defaultMeter = 70
+		Race[SourceID].defaultMeter = 30
 
 		Race[SourceID].Players.LoadPlayersData(Race[SourceID], SourceID)
 
