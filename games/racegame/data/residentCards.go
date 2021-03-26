@@ -313,8 +313,6 @@ var ResidentCard = map[string]CardOption{
 				property := thisPlayer.GetProperty()
 				property.MakeDice(1, 0, 0)
 				strs = append(strs, fmt.Sprintf("%s「渦輪引擎」%sx%d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), move+1))
-				thisPlayer.AddDeBuff("drowsy")
-				strs = append(strs, fmt.Sprintf("%s下回合「%s」", thisPlayer.GetDisplayName(), CardData["drowsy"].CardName))
 				return true, strings.Join(strs, "\n")
 			}
 		},
