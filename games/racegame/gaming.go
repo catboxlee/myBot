@@ -257,8 +257,9 @@ func (g *GameType) running() (r bool, s string) {
 
 		if thisPlayer.Property.Stop == false {
 			thisPlayer.Property.TotalMove += thisPlayer.Property.Move
-			if len(thisPlayer.Buff) > 0 {
-				if thisPlayer.Buff[0] == "3" && thisPlayer.GetTurn() != 1 {
+			if len(thisPlayer.Buff) > 0 && thisPlayer.GetTurn() != 1 {
+				switch thisPlayer.Buff[0] {
+				case "3":
 					nowMyRank := g.GetRanking(thisPlayer.GetUserID())
 					if nowMyRank < lastMyRank {
 						rk := g.getRaceSort()
@@ -266,6 +267,20 @@ func (g *GameType) running() (r bool, s string) {
 							rk[i+1].AddDeBuff("speed_down1")
 							thisPlayer.AddDeBuff("speed_up2")
 							strs = append(strs, fmt.Sprintf("%s「攻城車」撞擊%s", thisPlayer.GetDisplayName(), rk[i+1].GetDisplayName()))
+						}
+					}
+				case "5":
+					if thisPlayer.GetTurn() > 1 {
+						for _, userID := range g.GetQueue() {
+							if userID != thisPlayer.GetUserID() {
+								if g.GetPlayer(userID).GetProperty().TotalMove <= thisPlayer.Property.TotalMove+3 && g.GetPlayer(userID).GetProperty().TotalMove >= thisPlayer.Property.TotalMove {
+									thisPlayer.Property.MakeDice(0, 0, 1)
+									strs = append(strs, fmt.Sprintf("%s「毒牙」", thisPlayer.GetDisplayName()))
+									thisPlayer.AddDeBuff("speed_up1")
+									g.GetPlayer(userID).AddDeBuff("speed_down1")
+									strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
+								}
+							}
 						}
 					}
 				}

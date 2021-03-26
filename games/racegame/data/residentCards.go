@@ -348,7 +348,7 @@ var ResidentCard = map[string]CardOption{
 				property := thisPlayer.GetProperty()
 				thisPlayer.RemoveAllDeBuff()
 				property.MakeDice(0, 0, move)
-				strs = append(strs, fmt.Sprintf("%s使用「無敵星星」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), move))
+				strs = append(strs, fmt.Sprintf("%s使用「無敵星星」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), move))
 				return true, strings.Join(strs, "\n")
 			}
 		},
@@ -429,7 +429,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"pill": CardOption{
-		CardName:    fmt.Sprintf("「%s興奮劑%s+1(移除:骨折,體力不支)」", emoji.Emoji(":pill:"), emoji.Emoji(":game_die:")),
+		CardName:    fmt.Sprintf("「%s興奮劑%s+1(移除:骨折,體力不支)」", emoji.Emoji(":pill:"), emoji.Emoji(":footprints:")),
 		DisplayName: "興奮劑",
 		CoreSet:     "pill",
 		CoolDown:    0,
@@ -445,7 +445,7 @@ var ResidentCard = map[string]CardOption{
 		OnPlayFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, args scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
-				strs = append(strs, fmt.Sprintf("%s使用興奮劑%s+1", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:")))
+				strs = append(strs, fmt.Sprintf("%s使用興奮劑%s+1", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:")))
 				if _, str := thisPlayer.RemoveDeBuff("broken", "drowsy"); len(str) > 0 {
 					strs = append(strs, str)
 				}
@@ -640,7 +640,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_need4": CardOption{
-		CardName:    fmt.Sprintf("「大峽谷%s>=%d」", emoji.Emoji(":game_die:"), 4),
+		CardName:    fmt.Sprintf("「大峽谷%s>=%d」", emoji.Emoji(":footprints:"), 4),
 		DisplayName: "大峽谷4",
 		CoreSet:     "speed_need4",
 		CoolDown:    0,
@@ -690,7 +690,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_limit4": CardOption{
-		CardName:    fmt.Sprintf("「彎道%s<=%d」", emoji.Emoji(":game_die:"), 4),
+		CardName:    fmt.Sprintf("「彎道%s<=%d」", emoji.Emoji(":footprints:"), 4),
 		DisplayName: "彎道4",
 		CoreSet:     "speed_limit4",
 		CoolDown:    0,
@@ -711,7 +711,7 @@ var ResidentCard = map[string]CardOption{
 					strs = append(strs, fmt.Sprintf("%s「彎道4」過彎失敗,此回合暫停", thisPlayer.GetDisplayName()))
 				} else if thisPlayer.GetProperty().DiceHit == 4 {
 					thisPlayer.GetProperty().Move += 1
-					strs = append(strs, fmt.Sprintf("%s「彎道4」甩尾過彎%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
+					strs = append(strs, fmt.Sprintf("%s「彎道4」甩尾過彎%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), 1))
 				} else {
 					strs = append(strs, fmt.Sprintf("%s「彎道4」過彎成功", thisPlayer.GetDisplayName()))
 				}
@@ -743,7 +743,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_limit2": CardOption{
-		CardName:    fmt.Sprintf("「髮夾彎%s<=%d」", emoji.Emoji(":game_die:"), 2),
+		CardName:    fmt.Sprintf("「髮夾彎%s<=%d」", emoji.Emoji(":footprints:"), 2),
 		DisplayName: "髮夾彎2",
 		CoreSet:     "speed_limit2",
 		CoolDown:    0,
@@ -765,7 +765,7 @@ var ResidentCard = map[string]CardOption{
 				} else if thisPlayer.GetProperty().DiceHit == 2 {
 					rnd := rand.Intn(6) + 1
 					thisPlayer.GetProperty().Move += rnd
-					strs = append(strs, fmt.Sprintf("%s「髮夾彎」甩尾過彎%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), rnd))
+					strs = append(strs, fmt.Sprintf("%s「髮夾彎」甩尾過彎%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), rnd))
 				} else {
 					strs = append(strs, fmt.Sprintf("%s「髮夾彎」過彎成功", thisPlayer.GetDisplayName()))
 				}

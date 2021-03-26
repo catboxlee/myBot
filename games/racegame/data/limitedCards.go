@@ -29,7 +29,7 @@ var LimitedCard = map[string]CardOption{
 				property := thisPlayer.GetProperty()
 				if property.GetTurn() == 1 {
 					property.MakeDice(0, 3, 3)
-					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 3))
+					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%s%+d%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 3, emoji.Emoji(":footprints:"), 3))
 				} else if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) == 0 {
 					property.MakeDice(0, 1, 0)
 				}
@@ -104,11 +104,11 @@ var LimitedCard = map[string]CardOption{
 				if property.TotalMove >= (g.GetMeter() - g.GetMeter()/2) {
 					move := 2
 					property.MakeDice(0, 1, move)
-					strs = append(strs, fmt.Sprintf("%s「刺客」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), move))
+					strs = append(strs, fmt.Sprintf("%s「刺客」%s%+d%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), move, emoji.Emoji(":footprints:"), move))
 					if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) != 0 && property.TotalMove >= (g.GetMeter()-g.GetMeter()/3) {
 						move++
 						property.MakeDice(0, 1, 1)
-						strs = append(strs, fmt.Sprintf("%s「刺客:背刺」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
+						strs = append(strs, fmt.Sprintf("%s「刺客:背刺」%s%+d%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1, emoji.Emoji(":footprints:"), 1))
 					}
 				}
 				return true, strings.Join(strs, "\n")
@@ -139,7 +139,7 @@ var LimitedCard = map[string]CardOption{
 						if userID != thisPlayer.GetUserID() {
 							if g.GetPlayer(userID).GetProperty().TotalMove <= property.TotalMove+2 && g.GetPlayer(userID).GetProperty().TotalMove >= property.TotalMove-3 {
 								property.MakeDice(0, 0, 1)
-								strs = append(strs, fmt.Sprintf("%s「毒牙」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
+								strs = append(strs, fmt.Sprintf("%s「毒牙」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), 1))
 								if b {
 									g.GetPlayer(userID).AddDeBuff("speed_down1")
 									strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
