@@ -43,7 +43,8 @@ func (g *GameType) showGameInfo() string {
 				return ""
 			}()))
 		}
-		strs = append(strs, fmt.Sprintf("\n[+] 進入賽場"))
+		strs = append(strs, fmt.Sprintf("\n[/m] 設定跑道距離"))
+		strs = append(strs, fmt.Sprintf("[+] 進入賽場"))
 		if len(g.Info.Queue) > 0 {
 			strs = append(strs, fmt.Sprintf("[-] 開始比賽"))
 		}

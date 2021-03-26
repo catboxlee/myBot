@@ -3,6 +3,7 @@ package racegame
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"myBot/games/racegame/cards"
 	"myBot/games/racegame/players"
 	"myBot/games/racegame/scheduler"
@@ -104,7 +105,7 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 		case "rank":
 			log.Println(fmt.Sprintf("Command<rank>: %s, %s", s[0], input))
 			g.Show()
-		case "set":
+		case "m":
 			log.Println(fmt.Sprintf("Command<set>: %s, %s", s[0], input))
 			if len(s) > 1 {
 				if x, err := strconv.Atoi(s[1]); err == nil {
@@ -112,6 +113,11 @@ func (g *GameType) checkCommand(input string, currentID string) (r string) {
 					g.reset()
 					g.Show()
 				}
+			} else {
+				m := []int{30, 50, 70}
+				g.SetMeter(m[rand.Intn(len(m))])
+				g.reset()
+				g.Show()
 			}
 		default:
 			log.Println(fmt.Sprintf("Command<v>: %s, %s", s[0], input))
