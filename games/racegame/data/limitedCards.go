@@ -137,7 +137,7 @@ var LimitedCard = map[string]CardOption{
 				if thisPlayer.GetTurn() > 1 {
 					for _, userID := range g.GetQueue() {
 						if userID != thisPlayer.GetUserID() {
-							if property.TotalMove >= g.GetPlayer(userID).GetProperty().TotalMove && g.GetPlayer(userID).GetProperty().TotalMove >= property.TotalMove-3 {
+							if g.GetPlayer(userID).GetProperty().TotalMove <= property.TotalMove+2 && g.GetPlayer(userID).GetProperty().TotalMove >= property.TotalMove-3 {
 								property.MakeDice(0, 0, 1)
 								strs = append(strs, fmt.Sprintf("%s「毒牙」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
 								if b {
