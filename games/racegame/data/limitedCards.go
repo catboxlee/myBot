@@ -109,4 +109,39 @@ var LimitedCard = map[string]CardOption{
 			}
 		},
 	},
+	"5": CardOption{
+		CardName:    "「毒牙」",
+		DisplayName: "毒牙",
+		Class:       "SSR",
+		CoreSet:     "snake",
+		Quantity:    1,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				str := fmt.Sprintf("%d", thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
+			return func(thisPlayer scheduler.Player) (r bool, s string) {
+				var strs []string
+				g := thisPlayer.GetTopParent()
+				property := thisPlayer.GetProperty()
+				property.MakeDice(0, 1, 0)
+				if thisPlayer.GetTurn() > 1 {
+					for _, userID := range g.GetQueue() {
+						if userID != thisPlayer.GetUserID() {
+							if g.GetPlayer(userID).GetProperty().TotalMove >= property.TotalMove-5 {
+								property.MakeDice(0, 0, 1)
+								strs = append(strs, fmt.Sprintf("%s「毒牙」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
+								g.GetPlayer(userID).AddDeBuff("speed_down1")
+								strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
+							}
+						}
+					}
+				}
+				return true, strings.Join(strs, "\n")
+			}
+		},
+	},
 }

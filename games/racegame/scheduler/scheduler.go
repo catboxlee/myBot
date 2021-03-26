@@ -40,6 +40,9 @@ type Player interface {
 	RemoveDeBuff(...string) (bool, string)
 	RemoveAllDeBuff() (bool, string)
 	SaveData()
+	GetTurn() int
+	AddDeBuff(string)
+	AddBuff(string)
 }
 
 // Cards ...

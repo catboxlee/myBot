@@ -617,10 +617,10 @@ var ResidentCard = map[string]CardOption{
 			}
 		},
 	},
-	"speed_need3": CardOption{
-		CardName:    fmt.Sprintf("「大峽谷%s>=%d」", emoji.Emoji(":game_die:"), 3),
-		DisplayName: "大峽谷3",
-		CoreSet:     "speed_need3",
+	"speed_need4": CardOption{
+		CardName:    fmt.Sprintf("「大峽谷%s>=%d」", emoji.Emoji(":game_die:"), 4),
+		DisplayName: "大峽谷4",
+		CoreSet:     "speed_need4",
 		CoolDown:    0,
 		ReCoolDown:  0,
 		Quantity:    2,
@@ -634,11 +634,11 @@ var ResidentCard = map[string]CardOption{
 		OnSpeedLimitFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player) (r bool, s string) {
 				var strs []string
-				if thisPlayer.GetProperty().DiceHit < 3 {
+				if thisPlayer.GetProperty().DiceHit < 4 {
 					thisPlayer.GetProperty().SetStop(true)
-					strs = append(strs, fmt.Sprintf("%s「大峽谷3」飛越失敗,此回合暫停", thisPlayer.GetDisplayName()))
+					strs = append(strs, fmt.Sprintf("%s「大峽谷4」飛越失敗,此回合暫停", thisPlayer.GetDisplayName()))
 				} else {
-					strs = append(strs, fmt.Sprintf("%s「大峽谷3」飛越成功", thisPlayer.GetDisplayName()))
+					strs = append(strs, fmt.Sprintf("%s「大峽谷4」飛越成功", thisPlayer.GetDisplayName()))
 				}
 				return true, strings.Join(strs, "\n")
 			}
@@ -656,8 +656,8 @@ var ResidentCard = map[string]CardOption{
 					targetPlayer = g.GetPlayer(arr[0])
 				}
 				property := targetPlayer.GetProperty()
-				property.AddDeBuff("speed_need3")
-				strs = append(strs, fmt.Sprintf("%s對%s使用大峽谷3", thisPlayer.GetDisplayName(), targetPlayer.GetDisplayName()))
+				property.AddDeBuff("speed_need4")
+				strs = append(strs, fmt.Sprintf("%s對%s使用大峽谷4", thisPlayer.GetDisplayName(), targetPlayer.GetDisplayName()))
 
 				return true, strings.Join(strs, "\n")
 			}

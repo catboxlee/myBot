@@ -30,9 +30,13 @@ func (g *GameType) showGameInfo() string {
 
 	if g.Info.Phase == false {
 		strs = append(strs, fmt.Sprintf("[[%s賽羚娘 %s%d]]", emoji.Emoji(":game_die:"), emoji.Emoji(":chequered_flag:"), g.Info.Meter))
-		for i := 1; i < 3; i++ {
-			//id := strconv.Itoa(i)
-			//strs = append(strs, fmt.Sprintf("%s.%s ", id, g.mythosCards.Cards[id].GetDisplayName()))
+		var skills []string
+		for i := 1; i <= 5; i++ {
+			id := strconv.Itoa(i)
+			skills = append(skills, fmt.Sprintf("%s.%s ", id, g.mythosCards.Cards[id].GetDisplayName()))
+		}
+		if len(skills) > 0 {
+			strs = append(strs, strings.Join(skills, ","))
 		}
 		horses := g.Info.Queue
 		for _, userID := range horses {
