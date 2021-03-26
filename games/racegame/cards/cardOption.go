@@ -30,7 +30,7 @@ type CardOption struct {
 	DescFunc         func() string                                           `json:"-"`
 	OnPlayFunc       func(scheduler.Player, scheduler.Player) (bool, string) `json:"-"`
 	OnAttackFunc     func(scheduler.Player) (bool, string)                   `json:"-"`
-	OnEffectFunc     func(scheduler.Player) (bool, string)                   `json:"-"`
+	OnEffectFunc     func(scheduler.Player, bool) (bool, string)             `json:"-"`
 	OnSpeedLimitFunc func(scheduler.Player) (bool, string)                   `json:"-"`
 	ActivateFunc     func(scheduler.Card)                                    `json:"-"`
 	OnHitFunc        func() (bool, string)                                   `json:"-"`

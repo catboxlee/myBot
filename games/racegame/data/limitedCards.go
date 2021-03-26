@@ -23,8 +23,8 @@ var LimitedCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
 				if property.GetTurn() == 1 {
@@ -51,8 +51,8 @@ var LimitedCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
 				property.MakeDice(0, 0, 1)
@@ -74,8 +74,8 @@ var LimitedCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
 				property.MakeDice(0, 2, 0)
@@ -96,8 +96,8 @@ var LimitedCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				g := thisPlayer.GetTopParent()
 				property := thisPlayer.GetProperty()
@@ -128,8 +128,8 @@ var LimitedCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				g := thisPlayer.GetTopParent()
 				property := thisPlayer.GetProperty()
@@ -140,8 +140,10 @@ var LimitedCard = map[string]CardOption{
 							if property.TotalMove >= g.GetPlayer(userID).GetProperty().TotalMove && g.GetPlayer(userID).GetProperty().TotalMove >= property.TotalMove-3 {
 								property.MakeDice(0, 0, 1)
 								strs = append(strs, fmt.Sprintf("%s「毒牙」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 1))
-								g.GetPlayer(userID).AddDeBuff("speed_down1")
-								strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
+								if b {
+									g.GetPlayer(userID).AddDeBuff("speed_down1")
+									strs = append(strs, fmt.Sprintf("%s「減速1」", g.GetPlayer(userID).GetDisplayName()))
+								}
 							}
 						}
 					}

@@ -511,8 +511,8 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				move := -3
 				property := thisPlayer.GetProperty()
@@ -555,8 +555,8 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				move := -1
 				property := thisPlayer.GetProperty()
@@ -599,8 +599,8 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
-		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
-			return func(thisPlayer scheduler.Player) (r bool, s string) {
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				move := 1
 				property := thisPlayer.GetProperty()

@@ -23,7 +23,7 @@ type CardOption struct {
 	DescFunc         func(scheduler.Card) func() string
 	OnPlayFunc       func(scheduler.Card) func(scheduler.Player, scheduler.Player) (bool, string)
 	OnAttackFunc     func(scheduler.Card) func(scheduler.Player) (bool, string)
-	OnEffectFunc     func(scheduler.Card) func(scheduler.Player) (bool, string)
+	OnEffectFunc     func(scheduler.Card) func(scheduler.Player, bool) (bool, string)
 	OnSpeedLimitFunc func(scheduler.Card) func(scheduler.Player) (bool, string)
 	OnMythosPassFunc func(scheduler.Card) func(scheduler.Game) (bool, string)
 	OnHitFunc        func(scheduler.Card) func() (bool, string)

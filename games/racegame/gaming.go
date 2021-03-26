@@ -96,7 +96,7 @@ func (g *GameType) showGameInfo() string {
 		for _, cid := range nextPlayer.Buff {
 			if _, exist := g.mythosCards.Cards[cid]; exist {
 				tmp = append(tmp, g.mythosCards.Cards[cid].GetDisplayName())
-				g.mythosCards.Cards[cid].OnEffectFunc(nextPlayer)
+				g.mythosCards.Cards[cid].OnEffectFunc(nextPlayer, false)
 			}
 		}
 	}
@@ -285,7 +285,7 @@ func (g *GameType) checkBuffFunc(thisPlayer *players.PlayerOption) string {
 	var strs []string
 	for _, coid := range thisPlayer.Property.Buff {
 		if g.mythosCards.Cards[coid].OnEffectFunc != nil {
-			if r, s := g.mythosCards.Cards[coid].OnEffectFunc(thisPlayer); r {
+			if r, s := g.mythosCards.Cards[coid].OnEffectFunc(thisPlayer, true); r {
 				if len(s) > 0 {
 					strs = append(strs, s)
 				}
@@ -320,7 +320,7 @@ func (g *GameType) checkDeBuffEffectFunc(thisPlayer *players.PlayerOption) strin
 	for _, coid := range thisPlayer.Property.DeBuff {
 		if _, exist := g.mythosCards.Cards[coid]; exist {
 			if g.mythosCards.Cards[coid].OnEffectFunc != nil {
-				if r, s := g.mythosCards.Cards[coid].OnEffectFunc(thisPlayer); r {
+				if r, s := g.mythosCards.Cards[coid].OnEffectFunc(thisPlayer, true); r {
 					if len(s) > 0 {
 						strs = append(strs, s)
 					}
