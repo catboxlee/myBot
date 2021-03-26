@@ -28,8 +28,8 @@ var LimitedCard = map[string]CardOption{
 				var strs []string
 				property := thisPlayer.GetProperty()
 				if property.GetTurn() == 1 {
-					property.MakeDice(1, 0, 0)
-					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%sx%d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), property.DiceCnt))
+					property.MakeDice(0, 3, 3)
+					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 3))
 				} else if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) == 0 {
 					property.MakeDice(0, 1, 0)
 				}
