@@ -211,7 +211,8 @@ func (g *GameType) running() (r bool, s string) {
 	var strs []string
 	g.OnPlay()
 	thisPlayer := g.Player(g.Info.currentUserID)
-	lastMyRank := g.GetRanking(thisPlayer.GetUserID())
+	//lastMyRank := g.GetRanking(thisPlayer.GetUserID())
+	lastMyTotalMove := thisPlayer.Property.TotalMove
 	thisPlayer.Property.Move = 0
 	if s := g.checkDeBuffAttackFunc(thisPlayer); len(s) > 0 {
 		strs = append(strs, s)
@@ -255,18 +256,21 @@ func (g *GameType) running() (r bool, s string) {
 			}
 		}
 
+		nowMyTotalMove := thisPlayer.Property.TotalMove
 		if thisPlayer.Property.Stop == false {
 			thisPlayer.Property.TotalMove += thisPlayer.Property.Move
 			if len(thisPlayer.Buff) > 0 && thisPlayer.GetTurn() != 1 {
 				switch thisPlayer.Buff[0] {
 				case "3":
-					nowMyRank := g.GetRanking(thisPlayer.GetUserID())
-					if nowMyRank < lastMyRank {
-						rk := g.getRaceSort()
-						for i := 0; i < lastMyRank-nowMyRank; i++ {
-							rk[i+1].AddDeBuff("speed_down1")
-							thisPlayer.AddDeBuff("speed_up2")
-							strs = append(strs, fmt.Sprintf("%s「攻城車」撞擊%s", thisPlayer.GetDisplayName(), rk[i+1].GetDisplayName()))
+					if thisPlayer.GetTurn() > 1 {
+						for _, userID := range g.GetQueue() {
+							if userID != thisPlayer.GetUserID() {
+								if g.GetPlayer(userID).GetProperty().TotalMove <= nowMyTotalMove && g.GetPlayer(userID).GetProperty().TotalMove >= lastMyTotalMove {
+									g.GetPlayer(userID).AddDeBuff("speed_down1")
+									thisPlayer.AddDeBuff("speed_up2")
+									strs = append(strs, fmt.Sprintf("%s「攻城車」撞擊%s", thisPlayer.GetDisplayName(), g.GetPlayer(userID).GetDisplayName()))
+								}
+							}
 						}
 					}
 				case "5":
