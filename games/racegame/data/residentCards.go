@@ -221,6 +221,16 @@ var ResidentCard = map[string]CardOption{
 				return str
 			}
 		},
+		OnAttackFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player) (bool, string) {
+			return func(thisPlayer scheduler.Player) (r bool, s string) {
+				var strs []string
+				move := 2
+				property := thisPlayer.GetProperty()
+				property.MakeDice(0, 0, move)
+				strs = append(strs, fmt.Sprintf("%s「加速2」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), move))
+				return true, strings.Join(strs, "\n")
+			}
+		},
 		OnPlayFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, args scheduler.Player) (bool, string) {
 			return func(thisPlayer scheduler.Player, args scheduler.Player) (r bool, s string) {
 				var strs []string
