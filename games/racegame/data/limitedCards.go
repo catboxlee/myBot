@@ -27,11 +27,11 @@ var LimitedCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
-				property.MakeDice(0, 1, 0)
 				if property.GetTurn() == 1 {
-					property.MakeDice(0, 1, 3)
-					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), 3))
+					property.MakeDice(1, 0, 0)
+					strs = append(strs, fmt.Sprintf("%s「一騎絕塵」%sx%d", thisPlayer.GetDisplayName(), emoji.Emoji(":game_die:"), property.DiceCnt))
 				} else if thisPlayer.GetTopParent().GetRanking(thisPlayer.GetUserID()) == 0 {
+					property.MakeDice(0, 1, 0)
 				}
 				return true, strings.Join(strs, "\n")
 			}
