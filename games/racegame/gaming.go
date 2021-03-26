@@ -264,7 +264,7 @@ func (g *GameType) running() (r bool, s string) {
 						rk := g.getRaceSort()
 						for i := 0; i < lastMyRank-nowMyRank; i++ {
 							rk[i+1].AddDeBuff("speed_down1")
-							thisPlayer.AddDeBuff("speed_up1")
+							thisPlayer.AddDeBuff("speed_up2")
 							strs = append(strs, fmt.Sprintf("%s「攻城車」撞擊%s", thisPlayer.GetDisplayName(), rk[i+1].GetDisplayName()))
 						}
 					}
