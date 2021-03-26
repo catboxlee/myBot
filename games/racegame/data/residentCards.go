@@ -640,7 +640,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_need4": CardOption{
-		CardName:    fmt.Sprintf("「大峽谷%s>=%d」", emoji.Emoji(":footprints:"), 4),
+		CardName:    fmt.Sprintf("「大峽谷%s≥%d」", emoji.Emoji(":footprints:"), 4),
 		DisplayName: "大峽谷4",
 		CoreSet:     "speed_need4",
 		CoolDown:    0,
@@ -690,7 +690,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_limit4": CardOption{
-		CardName:    fmt.Sprintf("「彎道%s<=%d」", emoji.Emoji(":footprints:"), 4),
+		CardName:    fmt.Sprintf("「彎道%s≤%d」", emoji.Emoji(":footprints:"), 4),
 		DisplayName: "彎道4",
 		CoreSet:     "speed_limit4",
 		CoolDown:    0,
@@ -743,7 +743,7 @@ var ResidentCard = map[string]CardOption{
 		},
 	},
 	"speed_limit2": CardOption{
-		CardName:    fmt.Sprintf("「髮夾彎%s<=%d」", emoji.Emoji(":footprints:"), 2),
+		CardName:    fmt.Sprintf("「髮夾彎%s≤%d」", emoji.Emoji(":footprints:"), 2),
 		DisplayName: "髮夾彎2",
 		CoreSet:     "speed_limit2",
 		CoolDown:    0,
