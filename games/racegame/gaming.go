@@ -256,9 +256,10 @@ func (g *GameType) running() (r bool, s string) {
 			}
 		}
 
-		nowMyTotalMove := thisPlayer.Property.TotalMove
+		
 		if thisPlayer.Property.Stop == false {
 			thisPlayer.Property.TotalMove += thisPlayer.Property.Move
+			nowMyTotalMove := thisPlayer.Property.TotalMove
 			if len(thisPlayer.Buff) > 0 && thisPlayer.GetTurn() != 1 {
 				switch thisPlayer.Buff[0] {
 				case "3":
