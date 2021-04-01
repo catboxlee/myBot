@@ -177,7 +177,7 @@ var LimitedCard = map[string]CardOption{
 					property := thisPlayer.GetProperty()
 					switch rand.Intn(3) {
 					case 0:
-						move = -3
+						move = -2
 					default:
 						move = 2
 					}
