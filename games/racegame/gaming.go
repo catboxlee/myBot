@@ -31,7 +31,7 @@ func (g *GameType) showGameInfo() string {
 	if g.Info.Phase == false {
 		strs = append(strs, fmt.Sprintf("[[%s賽羚娘 %s%d]]", emoji.Emoji(":game_die:"), emoji.Emoji(":chequered_flag:"), g.Info.Meter))
 		var skills []string
-		for i := 1; i <= 5; i++ {
+		for i := 1; i <= 6; i++ {
 			id := strconv.Itoa(i)
 			skills = append(skills, fmt.Sprintf("%s.%s ", id, g.mythosCards.Cards[id].GetDisplayName()))
 		}
@@ -256,7 +256,6 @@ func (g *GameType) running() (r bool, s string) {
 			}
 		}
 
-		
 		if thisPlayer.Property.Stop == false {
 			thisPlayer.Property.TotalMove += thisPlayer.Property.Move
 			nowMyTotalMove := thisPlayer.Property.TotalMove
