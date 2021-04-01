@@ -170,7 +170,7 @@ var LimitedCard = map[string]CardOption{
 			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
 				var strs []string
 				property := thisPlayer.GetProperty()
-				//property.MakeDice(0, 2, 0)
+				property.MakeDice(0, 1, 0)
 				if thisPlayer.GetTurn() > 1 {
 					if b {
 					move := 0
