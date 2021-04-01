@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+	"math/rand"
 	"myBot/emoji"
 	"myBot/games/racegame/scheduler"
 	"strings"
@@ -147,6 +148,41 @@ var LimitedCard = map[string]CardOption{
 							}
 						}
 					}
+				}
+				return true, strings.Join(strs, "\n")
+			}
+		},
+	},
+	"6": CardOption{
+		CardName:    "「滑板鞋」",
+		DisplayName: "滑板鞋",
+		Class:       "SSR",
+		CoreSet:     "skateboard",
+		Quantity:    1,
+		DescFunc: func(thisCard scheduler.Card) func() string {
+			return func() string {
+				str := fmt.Sprintf("%d", thisCard.GetReCoolDown())
+				thisCard.SetDesc(str)
+				return str
+			}
+		},
+		OnEffectFunc: func(thisCard scheduler.Card) func(thisPlayer scheduler.Player, b bool) (bool, string) {
+			return func(thisPlayer scheduler.Player, b bool) (r bool, s string) {
+				var strs []string
+				property := thisPlayer.GetProperty()
+				property.MakeDice(0, 2, 0)
+				if thisPlayer.GetTurn() > 1 {
+					move := 0
+					property := thisPlayer.GetProperty()
+					switch rand.Intn(2) {
+					case 0:
+						move = 2
+					default:
+						move = -2
+					}
+					property.MakeDice(0, 0, move)
+					strs = append(strs, fmt.Sprintf("%s「滑板鞋」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), move))
+
 				}
 				return true, strings.Join(strs, "\n")
 			}
