@@ -177,9 +177,9 @@ var LimitedCard = map[string]CardOption{
 					property := thisPlayer.GetProperty()
 					switch rand.Intn(3) {
 					case 0:
-						move = 2
-					default:
 						move = -3
+					default:
+						move = 2
 					}
 					property.MakeDice(0, 0, move)
 					strs = append(strs, fmt.Sprintf("%s「滑板鞋」%s%+d", thisPlayer.GetDisplayName(), emoji.Emoji(":footprints:"), move))
